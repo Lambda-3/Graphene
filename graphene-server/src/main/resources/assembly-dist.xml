@@ -1,0 +1,98 @@
+<!--
+  ~ ==========================License-Start=============================
+  ~ graphene-server : assembly-dist.xml
+  ~
+  ~ Copyright © 2017 Lambda³
+  ~
+  ~ GNU General Public License 3
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see http://www.gnu.org/licenses/.
+  ~ ==========================License-End==============================
+  -->
+
+<assembly xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		  xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+		  xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+
+	<id>dist</id>
+	<includeBaseDirectory>false</includeBaseDirectory>
+
+	<formats>
+		<format>dir</format>
+	</formats>
+
+	<dependencySets>
+		<dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<fileMode>600</fileMode>
+			<directoryMode>700</directoryMode>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<fileSet>
+			<directory>${project.basedir}</directory>
+			<outputDirectory/>
+			<includes>
+				<include>README.md</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>./</directory>
+			<outputDirectory>logs</outputDirectory>
+			<excludes>
+				<exclude>*/**</exclude>
+			</excludes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>logback.xml</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${parent.basedir}/conf</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>graphene.conf</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources</directory>
+			<outputDirectory>conf</outputDirectory>
+			<includes>
+				<include>Dockerfile-graphene</include>
+			</includes>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.basedir}/src/main/resources</directory>
+			<outputDirectory>bin</outputDirectory>
+			<includes>
+				<include>*.sh</include>
+			</includes>
+			<fileMode>700</fileMode>
+			<filtered>true</filtered>
+		</fileSet>
+
+		<fileSet>
+			<directory>${project.build.directory}/site</directory>
+			<outputDirectory>docs</outputDirectory>
+		</fileSet>
+	</fileSets>
+</assembly>
