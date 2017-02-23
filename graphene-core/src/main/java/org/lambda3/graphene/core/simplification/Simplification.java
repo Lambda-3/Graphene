@@ -50,42 +50,32 @@ public class Simplification {
 		log.info("Simplification initialized");
 	}
 
-	private static CoreSentence getCoreSentence(DCore dCore, Map<DCore, CoreSentence> dCoreMapping, Map<Integer, List<CoreSentence>> sentenceMapping) {
-		CoreSentence res;
+    private static CoreSentence getCoreSentence(DCore dCore, Map<DCore, CoreSentence> dCoreMapping, Map<Integer, List<CoreSentence>> sentenceMapping) {
+        CoreSentence res;
 
-		if (dCoreMapping.containsKey(dCore)) {
-			res = dCoreMapping.get(dCore);
-		} else {
-			res = new CoreSentence(
-					dCore.getText(),
-					DiscourseType.DISCOURSE_CORE,
-					dCore.getNotSimplifiedText(),
-					dCore.getSContexts()
-							.stream()
-							.map(c -> new ContextSentence(c.getText(), c.getRelation()))
-							.collect(Collectors.toList())
-			);
+        if (dCoreMapping.containsKey(dCore)) {
+            res = dCoreMapping.get(dCore);
+        } else {
+            res = new CoreSentence(
+                    dCore.getText(),
+                    DiscourseType.DISCOURSE_CORE,
+                    dCore.getNotSimplifiedText(),
+                    dCore.getSContexts()
+                            .stream()
+                            .map(c -> new ContextSentence(c.getText(), c.getRelation()))
+                            .collect(Collectors.toList())
+            );
 
-			// add to dCoreMapping
-			dCoreMapping.put(dCore, res);
+            // add to dCoreMapping
+            dCoreMapping.put(dCore, res);
 
-		}
+            // add to sentenceMapping
+            sentenceMapping.putIfAbsent(dCore.getSentenceIndex(), new ArrayList<>());
+            sentenceMapping.get(dCore.getSentenceIndex()).add(res);
+        }
 
-		addToSentenceMapping(sentenceMapping, dCore.getSentenceIndex(), res);
-
-		return res;
-	}
-
-	private static void addToSentenceMapping(Map<Integer, List<CoreSentence>> sentenceMapping, Integer sentenceIndex, CoreSentence result) {
-		// add to sentenceMapping
-		if (sentenceMapping.containsKey(sentenceIndex)) {
-			sentenceMapping.get(sentenceIndex).add(result);
-		} else {
-			List<CoreSentence> lst = new ArrayList<>();
-			lst.add(result);
-			sentenceMapping.put(sentenceIndex, lst);
-		}
-	}
+        return res;
+    }
 
 	private static CoreSentence getCoreSentence(DContext dContext, Map<DContext, CoreSentence> dContextMapping, Map<Integer, List<CoreSentence>> sentenceMapping) {
 		CoreSentence res;
@@ -103,7 +93,9 @@ public class Simplification {
 			// add to dContextMapping
 			dContextMapping.put(dContext, res);
 
-			addToSentenceMapping(sentenceMapping, dContext.getSentenceIndex(), res);
+            // add to sentenceMapping
+            sentenceMapping.putIfAbsent(dContext.getSentenceIndex(), new ArrayList<>());
+            sentenceMapping.get(dContext.getSentenceIndex()).add(res);
 		}
 
 		return res;
