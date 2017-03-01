@@ -17,7 +17,7 @@ In order to capture all the contextual information, Graphene performs the follow
 * Extract binary relations from each sentence.
 * Merge all the extracted relations into a relation graph (knowledge graph).
 
-Graphene’s extracted graphs are represented using the RDF.NL format, an extension of the RDF format which facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A short description of the RDF.NL format can be found [here](wiki/RDF.NL-Format).
+Graphene’s extracted graphs are represented using the RDF.NL format, an extension of the RDF format which facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A short description of the RDF.NL format can be found [here](wiki/RDF.NL-Format.md).
 Alternative to the RDF.NL representation, developers can use the direct output class of the API, which is serializable and deserializable as a JSON object.
 
 ## Example Extractions
@@ -156,11 +156,11 @@ Then, you can build and start the composed images:
 ## Usage
 
 ### Graphene-Core
-Graphene comes with a java API which is described [here](wiki/Graphene-Core). 
+Graphene comes with a java API which is described [here](wiki/Graphene-Core.md). 
 
 ### Graphene-Sever
 For simplified access, we wrapped the Graphene-Core library inside a web-service.
-The usage of the Graphene-Server is described [here](wiki/Graphene-Server).
+The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
 
 ## Graphene-CLI
-Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI).
+Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI.md).

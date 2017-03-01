@@ -66,3 +66,5 @@ curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doC
 ```sh
 curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true"}' -H "Accept: text/plain" "http://localhost:8080/graphExtraction/rdf"
 ```
+
+[Back to the home page](../README.md)
