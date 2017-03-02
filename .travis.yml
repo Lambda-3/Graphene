@@ -1,0 +1,11 @@
+language: java
+script: mvn test -B
+jdk: oraclejdk8
+
+cache:
+  directories:
+  - $HOME/.m2
+
+before_install:
+  - ./install-SentenceSimplification.sh
+  - ./install-DiscourseSimplification.sh
