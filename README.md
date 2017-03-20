@@ -131,21 +131,14 @@ Then, build the image
 	docker build -t "corenlp:latest" -f Dockerfile-corenlp .
 
 ### Installing coreference
-Clone the repository
+Install `PyCobalt`as a docker image
 
-	git clone --depth 1 https://github.com/Lambda-3/CoreferenceResolutionPython.git /tmp/coreference
-	cd /tmp/coreference
-
-Then, adjust the CoreNLP access URL to reflect the later docker-compose network in the `Resolver.py` file:
-
-	# OLD:
-	_nlp = StanfordCoreNLP('http://localhost:9000')
-	# NEW
-	_nlp = StanfordCoreNLP('http://corenlp:9000')
-
-Then build the image with
-
-	docker build -t "coreference:v1" -f Dockerfile .
+	wget https://github.com/Lambda-3/PyCobalt/archive/v1.1.0-beta.3.tar.gz -O /tmp/PyCobalt.tar.gz
+	cd /tmp
+	tar xfva PyCobalt.tar.gz
+	cd PyCobalt-1.1.0-beta.3
+	docker build -t "lambda3/pycobalt:v1.1.0-beta.3" .
+	
 
 ### Docker-Compose
 
