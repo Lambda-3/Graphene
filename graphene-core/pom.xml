@@ -34,6 +34,13 @@
 	<artifactId>graphene-core</artifactId>
 	<name>Graphene Core</name>
 
+	<packaging>jar</packaging>
+
+	<properties>
+    <simplification.version>5.0.0</simplification.version>
+		<openie.version>4.2.1</openie.version>
+	</properties>
+
 	<dependencies>
 
 		<!-- Coreference Resolution -->
@@ -76,15 +83,6 @@
 			</exclusions>
 		</dependency>
 	</dependencies>
-
-	<packaging>jar</packaging>
-
-	<properties>
-		<simplification.version>5.0.0</simplification.version>
-		<openie.version>4.2.1</openie.version>
-
-		<jersey.version>2.25.1</jersey.version>
-	</properties>
 
 	<build>
 		<resources>
