@@ -5,7 +5,7 @@ services:
   graphene:
     depends_on:
       - coreference
-    build: 
+    build:
       context: .
       dockerfile: graphene-server/target/classes/Dockerfile-graphene
     ports:
@@ -20,7 +20,9 @@ services:
   coreference:
     depends_on:
       - corenlp
-    image: "coreference:v1"
+    image: "lambda3/pycobalt:v1.1.0-beta.3"
+    environment:
+      - PYCOBALT_CORENLP=http://corenlp:9000
     expose:
       - "5128"
     links:
