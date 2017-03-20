@@ -20,7 +20,7 @@ services:
   coreference:
     depends_on:
       - corenlp
-    image: "lambda3/pycobalt:v1.1.0-beta.3"
+    image: "lambdacube/pycobalt:v1.1.0-beta.3"
     environment:
       - PYCOBALT_CORENLP=http://corenlp:9000
     expose:
