@@ -37,8 +37,9 @@
 	<packaging>jar</packaging>
 
 	<properties>
-    <simplification.version>5.0.0</simplification.version>
-		<openie.version>4.2.1</openie.version>
+        <discourse_simplification.version>6.0.0-SNAPSHOT</discourse_simplification.version>
+        <simplification.version>5.0.0</simplification.version>
+        <openie.version>4.2.1</openie.version>
 	</properties>
 
 	<dependencies>
@@ -63,12 +64,19 @@
 			<version>${jersey.version}</version>
 		</dependency>
 
-		<!-- Simplification -->
+		<!-- Discourse Simplification -->
 		<dependency>
 			<groupId>org.lambda3.text.simplification</groupId>
 			<artifactId>discourse-simplification</artifactId>
-			<version>${simplification.version}</version>
+			<version>${discourse_simplification.version}</version>
 		</dependency>
+
+        <!-- Sentence Simplification -->
+        <dependency>
+            <groupId>org.lambda3.text.simplification</groupId>
+            <artifactId>sentence-simplification</artifactId>
+            <version>${simplification.version}</version>
+        </dependency>
 
 		<!-- Graph Extraction -->
 		<dependency>

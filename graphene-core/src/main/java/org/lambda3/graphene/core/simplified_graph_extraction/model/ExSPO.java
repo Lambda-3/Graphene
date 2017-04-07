@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : ExContextSentence
+ * graphene-core : RDFOutput
  *
  * Copyright © 2017 Lambda³
  *
@@ -22,46 +22,33 @@
 
 package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
-
-import org.lambda3.graphene.core.graph_extraction.model.Extraction;
-import org.lambda3.text.simplification.discourse.tree.Relation;
-
-import java.util.List;
-import java.util.UUID;
-
 /**
  *
  */
-public class ExContextSentence {
-	private String id;
-	private String text;
-	private Relation relation;
-	private List<Extraction> extractions;
+public class ExSPO {
+    private String subject;
+    private String predicate;
+    private String object;
 
-	// for deserialization
-	public ExContextSentence() {
-	}
+    // for deserialization
+    public ExSPO() {
+    }
 
-	public ExContextSentence(String text, Relation relation, List<Extraction> extractions) {
-		this.id = "CONTEXT-" + UUID.randomUUID();
-		this.text = text;
-		this.relation = relation;
-		this.extractions = extractions;
-	}
+    public ExSPO(String subject, String predicate, String object) {
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getSubject() {
+        return subject;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getPredicate() {
+        return predicate;
+    }
 
-	public Relation getRelation() {
-		return relation;
-	}
-
-	public List<Extraction> getExtractions() {
-		return extractions;
-	}
+    public String getObject() {
+        return object;
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : DiscourseType
+ * graphene-core : ExCoreSentence
  *
  * Copyright © 2017 Lambda³
  *
@@ -20,9 +20,33 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplification.model;
+package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
-public enum DiscourseType {
-	DISCOURSE_CORE,
-	DISCOURSE_CONTEXT
+/**
+ * Context mediated by verbs
+ */
+public class ExVContext {
+    private String text;
+    private Classification classification;
+
+    // for deserialization
+    public ExVContext() {
+    }
+
+    public ExVContext(String text) {
+        this.text = text;
+        this.classification = Classification.UNKNOWN;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public Classification getClassification() {
+        return classification;
+    }
 }

@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : SimplificationSentence
+ * graphene-core : RDFOutput
  *
  * Copyright © 2017 Lambda³
  *
@@ -20,28 +20,13 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplification.model;
+package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
 
-import java.util.List;
-
-public class SimplificationSentence {
-	private String originalSentence;
-	private List<CoreSentence> coreSentences;
-
-	// for deserialization
-	public SimplificationSentence() {
-	}
-
-	public SimplificationSentence(String originalSentence, List<CoreSentence> coreSentences) {
-		this.originalSentence = originalSentence;
-		this.coreSentences = coreSentences;
-	}
-
-	public String getOriginalSentence() {
-		return originalSentence;
-	}
-
-	public List<CoreSentence> getCoreSentences() {
-		return coreSentences;
-	}
+/**
+ *
+ */
+public enum RDFStyle {
+    DEFAULT,
+    FLAT,
+    EXPANDED,
 }

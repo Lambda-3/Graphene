@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : ExCoreSentenceRelation
+ * graphene-core : ExCoreSentence
  *
  * Copyright © 2017 Lambda³
  *
@@ -22,36 +22,43 @@
 
 package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
-import org.lambda3.text.simplification.discourse.tree.Relation;
+import java.util.Optional;
 
 /**
- *
+ *  Context mediated by nouns
  */
-public class ExCoreSentenceRelation {
-	private ExCoreSentence target;
-	private Relation relation;
+public class ExNContext {
+    private String text;
+    private Classification classification;
+    private ExSPO spo; // optional
 
-	// for deserialization
-	public ExCoreSentenceRelation() {
-	}
+    // for deserialization
+    public ExNContext() {
+    }
 
-	public ExCoreSentenceRelation(ExCoreSentence target, Relation relation) {
-		this.target = target;
-		this.relation = relation;
-	}
+    public ExNContext(String text) {
+        this.text = text;
+        this.classification = Classification.UNKNOWN;
+        this.spo = null;
+    }
 
-	public ExCoreSentence getTarget() {
-		return target;
-	}
+    public void setClassification(Classification classification) {
+        this.classification = classification;
+    }
 
-	public Relation getRelation() {
-		return relation;
-	}
+    public void setSpo(ExSPO spo) {
+        this.spo = spo;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		return ((o instanceof ExCoreSentenceRelation)
-				&& (((ExCoreSentenceRelation) o).relation.equals(relation))
-				&& (((ExCoreSentenceRelation) o).target.equals(target)));
-	}
+    public String getText() {
+        return text;
+    }
+
+    public Classification getClassification() {
+        return classification;
+    }
+
+    public Optional<ExSPO> getSpo() {
+        return Optional.ofNullable(spo);
+    }
 }

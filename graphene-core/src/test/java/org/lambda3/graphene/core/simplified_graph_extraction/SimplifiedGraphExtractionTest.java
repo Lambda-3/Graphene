@@ -23,11 +23,9 @@
 package org.lambda3.graphene.core.simplified_graph_extraction;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.lambda3.graphene.core.simplification.Simplification;
-import org.lambda3.graphene.core.simplification.model.IDCoreSentenceRelation;
-import org.lambda3.graphene.core.simplification.model.SimplificationContent;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExSimplificationContent;
+import org.lambda3.graphene.core.simplified_graph_extraction.model.ExContent;
 import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFGenerator;
+import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -45,40 +43,29 @@ public class SimplifiedGraphExtractionTest {
 
 	@Test
 	public void testSerializationAndSeserialization() throws IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		Simplification simplification = new Simplification();
 		SimplifiedGraphExtraction simplifiedGraphExtraction = new SimplifiedGraphExtraction();
 
-		SimplificationContent simplificationContent = simplification.doSimplification("Peter went to Berlin and went to Paris.");
-		ExSimplificationContent serializeContent = simplifiedGraphExtraction.extract(simplificationContent);
+		ExContent serializeContent = simplifiedGraphExtraction.doExtraction("Peter went to Berlin and went to Paris.");
 
 		// serialize
-		String json = mapper.writeValueAsString(serializeContent);
+//		String json = mapper.writeValueAsString(serializeContent);
+		String json = serializeContent.serializeToJSON();
 
 		log.info(json);
 
 		// deserialization
-		ExSimplificationContent deserializeContent = mapper.readValue(json, ExSimplificationContent.class);
-
-		// compare hashmaps
-		Map<String, List<IDCoreSentenceRelation>> serializedIDCoreRelationsMap = serializeContent.getIDCoreRelationsMap();
-		Map<String, List<IDCoreSentenceRelation>> deserializedIDCoreRelationsMap = deserializeContent.getIDCoreRelationsMap();
-		Assert.assertEquals(serializedIDCoreRelationsMap.size(), deserializedIDCoreRelationsMap.size());
-
-		for (String id : serializedIDCoreRelationsMap.keySet()) {
-			Assert.assertTrue(serializedIDCoreRelationsMap.get(id).containsAll(deserializedIDCoreRelationsMap.get(id)));
-			Assert.assertTrue(deserializedIDCoreRelationsMap.get(id).containsAll(serializedIDCoreRelationsMap.get(id)));
-		}
+//		ExContent deserializeContent = mapper.readValue(json, ExContent.class);
+		ExContent deserializeContent = ExContent.deserializeFromJSON(json, ExContent.class);
 	}
 
 	@Test
 	public void testRDFOutput() throws IOException {
-		Simplification simplification = new Simplification();
-		SimplifiedGraphExtraction simplifiedGraphExtraction = new SimplifiedGraphExtraction();
+        SimplifiedGraphExtraction simplifiedGraphExtraction = new SimplifiedGraphExtraction();
 
-		SimplificationContent simplificationContent = simplification.doSimplification("Peter went to Berlin and went to Paris.");
-		ExSimplificationContent esc = simplifiedGraphExtraction.extract(simplificationContent);
+        ExContent content = simplifiedGraphExtraction.doExtraction("Peter went to Berlin and went to Paris.");
 
-		RDFGenerator.generateOutput(esc);
+        log.info(RDFGenerator.getRDFRepresentation(content, RDFStyle.DEFAULT));
+        log.info(RDFGenerator.getRDFRepresentation(content, RDFStyle.FLAT));
+        log.info(RDFGenerator.getRDFRepresentation(content, RDFStyle.EXPANDED));
 	}
 }

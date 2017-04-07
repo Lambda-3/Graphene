@@ -22,17 +22,15 @@
 
 package org.lambda3.graphene.core.simplified_graph_extraction;
 
-import org.lambda3.graphene.core.graph_extraction.model.Extraction;
-import org.lambda3.graphene.core.graph_extraction.runner.OpenIERunner;
-import org.lambda3.graphene.core.simplification.model.*;
 import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
+import org.lambda3.graphene.core.simplified_graph_extraction.runner.DiscourseExtractionRunner;
+import org.lambda3.graphene.core.simplified_graph_extraction.runner.SPORunner;
+import org.lambda3.graphene.core.simplified_graph_extraction.runner.SimplificationRunner;
+import org.lambda3.text.simplification.discourse.utils.sentences.SentencesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  *
@@ -44,54 +42,24 @@ public class SimplifiedGraphExtraction {
 		log.info("SimplifiedGraphExtraction initialized");
 	}
 
-	public ExSimplificationContent extract(SimplificationContent simplificationContent) {
+	public ExContent doExtraction(String text) {
+        return doExtraction(SentencesUtils.splitIntoSentences(text));
+    }
 
-		if (log.isDebugEnabled()) {
-			log.debug("extract graph for simplified content");
-		}
+    @SuppressWarnings("WeakerAccess")
+    public ExContent doExtraction(List<String> sentences) {
+        log.info("Running SimplifiedGraphExtraction on {} sentences", sentences.size());
 
-		List<ExSimplificationSentence> exSimplificationSentences = new ArrayList<>();
+        // Step 1) do discourse extraction
+        ExContent content = DiscourseExtractionRunner.doDiscourseExtraction(sentences);
 
-		// 1) create (deep) copy of tree
-		Map<CoreSentence, ExCoreSentence> coreMapping = new LinkedHashMap<>();
+        // Step 2) do simplification
+        SimplificationRunner.doSimplification(content);
 
-		// for each simplificationSentence
-		for (SimplificationSentence simplificationSentence : simplificationContent.getSimplifiedSentences()) {
-			List<ExCoreSentence> exCoreSentences = new ArrayList<>();
+        // Step 3) do SPO
+        SPORunner.doSPOExtraction(content);
 
-			// for each simplificationSentence.coreSentence
-			for (CoreSentence coreSentence : simplificationSentence.getCoreSentences()) {
-				List<ExContextSentence> exContextSentences = new ArrayList<>();
-				List<Extraction> coreExtractions = OpenIERunner.extract(coreSentence.getText()).getExtractions();
+        return content;
+    }
 
-				// for each simplificationSentence.coreSentence.contextSentence
-				for (ContextSentence contextSentence : coreSentence.getContextSentences()) {
-					List<Extraction> contextExtractions = OpenIERunner.extract(contextSentence.getText()).getExtractions();
-
-					exContextSentences.add(new ExContextSentence(contextSentence.getText(), contextSentence.getRelation(), contextExtractions));
-				}
-
-				ExCoreSentence exCoreSentence = new ExCoreSentence(coreSentence.getText(), coreSentence.getDiscourseType(), coreSentence.getNotSimplifiedText(), exContextSentences, coreExtractions);
-				coreMapping.put(coreSentence, exCoreSentence);
-				exCoreSentences.add(exCoreSentence);
-			}
-
-			exSimplificationSentences.add(new ExSimplificationSentence(simplificationSentence.getOriginalSentence(), exCoreSentences));
-		}
-
-		// 2) create coreRelationsMap
-		Map<ExCoreSentence, List<ExCoreSentenceRelation>> coreRelationsMap = new LinkedHashMap<>();
-		for (CoreSentence coreSentence : simplificationContent.getCoreRelationsMap().keySet()) {
-			List<ExCoreSentenceRelation> lst = new ArrayList<>();
-			for (CoreSentenceRelation relation : simplificationContent.getCoreRelationsMap().get(coreSentence)) {
-				lst.add(new ExCoreSentenceRelation(coreMapping.get(relation.getTarget()), relation.getRelation()));
-			}
-			coreRelationsMap.put(coreMapping.get(coreSentence), lst);
-		}
-
-		ExSimplificationContent res = new ExSimplificationContent(exSimplificationSentences, coreRelationsMap);
-		res.setCoreferenced(simplificationContent.isCoreferenced());
-
-		return res;
-	}
 }

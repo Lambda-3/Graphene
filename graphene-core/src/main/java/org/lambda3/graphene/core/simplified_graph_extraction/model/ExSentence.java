@@ -22,29 +22,46 @@
 
 package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  *
  */
-public class ExSimplificationSentence {
+public class ExSentence {
 	private String originalSentence;
-	private List<ExCoreSentence> coreSentences;
+	private int sentenceIdx;
+    private HashMap<String, ExElement> elementMap; // all elements extracted from this sentence
 
 	// for deserialization
-	public ExSimplificationSentence() {
+	public ExSentence() {
 	}
 
-	public ExSimplificationSentence(String originalSentence, List<ExCoreSentence> coreSentences) {
-		this.originalSentence = originalSentence;
-		this.coreSentences = coreSentences;
-	}
+    public ExSentence(String originalSentence, int sentenceIdx) {
+        this.originalSentence = originalSentence;
+        this.sentenceIdx = sentenceIdx;
+        this.elementMap = new LinkedHashMap<>();
+    }
 
-	public String getOriginalSentence() {
-		return originalSentence;
-	}
+    public void addElement(ExElement exElement) {
+        elementMap.putIfAbsent(exElement.getId(), exElement);
+    }
 
-	public List<ExCoreSentence> getCoreSentences() {
-		return coreSentences;
-	}
+    public String getOriginalSentence() {
+        return originalSentence;
+    }
+
+    public int getSentenceIdx() {
+        return sentenceIdx;
+    }
+
+    public ExElement getElement(String id) {
+	    return elementMap.getOrDefault(id, null);
+    }
+
+    public List<ExElement> getElements() {
+	    return elementMap.values().stream().collect(Collectors.toList());
+    }
 }

@@ -31,7 +31,7 @@ import org.testng.annotations.Test;
 import java.util.List;
 
 /**
- * Tests for the OpenIE-Runner.
+ * Tests for the OpenIERunner-Runner.
  */
 public class OpenIERunnerTest {
 

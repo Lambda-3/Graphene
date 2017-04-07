@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : ContextSentence
+ * graphene-core : IDCoreSentenceRelation
  *
  * Copyright © 2017 Lambda³
  *
@@ -20,40 +20,41 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplification.model;
+package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
-
-import org.lambda3.text.simplification.discourse.tree.Relation;
-
-import java.util.UUID;
 
 /**
  *
  */
-public class ContextSentence {
-	private String id;
-	private String text;
-	private Relation relation;
+public class ExElementRelation {
+	private String targetElementID;
+	private Classification classification;
 
 	// for deserialization
-	public ContextSentence() {
+	public ExElementRelation() {
 	}
 
-	public ContextSentence(String text, Relation relation) {
-		this.id = "CONTEXT-" + UUID.randomUUID();
-		this.text = text;
-		this.relation = relation;
+	public ExElementRelation(String targetElementID, Classification classification) {
+		this.targetElementID = targetElementID;
+		this.classification = classification;
 	}
 
-	public String getId() {
-		return id;
+	public String getTargetElementID() {
+		return targetElementID;
 	}
 
-	public String getText() {
-		return text;
+	public ExElement getTargetElement(ExContent content) {
+        return content.getElement(targetElementID);
+    }
+
+	public Classification getClassification() {
+		return classification;
 	}
 
-	public Relation getRelation() {
-		return relation;
-	}
+    @Override
+	public boolean equals(Object o) {
+		return ((o instanceof ExElementRelation)
+				&& (((ExElementRelation) o).targetElementID.equals(targetElementID))
+				&& (((ExElementRelation) o).classification.equals(classification)));
+    }
 }

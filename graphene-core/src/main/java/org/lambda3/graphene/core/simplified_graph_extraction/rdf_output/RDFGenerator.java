@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFGenerator
+ * graphene-core : RDFOutput
  *
  * Copyright © 2017 Lambda³
  *
@@ -22,100 +22,214 @@
 
 package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExContextSentence;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExCoreSentence;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExSimplificationContent;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExSimplificationSentence;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.model.*;
+import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 /**
  *
  */
 public class RDFGenerator {
+    private static final String ELEMENT_STR = "ELEM";
+    private static final String NCONTEXT_STR = "NCON";
+    private static final String VCONTEXT_STR = "VCON";
 
-	public static String generateOuputStr(ExSimplificationContent exSimplificationContent) {
-		StringBuilder strb = new StringBuilder();
+    private static String elementAbbrev(ExElement element, Classification classification) {
+        return ELEMENT_STR + ":" + classification.name();
+    }
 
-		for (ExSimplificationSentence exSimplificationSentence : exSimplificationContent.getSimplifiedSentences()) {
-			strb.append("\n");
-			strb.append("# original sentence: '").append(exSimplificationSentence.getOriginalSentence()).append("'").append("\n");
+    private static String nContextAbbrev(ExNContext nContext) {
+        return NCONTEXT_STR + ":" + nContext.getClassification().name();
+    }
 
-			for (ExCoreSentence exCoreSentence : exSimplificationSentence.getCoreSentences()) {
-				strb.append("\n");
-				strb.append("## core sentence: '").append(exCoreSentence.getText()).append("'").append("\n");
+    private static String vContextAbbrev(ExVContext vContext) {
+        return VCONTEXT_STR + ":" + vContext.getClassification().name();
+    }
 
-				// core discourse type
-				strb.append(new CoreDiscourseType(exCoreSentence.getId(), exCoreSentence.getDiscourseType())).append("\n");
+    private static Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
+        if (!element.getSpo().isPresent()) {
+            return Optional.empty();
+        }
+        ExSPO spo = element.getSpo().get();
+        String abbrev = elementAbbrev(element, classification);
 
-				// core extractions
-				exCoreSentence.getExtractions().stream().map(
-						e -> new CoreExtraction(exCoreSentence.getId(), e.getSubject(), e.getPredicate(), e.getObject())
-				).forEach(e -> strb.append(e.toString()).append("\n"));
+        if (linked) {
+            if (asArg) {
+                return Optional.of(abbrev + "(" + element.getId() + ")");
+            } else {
+                return Optional.of(abbrev + "\t" + element.getId());
+            }
+        } else {
+            if (asArg) {
+                return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+            } else {
+                return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+            }
+        }
+    }
 
-				// core relations
-				exSimplificationContent.getCoreSentenceRelations(exCoreSentence).stream().map(
-						e -> new CoreCoreRelation(exCoreSentence.getId(), e.getTarget().getId(), e.getRelation())
-				).forEach(e -> strb.append(e.toString()).append("\n"));
+    private static Optional<String> nContextRep(ExNContext context, boolean asArg) {
+        if (!context.getSpo().isPresent()) {
+            return Optional.empty();
+        }
+        ExSPO spo = context.getSpo().get();
+        String abbrev = nContextAbbrev(context);
 
-				// contexts
-				for (ExContextSentence exContextSentence : exCoreSentence.getContextSentences()) {
-					strb.append("### context sentence: '").append(exContextSentence.getText()).append("'").append("\n");
+        if (asArg) {
+            return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+        } else {
+            return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+        }
+    }
 
-					// context extractions
-					exContextSentence.getExtractions().stream().map(
-							e -> new ContextExtraction(exContextSentence.getId(), e.getSubject(), e.getPredicate(), e.getObject())
-					).forEach(e -> strb.append(e.toString()).append("\n"));
+    private static String vContextRep(ExVContext context, boolean asArg) {
+        String abbrev = vContextAbbrev(context);
 
-					// context relation
-					strb.append(new CoreContextRelation(exCoreSentence.getId(), exContextSentence.getId(), exContextSentence.getRelation()).toString()).append("\n");
-				}
-			}
-		}
+        if (asArg) {
+            return abbrev + "(" + context.getText() + ")";
+        } else {
+            return abbrev + "\t" + context.getText();
+        }
+    }
 
-		return strb.toString();
-	}
+    public static String getRDFRepresentation(ExContent content, RDFStyle style) {
+        StringBuilder strb = new StringBuilder();
 
-	public static RDFOutput generateOutput(ExSimplificationContent exSimplificationContent) {
-		List<CoreExtraction> coreExtractions = new ArrayList<>();
-		List<CoreDiscourseType> coreDiscourseTypes = new ArrayList<>();
-		List<ContextExtraction> contextExtractions = new ArrayList<>();
-		List<CoreCoreRelation> coreCoreRelations = new ArrayList<>();
-		List<CoreContextRelation> coreContextRelations = new ArrayList<>();
+        for (ExSentence exSentence : content.getSentences()) {
 
-		for (ExSimplificationSentence exSimplificationSentence : exSimplificationContent.getSimplifiedSentences()) {
-			for (ExCoreSentence exCoreSentence : exSimplificationSentence.getCoreSentences()) {
+            // sentence
+            strb.append(exSentence.getOriginalSentence() + "\n\n");
 
-				// core discourse type
-				coreDiscourseTypes.add(new CoreDiscourseType(exCoreSentence.getId(), exCoreSentence.getDiscourseType()));
+            // all elements
+            for (ExElement element : exSentence.getElements()) {
+                if (style.equals(RDFStyle.DEFAULT)) {
+                    addDefaultElementRepresentation(strb, content, element);
+                } else if (style.equals(RDFStyle.FLAT)) {
+                    addFlatElementRepresentation(strb, content, element);
+                } else if (style.equals(RDFStyle.EXPANDED)) {
+                    addExpandedElementRepresentation(strb, 0, content, element, null);
+                } else {
+                    throw new AssertionError("Unknown RDF style.");
+                }
+            }
 
-				// core extractions
-				coreExtractions.addAll(exCoreSentence.getExtractions().stream().map(
-						e -> new CoreExtraction(exCoreSentence.getId(), e.getSubject(), e.getPredicate(), e.getObject())
-				).collect(Collectors.toList()));
+            if (style.equals(RDFStyle.FLAT)) {
+                strb.append("\n");
+            }
+        }
 
-				// core relations
-				coreCoreRelations.addAll(exSimplificationContent.getCoreSentenceRelations(exCoreSentence).stream().map(
-						e -> new CoreCoreRelation(exCoreSentence.getId(), e.getTarget().getId(), e.getRelation())
-				).collect(Collectors.toList()));
+        return strb.toString();
+    }
 
-				// contexts
-				for (ExContextSentence exContextSentence : exCoreSentence.getContextSentences()) {
+    private static void addDefaultElementRepresentation(StringBuilder strb, ExContent content, ExElement element) {
+        if (!element.getSpo().isPresent()) {
+            return;
+        }
+        ExSPO spo = element.getSpo().get();
 
-					// context extractions
-					contextExtractions.addAll(exContextSentence.getExtractions().stream().map(
-							e -> new ContextExtraction(exContextSentence.getId(), e.getSubject(), e.getPredicate(), e.getObject())
-					).collect(Collectors.toList()));
+        // element
+        strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
 
-					// context relation
-					coreContextRelations.add(new CoreContextRelation(exCoreSentence.getId(), exContextSentence.getId(), exContextSentence.getRelation()));
-				}
-			}
-		}
+        // vContexts
+        for (ExVContext context : element.getVContexts()) {
+            String vContextRep = vContextRep(context, false);
+            strb.append("\t" + vContextRep + "\n");
+        }
 
-		return new RDFOutput(coreDiscourseTypes, coreExtractions, contextExtractions, coreCoreRelations, coreContextRelations);
-	}
+        // nContexts
+        for (ExNContext context : element.getNContexts()) {
+            Optional<String> nContextRep = nContextRep(context, false);
+            if (nContextRep.isPresent()) {
+                strb.append("\t" + nContextRep.get() + "\n");
+            }
+        }
+
+        // element contexts
+        for (ExElementRelation relation : element.getRelations()) {
+            ExElement target = relation.getTargetElement(content);
+            Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, false);
+            if (elemContextRep.isPresent()) {
+                strb.append("\t" + elemContextRep.get() + "\n");
+            }
+        }
+
+        strb.append("\n");
+    }
+
+    private static void addFlatElementRepresentation(StringBuilder strb, ExContent content, ExElement element) {
+        if (!element.getSpo().isPresent()) {
+            return;
+        }
+        ExSPO spo = element.getSpo().get();
+
+        // element
+        strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+
+        // vContexts
+        for (ExVContext context : element.getVContexts()) {
+            String vContextRep = vContextRep(context, true);
+            strb.append("\t" + vContextRep);
+        }
+
+        // nContexts
+        for (ExNContext context : element.getNContexts()) {
+            Optional<String> nContextRep = nContextRep(context, true);
+            if (nContextRep.isPresent()) {
+                strb.append("\t" + nContextRep.get());
+            }
+        }
+
+        // element contexts
+        for (ExElementRelation relation : element.getRelations()) {
+            ExElement target = relation.getTargetElement(content);
+            Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
+            if (elemContextRep.isPresent()) {
+                strb.append("\t" + elemContextRep.get());
+            }
+        }
+
+        strb.append("\n");
+    }
+
+    private static void addExpandedElementRepresentation(StringBuilder strb, int layer, ExContent content, ExElement element, Classification classification) {
+        if (!element.getSpo().isPresent()) {
+            return;
+        }
+        ExSPO spo = element.getSpo().get();
+        String indent = "";
+        for (int i = 0; i < layer; i++) {
+            indent += "\t";
+        }
+
+        // element
+        if (layer == 0) {
+            strb.append(indent + element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
+        } else {
+            strb.append(indent + elemContextRep(element, classification, false, false).get() + "\n");
+        }
+
+        // vContexts
+        for (ExVContext context : element.getVContexts()) {
+            String vContextRep = vContextRep(context, false);
+            strb.append(indent + "\t" + vContextRep + "\n");
+        }
+
+        // nContexts
+        for (ExNContext context : element.getNContexts()) {
+            Optional<String> nContextRep = nContextRep(context, false);
+            if (nContextRep.isPresent()) {
+                strb.append(indent + "\t" + nContextRep.get() + "\n");
+            }
+        }
+
+        // element contexts
+        for (ExElementRelation relation : element.getRelations()) {
+            ExElement target = relation.getTargetElement(content);
+            addExpandedElementRepresentation(strb, layer + 1, content, target, relation.getClassification());
+        }
+
+        if (layer == 0) {
+            strb.append("\n");
+        }
+    }
 }

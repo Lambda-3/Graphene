@@ -47,7 +47,7 @@ public class OpenIERunner {
 	private final static OpenIE OPENIE = initializeOpenIE();
 
 	private synchronized static OpenIE initializeOpenIE() {
-		LOG.debug("Initializing OpenIE...");
+		LOG.debug("Initializing OpenIERunner...");
 		long started = System.currentTimeMillis();
 		OpenIE openIE =
 				new OpenIE(
@@ -60,7 +60,7 @@ public class OpenIERunner {
 						false,
 						true
 				);
-		LOG.debug("OpenIE initialized after {} seconds", (System.currentTimeMillis() - started) / 1000);
+		LOG.debug("OpenIERunner initialized after {} seconds", (System.currentTimeMillis() - started) / 1000);
 
 		return openIE;
 	}
@@ -68,7 +68,7 @@ public class OpenIERunner {
 	/**
 	 * Extracts n-ary relations from the given sentence.
 	 *
-	 * @param sentence One sentence that is given to OpenIE to extract n-ary relations
+	 * @param sentence One sentence that is given to OpenIERunner to extract n-ary relations
 	 * @return Instance of {@link ExtractionSentence} that contains all extractions from this sentence.
 	 */
 	public static ExtractionSentence extract(String sentence) {
