@@ -92,7 +92,7 @@ public class RDFGenerator {
         }
     }
 
-    public static String getRDFRepresentation(ExContent content, RDFStyle style) {
+    public static String getRDFRepresentation(ExContent content, RDFStyle style, int maxContextDepth) {
         StringBuilder strb = new StringBuilder();
 
         for (ExSentence exSentence : content.getSentences()) {
@@ -107,7 +107,7 @@ public class RDFGenerator {
                 } else if (style.equals(RDFStyle.FLAT)) {
                     addFlatElementRepresentation(strb, content, element);
                 } else if (style.equals(RDFStyle.EXPANDED)) {
-                    addExpandedElementRepresentation(strb, 0, content, element, null);
+                    addExpandedElementRepresentation(strb, 0, maxContextDepth, content, element, null);
                 } else {
                     throw new AssertionError("Unknown RDF style.");
                 }
@@ -119,6 +119,10 @@ public class RDFGenerator {
         }
 
         return strb.toString();
+    }
+
+    public static String getRDFRepresentation(ExContent content, RDFStyle style) {
+        return getRDFRepresentation(content, style, 5);
     }
 
     private static void addDefaultElementRepresentation(StringBuilder strb, ExContent content, ExElement element) {
@@ -191,44 +195,46 @@ public class RDFGenerator {
         strb.append("\n");
     }
 
-    private static void addExpandedElementRepresentation(StringBuilder strb, int layer, ExContent content, ExElement element, Classification classification) {
+    private static void addExpandedElementRepresentation(StringBuilder strb, int contextDepth, int maxContextDepth, ExContent content, ExElement element, Classification classification) {
         if (!element.getSpo().isPresent()) {
             return;
         }
         ExSPO spo = element.getSpo().get();
         String indent = "";
-        for (int i = 0; i < layer; i++) {
+        for (int i = 0; i < contextDepth; i++) {
             indent += "\t";
         }
 
         // element
-        if (layer == 0) {
+        if (contextDepth == 0) {
             strb.append(indent + element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
         } else {
             strb.append(indent + elemContextRep(element, classification, false, false).get() + "\n");
         }
 
-        // vContexts
-        for (ExVContext context : element.getVContexts()) {
-            String vContextRep = vContextRep(context, false);
-            strb.append(indent + "\t" + vContextRep + "\n");
-        }
+        if (contextDepth < maxContextDepth) {
+            // vContexts
+            for (ExVContext context : element.getVContexts()) {
+                String vContextRep = vContextRep(context, false);
+                strb.append(indent + "\t" + vContextRep + "\n");
+            }
 
-        // nContexts
-        for (ExNContext context : element.getNContexts()) {
-            Optional<String> nContextRep = nContextRep(context, false);
-            if (nContextRep.isPresent()) {
-                strb.append(indent + "\t" + nContextRep.get() + "\n");
+            // nContexts
+            for (ExNContext context : element.getNContexts()) {
+                Optional<String> nContextRep = nContextRep(context, false);
+                if (nContextRep.isPresent()) {
+                    strb.append(indent + "\t" + nContextRep.get() + "\n");
+                }
+            }
+
+            // element contexts
+            for (ExElementRelation relation : element.getRelations()) {
+                ExElement target = relation.getTargetElement(content);
+                addExpandedElementRepresentation(strb, contextDepth + 1, maxContextDepth, content, target, relation.getClassification());
             }
         }
 
-        // element contexts
-        for (ExElementRelation relation : element.getRelations()) {
-            ExElement target = relation.getTargetElement(content);
-            addExpandedElementRepresentation(strb, layer + 1, content, target, relation.getClassification());
-        }
-
-        if (layer == 0) {
+        if (contextDepth == 0) {
             strb.append("\n");
         }
     }

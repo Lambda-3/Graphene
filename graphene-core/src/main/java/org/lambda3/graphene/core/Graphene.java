@@ -114,11 +114,17 @@ public class Graphene {
 		return ec;
 	}
 
-	public String getRDFRepresentation(ExContent exContent, RDFStyle rdfStyle) {
+	public String getRDFRepresentation(ExContent exContent, RDFStyle rdfStyle, int maxContextDepth) {
 		log.debug("generate RDF as string for exContent");
 
-		return RDFGenerator.getRDFRepresentation(exContent, rdfStyle);
+		return RDFGenerator.getRDFRepresentation(exContent, rdfStyle, maxContextDepth);
 	}
+
+    public String getRDFRepresentation(ExContent exContent, RDFStyle rdfStyle) {
+        log.debug("generate RDF as string for exContent");
+
+        return RDFGenerator.getRDFRepresentation(exContent, rdfStyle);
+    }
 
 
 	public VersionInfo getVersionInfo() {
