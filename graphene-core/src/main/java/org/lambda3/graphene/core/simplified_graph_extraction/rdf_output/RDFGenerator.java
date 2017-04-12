@@ -207,7 +207,7 @@ public class RDFGenerator {
 
         // element
         if (contextDepth == 0) {
-            strb.append(indent + element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
+            strb.append(indent + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
         } else {
             strb.append(indent + elemContextRep(element, classification, false, false).get() + "\n");
         }
