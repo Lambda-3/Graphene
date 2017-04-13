@@ -20,7 +20,7 @@ services:
   coreference:
     depends_on:
       - corenlp
-    image: "coreference:v1"
+    image: "lambda3/pycobalt:v1.1.0-beta.3"
     expose:
       - "5128"
     links:
