@@ -112,7 +112,7 @@ Then, build the image
 
 	docker build -t "corenlp:370" -f Dockerfile-corenlp .
 
-### Installing PyCobalt (coreference resolution service)
+#### Installing PyCobalt (coreference resolution service)
 Install `PyCobalt`as a docker image
 
 	wget https://github.com/Lambda-3/PyCobalt/archive/v1.1.0-beta.3.tar.gz -O /tmp/PyCobalt.tar.gz
