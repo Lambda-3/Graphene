@@ -100,13 +100,15 @@ First, clone the repository and copy the `Dockerfile-corenlp` to the CoreNLP dir
 Build the jar file
 
 	ant
+	cd classes
 	jar -cf ../stanford-corenlp.jar edu
 
 Download the required models:
-	
+
+	cd ..
 	wget http://nlp.stanford.edu/software/stanford-corenlp-models-current.jar
-   	wget http://nlp.stanford.edu/software/stanford-english-corenlp-models-current.jar
-    	wget http://nlp.stanford.edu/software/stanford-english-kbp-corenlp-models-current.jar
+	wget http://nlp.stanford.edu/software/stanford-english-corenlp-models-current.jar
+	wget http://nlp.stanford.edu/software/stanford-english-kbp-corenlp-models-current.jar
 
 Then, build the image 
 
@@ -139,6 +141,10 @@ To build both interfaces, you can specify both profiles:
     mvn -P cli -P server clean package -DskipTests
 
 ### Docker-Compose
+
+Create a new config file:
+
+	touch conf/graphene.conf
 
 Then, you can build and start the composed images:
 	
