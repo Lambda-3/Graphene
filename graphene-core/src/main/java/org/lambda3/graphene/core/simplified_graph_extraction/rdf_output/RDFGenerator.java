@@ -23,30 +23,36 @@
 package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
 
 import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
+import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.DefaultGenerator;
+import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.ExpandedGenerator;
+import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.FlatGenerator;
+import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.NTriplesGenerator;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  *
  */
-public class RDFGenerator {
-    private static final String ELEMENT_STR = "ELEM";
-    private static final String NCONTEXT_STR = "NCON";
-    private static final String VCONTEXT_STR = "VCON";
+public abstract class RDFGenerator {
+    protected static final String ELEMENT_STR = "ELEM";
+    protected static final String NCONTEXT_STR = "NCON";
+    protected static final String VCONTEXT_STR = "VCON";
 
-    private static String elementAbbrev(ExElement element, Classification classification) {
-        return ELEMENT_STR + ":" + classification.name();
+    protected static String elementAbbrev(ExElement element, Classification classification) {
+        return ELEMENT_STR + "-" + classification.name();
     }
 
-    private static String nContextAbbrev(ExNContext nContext) {
-        return NCONTEXT_STR + ":" + nContext.getClassification().name();
+    protected static String nContextAbbrev(ExNContext nContext) {
+        return NCONTEXT_STR + "-" + nContext.getClassification().name();
     }
 
-    private static String vContextAbbrev(ExVContext vContext) {
-        return VCONTEXT_STR + ":" + vContext.getClassification().name();
+    protected static String vContextAbbrev(ExVContext vContext) {
+        return VCONTEXT_STR + "-" + vContext.getClassification().name();
     }
 
-    private static Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
+    protected static Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
         if (!element.getSpo().isPresent()) {
             return Optional.empty();
         }
@@ -68,7 +74,7 @@ public class RDFGenerator {
         }
     }
 
-    private static Optional<String> nContextRep(ExNContext context, boolean asArg) {
+    protected static Optional<String> nContextRep(ExNContext context, boolean asArg) {
         if (!context.getSpo().isPresent()) {
             return Optional.empty();
         }
@@ -82,7 +88,7 @@ public class RDFGenerator {
         }
     }
 
-    private static String vContextRep(ExVContext context, boolean asArg) {
+    protected static String vContextRep(ExVContext context, boolean asArg) {
         String abbrev = vContextAbbrev(context);
 
         if (asArg) {
@@ -92,150 +98,23 @@ public class RDFGenerator {
         }
     }
 
-    public static String getRDFRepresentation(ExContent content, RDFStyle style, int maxContextDepth) {
-        StringBuilder strb = new StringBuilder();
-
-        for (ExSentence exSentence : content.getSentences()) {
-
-            // sentence
-            strb.append(exSentence.getOriginalSentence() + "\n\n");
-
-            // all elements
-            for (ExElement element : exSentence.getElements()) {
-                if (style.equals(RDFStyle.DEFAULT)) {
-                    addDefaultElementRepresentation(strb, content, element);
-                } else if (style.equals(RDFStyle.FLAT)) {
-                    addFlatElementRepresentation(strb, content, element);
-                } else if (style.equals(RDFStyle.EXPANDED)) {
-                    addExpandedElementRepresentation(strb, 0, maxContextDepth, content, element, null);
-                } else {
-                    throw new AssertionError("Unknown RDF style.");
-                }
-            }
-
-            if (style.equals(RDFStyle.FLAT)) {
-                strb.append("\n");
-            }
-        }
-
-        return strb.toString();
-    }
+    public abstract List<String> format(ExContent content);
 
     public static String getRDFRepresentation(ExContent content, RDFStyle style) {
         return getRDFRepresentation(content, style, 5);
     }
 
-    private static void addDefaultElementRepresentation(StringBuilder strb, ExContent content, ExElement element) {
-        if (!element.getSpo().isPresent()) {
-            return;
-        }
-        ExSPO spo = element.getSpo().get();
-
-        // element
-        strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
-
-        // vContexts
-        for (ExVContext context : element.getVContexts()) {
-            String vContextRep = vContextRep(context, false);
-            strb.append("\t" + vContextRep + "\n");
-        }
-
-        // nContexts
-        for (ExNContext context : element.getNContexts()) {
-            Optional<String> nContextRep = nContextRep(context, false);
-            if (nContextRep.isPresent()) {
-                strb.append("\t" + nContextRep.get() + "\n");
-            }
-        }
-
-        // element contexts
-        for (ExElementRelation relation : element.getRelations()) {
-            ExElement target = relation.getTargetElement(content);
-            Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, false);
-            if (elemContextRep.isPresent()) {
-                strb.append("\t" + elemContextRep.get() + "\n");
-            }
-        }
-
-        strb.append("\n");
-    }
-
-    private static void addFlatElementRepresentation(StringBuilder strb, ExContent content, ExElement element) {
-        if (!element.getSpo().isPresent()) {
-            return;
-        }
-        ExSPO spo = element.getSpo().get();
-
-        // element
-        strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
-
-        // vContexts
-        for (ExVContext context : element.getVContexts()) {
-            String vContextRep = vContextRep(context, true);
-            strb.append("\t" + vContextRep);
-        }
-
-        // nContexts
-        for (ExNContext context : element.getNContexts()) {
-            Optional<String> nContextRep = nContextRep(context, true);
-            if (nContextRep.isPresent()) {
-                strb.append("\t" + nContextRep.get());
-            }
-        }
-
-        // element contexts
-        for (ExElementRelation relation : element.getRelations()) {
-            ExElement target = relation.getTargetElement(content);
-            Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
-            if (elemContextRep.isPresent()) {
-                strb.append("\t" + elemContextRep.get());
-            }
-        }
-
-        strb.append("\n");
-    }
-
-    private static void addExpandedElementRepresentation(StringBuilder strb, int contextDepth, int maxContextDepth, ExContent content, ExElement element, Classification classification) {
-        if (!element.getSpo().isPresent()) {
-            return;
-        }
-        ExSPO spo = element.getSpo().get();
-        String indent = "";
-        for (int i = 0; i < contextDepth; i++) {
-            indent += "\t";
-        }
-
-        // element
-        if (contextDepth == 0) {
-            strb.append(indent + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + "\n");
+    public static String getRDFRepresentation(ExContent content, RDFStyle style, Integer maxContextDepth) {
+        if (style.equals(RDFStyle.DEFAULT)) {
+            return new DefaultGenerator().format(content).stream().collect(Collectors.joining("\n"));
+        } else if (style.equals(RDFStyle.FLAT)) {
+            return new FlatGenerator().format(content).stream().collect(Collectors.joining("\n"));
+        } else if (style.equals(RDFStyle.EXPANDED)) {
+            return new ExpandedGenerator((maxContextDepth == null)? 3 : maxContextDepth).format(content).stream().collect(Collectors.joining("\n"));
+        } else if (style.equals(RDFStyle.N_TRIPLES)) {
+            return new NTriplesGenerator().format(content).stream().collect(Collectors.joining("\n"));
         } else {
-            strb.append(indent + elemContextRep(element, classification, false, false).get() + "\n");
-        }
-
-        if (contextDepth < maxContextDepth) {
-            // vContexts
-            for (ExVContext context : element.getVContexts()) {
-                String vContextRep = vContextRep(context, false);
-                strb.append(indent + "\t" + vContextRep + "\n");
-            }
-
-            // nContexts
-            for (ExNContext context : element.getNContexts()) {
-                Optional<String> nContextRep = nContextRep(context, false);
-                if (nContextRep.isPresent()) {
-                    strb.append(indent + "\t" + nContextRep.get() + "\n");
-                }
-            }
-
-            // element contexts
-            for (ExElementRelation relation : element.getRelations()) {
-                ExElement target = relation.getTargetElement(content);
-                addExpandedElementRepresentation(strb, contextDepth + 1, maxContextDepth, content, target, relation.getClassification());
-            }
-        }
-
-        if (contextDepth == 0) {
-            strb.append("\n");
+            throw new AssertionError("Unknown RDF style.");
         }
     }
 }

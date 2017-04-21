@@ -20,14 +20,15 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
+package org.lambda3.graphene.core.utils;
+
+import java.util.UUID;
 
 /**
  *
  */
-public enum RDFStyle {
-    DEFAULT,
-    FLAT,
-    EXPANDED,
-    N_TRIPLES
+public class IDGenerator {
+    public static String generateUUID() {
+        return String.valueOf(UUID.randomUUID()).replaceAll("-", "");
+    }
 }

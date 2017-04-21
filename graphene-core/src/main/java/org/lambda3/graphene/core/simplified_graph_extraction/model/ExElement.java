@@ -23,10 +23,11 @@
 package org.lambda3.graphene.core.simplified_graph_extraction.model;
 
 
+import org.lambda3.graphene.core.utils.IDGenerator;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 /**
  *
@@ -47,7 +48,7 @@ public class ExElement {
     }
 
     public ExElement(String text, int sentenceIdx, int contextLayer) {
-        this.id = String.valueOf(UUID.randomUUID());
+        this.id = IDGenerator.generateUUID();
         this.text = text;
         this.notSimplifiedText = text;
         this.sentenceIdx = sentenceIdx;
