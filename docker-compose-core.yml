@@ -2,21 +2,6 @@ version: '3'
 
 services:
 
-  graphene:
-    depends_on:
-      - coreference
-    build:
-      context: .
-      dockerfile: graphene-server/target/classes/Dockerfile-graphene
-    ports:
-      - "8080:8080"
-    links:
-      - coreference
-    volumes:
-      - ./logs:/usr/share/graphene/logs
-      - ./conf:/usr/share/graphene/conf
-
-
   coreference:
     depends_on:
       - corenlp
@@ -25,9 +10,10 @@ services:
       - PYCOBALT_CORENLP=http://corenlp:9000
     expose:
       - "5128"
+    ports:
+      - "5128:5128"
     links:
       - corenlp
-
 
   corenlp:
     image: "lambdacube/corenlp:3.7.0"

@@ -63,9 +63,8 @@ The corresponding RDF.NL format: [RDF.NL](wiki/files/Barack_Obama_2017-02-23.RDF
 
 * Java 8
 * Maven 3.3.9
-* Ant
-* Docker version 1.13+
-* docker-compose version 1.10+
+* Docker version 17.03+
+* docker-compose version 1.12+
 
 ## Setup
 Compiling and packaging requires two additional packages:
@@ -84,46 +83,18 @@ Compiling and packaging requires two additional packages:
 	cd DiscourseSimplification
 	mvn -DskipTests install
 
-### More dependencies (require docker)
+### More dependencies (requires [docker](https://www.docker.com/))
 Prior to running `Graphene`, two additional dependencies must be met:
-	
-* [CoreNLP](https://github.com/stanfordnlp/CoreNLP.git)
-* [CoreferenceResolution](https://github.com/Lambda-3/CoreferenceResolutionPython.git)
-	
-#### Installing CoreNLP
-First, clone the repository and copy the `Dockerfile-corenlp` to the CoreNLP directory
 
-	git clone --depth 1 https://github.com/stanfordnlp/CoreNLP.git /tmp/CoreNLP
-	cp Dockerfile-corenlp /tmp/CoreNLP
-	cd /tmp/CoreNLP
+* [CoreNLP](https://github.com/Lambda-3/CoreNLP.git)
+* [PyCobalt](https://github.com/Lambda-3/PyCobalt.git)
 
-Build the jar file
+Both are provided with the docker images:
+* [CoreNLP](https://hub.docker.com/r/lambdacube/corenlp/)
+* [PyCobalt](https://hub.docker.com/r/lambdacube/pycobalt/)
 
-	ant
-	cd classes
-	jar -cf ../stanford-corenlp.jar edu
 
-Download the required models:
-
-	cd ..
-	wget http://nlp.stanford.edu/software/stanford-corenlp-models-current.jar
-	wget http://nlp.stanford.edu/software/stanford-english-corenlp-models-current.jar
-	wget http://nlp.stanford.edu/software/stanford-english-kbp-corenlp-models-current.jar
-
-Then, build the image 
-
-	docker build -t "corenlp:370" -f Dockerfile-corenlp .
-
-#### Installing PyCobalt (coreference resolution service)
-Install `PyCobalt`as a docker image
-
-	wget https://github.com/Lambda-3/PyCobalt/archive/v1.1.0-beta.3.tar.gz -O /tmp/PyCobalt.tar.gz
-	cd /tmp
-	tar xfva PyCobalt.tar.gz
-	cd PyCobalt-1.1.0-beta.3
-	docker build -t "lambda3/pycobalt:v1.1.0-beta.3" .
-
-### Setup of Graphene-Core
+### Setup of Graphene
 Graphene-Core is build with
 
 	mvn clean package -DskipTests
@@ -142,7 +113,7 @@ To build both interfaces, you can specify both profiles:
 
 ### Docker-Compose
 
-Create a new config file:
+Create a new config file and adjust your settings:
 
 	touch conf/graphene.conf
 
@@ -153,11 +124,22 @@ Then, you can build and start the composed images:
 ## Usage
 
 ### Graphene-Core
-Graphene comes with a java API which is described [here](wiki/Graphene-Core.md). 
+Graphene comes with a Java API which is described [here](wiki/Graphene-Core.md).
+You must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`. Start it with `docker-compose -f docker-compose-core.yml`. You must then change the config file:
+```
+graphene {
+	coreference.url = "http://localhost:5128/resolve"
+}
+```
 
 ### Graphene-Sever
-For simplified access, we wrapped the Graphene-Core library inside a web-service.
+For simplified access, we wrapped the Graphene-Core library inside a REST-like web-service.
+```bash
+docker-compose up
+```
 The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
+
 
 ## Graphene-CLI
 Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI.md).
+Like the Graphene-Core setup, you must have a PyCobalt instance running before.
