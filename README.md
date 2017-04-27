@@ -84,6 +84,45 @@ Compiling and packaging requires two additional packages:
 	cd DiscourseSimplification
 	mvn -DskipTests install
 
+### More dependencies (require docker)
+Prior to running `Graphene`, two additional dependencies must be met:
+	
+* [CoreNLP](https://github.com/stanfordnlp/CoreNLP.git)
+* [CoreferenceResolution](https://github.com/Lambda-3/CoreferenceResolutionPython.git)
+	
+#### Installing CoreNLP
+First, clone the repository and copy the `Dockerfile-corenlp` to the CoreNLP directory
+
+	git clone --depth 1 https://github.com/stanfordnlp/CoreNLP.git /tmp/CoreNLP
+	cp Dockerfile-corenlp /tmp/CoreNLP
+	cd /tmp/CoreNLP
+
+Build the jar file
+
+	ant
+	cd classes
+	jar -cf ../stanford-corenlp.jar edu
+
+Download the required models:
+
+	cd ..
+	wget http://nlp.stanford.edu/software/stanford-corenlp-models-current.jar
+	wget http://nlp.stanford.edu/software/stanford-english-corenlp-models-current.jar
+	wget http://nlp.stanford.edu/software/stanford-english-kbp-corenlp-models-current.jar
+
+Then, build the image 
+
+	docker build -t "corenlp:370" -f Dockerfile-corenlp .
+
+#### Installing PyCobalt (coreference resolution service)
+Install `PyCobalt`as a docker image
+
+	wget https://github.com/Lambda-3/PyCobalt/archive/v1.1.0-beta.3.tar.gz -O /tmp/PyCobalt.tar.gz
+	cd /tmp
+	tar xfva PyCobalt.tar.gz
+	cd PyCobalt-1.1.0-beta.3
+	docker build -t "lambda3/pycobalt:v1.1.0-beta.3" .
+
 ### Setup of Graphene-Core
 Graphene-Core is build with
 
@@ -101,46 +140,11 @@ To build both interfaces, you can specify both profiles:
 
     mvn -P cli -P server clean package -DskipTests
 
-## Running as a service
-
-Prior to running `Graphene`, two additional dependencies must be met:
-	
-* [CoreNLP](https://github.com/stanfordnlp/CoreNLP.git)
-* [CoreferenceResolution](https://github.com/Lambda-3/CoreferenceResolutionPython.git)
-	
-### Installing CoreNLP
-First, clone the repository and copy the `Dockerfile-corenlp` to the CoreNLP directory
-
-	git clone --depth 1 https://github.com/stanfordnlp/CoreNLP.git /tmp/CoreNLP
-	cp Dockerfile-corenlp /tmp/CoreNLP
-	cd /tmp/CoreNLP
-
-Build the jar file
-
-	ant
-	jar -cf ../stanford-corenlp.jar edu
-
-Download the required models:
-	
-	wget http://nlp.stanford.edu/software/stanford-corenlp-models-current.jar
-    wget http://nlp.stanford.edu/software/stanford-english-corenlp-models-current.jar
-    wget http://nlp.stanford.edu/software/stanford-english-kbp-corenlp-models-current.jar
-
-Then, build the image 
-
-	docker build -t "corenlp:latest" -f Dockerfile-corenlp .
-
-### Installing coreference
-Install `PyCobalt`as a docker image
-
-	wget https://github.com/Lambda-3/PyCobalt/archive/v1.1.0-beta.3.tar.gz -O /tmp/PyCobalt.tar.gz
-	cd /tmp
-	tar xfva PyCobalt.tar.gz
-	cd PyCobalt-1.1.0-beta.3
-	docker build -t "lambda3/pycobalt:v1.1.0-beta.3" .
-	
-
 ### Docker-Compose
+
+Create a new config file:
+
+	touch conf/graphene.conf
 
 Then, you can build and start the composed images:
 	
