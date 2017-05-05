@@ -20,7 +20,7 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.model;
+package org.lambda3.graphene.core.relation_extraction.model;
 
 
 /**

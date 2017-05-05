@@ -20,12 +20,12 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.runner;
+package org.lambda3.graphene.core.relation_extraction.runner;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExContent;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExElement;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExNContext;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExSPO;
+import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.relation_extraction.model.ExElement;
+import org.lambda3.graphene.core.relation_extraction.model.ExNContext;
+import org.lambda3.graphene.core.relation_extraction.model.ExSPO;
 import org.lambda3.text.simplification.discourse.utils.SPOSplitter;
 
 import java.util.Optional;

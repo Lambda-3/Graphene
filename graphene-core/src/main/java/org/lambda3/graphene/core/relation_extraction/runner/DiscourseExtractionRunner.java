@@ -20,9 +20,9 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.runner;
+package org.lambda3.graphene.core.relation_extraction.runner;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.text.simplification.discourse.processing.OutSentence;
 import org.lambda3.text.simplification.discourse.processing.Processor;
 import org.lambda3.text.simplification.discourse.relation_extraction.Element;

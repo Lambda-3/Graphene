@@ -20,12 +20,12 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction;
+package org.lambda3.graphene.core.relation_extraction;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
-import org.lambda3.graphene.core.simplified_graph_extraction.runner.DiscourseExtractionRunner;
-import org.lambda3.graphene.core.simplified_graph_extraction.runner.SPORunner;
-import org.lambda3.graphene.core.simplified_graph_extraction.runner.SimplificationRunner;
+import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.runner.DiscourseExtractionRunner;
+import org.lambda3.graphene.core.relation_extraction.runner.SPORunner;
+import org.lambda3.graphene.core.relation_extraction.runner.SimplificationRunner;
 import org.lambda3.text.simplification.discourse.utils.sentences.SentencesUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,20 +35,20 @@ import java.util.*;
 /**
  *
  */
-public class SimplifiedGraphExtraction {
+public class RelationExtraction {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public SimplifiedGraphExtraction() {
-		log.info("SimplifiedGraphExtraction initialized");
+	public RelationExtraction() {
+		log.info("RelationExtraction initialized");
 	}
 
-	public ExContent doExtraction(String text) {
-        return doExtraction(SentencesUtils.splitIntoSentences(text));
+	public ExContent doRelationExtraction(String text) {
+        return doRelationExtraction(SentencesUtils.splitIntoSentences(text));
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ExContent doExtraction(List<String> sentences) {
-        log.info("Running SimplifiedGraphExtraction on {} sentences", sentences.size());
+    public ExContent doRelationExtraction(List<String> sentences) {
+        log.info("Running RelationExtraction on {} sentences", sentences.size());
 
         // Step 1) do discourse extraction
         ExContent content = DiscourseExtractionRunner.doDiscourseExtraction(sentences);

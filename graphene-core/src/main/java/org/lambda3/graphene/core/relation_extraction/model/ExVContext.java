@@ -20,34 +20,26 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.model;
-
-import java.util.Optional;
+package org.lambda3.graphene.core.relation_extraction.model;
 
 /**
- *  Context mediated by nouns
+ * Context mediated by verbs
  */
-public class ExNContext {
+public class ExVContext {
     private String text;
     private Classification classification;
-    private ExSPO spo; // optional
 
     // for deserialization
-    public ExNContext() {
+    public ExVContext() {
     }
 
-    public ExNContext(String text) {
+    public ExVContext(String text) {
         this.text = text;
         this.classification = Classification.UNKNOWN;
-        this.spo = null;
     }
 
     public void setClassification(Classification classification) {
         this.classification = classification;
-    }
-
-    public void setSpo(ExSPO spo) {
-        this.spo = spo;
     }
 
     public String getText() {
@@ -56,9 +48,5 @@ public class ExNContext {
 
     public Classification getClassification() {
         return classification;
-    }
-
-    public Optional<ExSPO> getSpo() {
-        return Optional.ofNullable(spo);
     }
 }

@@ -20,9 +20,9 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.runner;
+package org.lambda3.graphene.core.relation_extraction.runner;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.Classification;
+import org.lambda3.graphene.core.relation_extraction.model.Classification;
 import org.lambda3.text.simplification.discourse.utils.ner.NERString;
 import org.lambda3.text.simplification.discourse.utils.ner.NERStringParser;
 import org.slf4j.Logger;

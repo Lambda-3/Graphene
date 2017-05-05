@@ -20,10 +20,10 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators;
+package org.lambda3.graphene.core.relation_extraction.representation.generators;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFGenerator;
+import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Optional;
 /**
  *
  */
-public class FlatGenerator extends RDFGenerator {
+public class DefaultGenerator extends RepGenerator {
 
     @Override
     public List<String> format(ExContent content) {
@@ -50,37 +50,34 @@ public class FlatGenerator extends RDFGenerator {
                 }
                 ExSPO spo = element.getSpo().get();
 
-                StringBuilder strb = new StringBuilder();
-
                 // element
-                strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+                res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
 
                 // vContexts
                 for (ExVContext context : element.getVContexts()) {
-                    String vContextRep = vContextRep(context, true);
-                    strb.append("\t" + vContextRep);
+                    String vContextRep = vContextRep(context, false);
+                    res.add("\t" + vContextRep);
                 }
 
                 // nContexts
                 for (ExNContext context : element.getNContexts()) {
-                    Optional<String> nContextRep = nContextRep(context, true);
+                    Optional<String> nContextRep = nContextRep(context, false);
                     if (nContextRep.isPresent()) {
-                        strb.append("\t" + nContextRep.get());
+                        res.add("\t" + nContextRep.get());
                     }
                 }
 
                 // element contexts
                 for (ExElementRelation relation : element.getRelations()) {
                     ExElement target = relation.getTargetElement(content);
-                    Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
+                    Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, false);
                     if (elemContextRep.isPresent()) {
-                        strb.append("\t" + elemContextRep.get());
+                        res.add("\t" + elemContextRep.get());
                     }
                 }
 
-                res.add(strb.toString());
+                res.add("");
             }
-            res.add("");
         }
 
         return res;

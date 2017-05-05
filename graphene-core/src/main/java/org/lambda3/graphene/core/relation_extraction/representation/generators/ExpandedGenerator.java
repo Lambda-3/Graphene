@@ -20,10 +20,10 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators;
+package org.lambda3.graphene.core.relation_extraction.representation.generators;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFGenerator;
+import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ import java.util.Optional;
 /**
  *
  */
-public class ExpandedGenerator extends RDFGenerator {
+public class ExpandedGenerator extends RepGenerator {
     private int maxContextDepth;
 
     public ExpandedGenerator(int maxContextDepth) {

@@ -20,10 +20,10 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators;
+package org.lambda3.graphene.core.relation_extraction.representation.generators;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFGenerator;
+import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 import org.lambda3.graphene.core.utils.IDGenerator;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.List;
 /**
  *
  */
-public class NTriplesGenerator extends RDFGenerator {
+public class NTriplesGenerator extends RepGenerator {
 
     // official
     private static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";

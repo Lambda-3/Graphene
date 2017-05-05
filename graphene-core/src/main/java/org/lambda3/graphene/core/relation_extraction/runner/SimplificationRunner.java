@@ -20,10 +20,10 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.runner;
+package org.lambda3.graphene.core.relation_extraction.runner;
 
 import edu.stanford.nlp.trees.Tree;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
 import org.lambda3.text.simplification.sentence.transformation.CoreContextSentence;
 import org.lambda3.text.simplification.sentence.transformation.SentenceSimplifyingException;

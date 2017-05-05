@@ -20,12 +20,12 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
+package org.lambda3.graphene.core.relation_extraction.representation;
 
 /**
  *
  */
-public enum RDFStyle {
+public enum RepStyle {
     DEFAULT,
     FLAT,
     EXPANDED,

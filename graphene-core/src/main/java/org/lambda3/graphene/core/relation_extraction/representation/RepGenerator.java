@@ -20,13 +20,13 @@
  * ==========================License-End==============================
  */
 
-package org.lambda3.graphene.core.simplified_graph_extraction.rdf_output;
+package org.lambda3.graphene.core.relation_extraction.representation;
 
-import org.lambda3.graphene.core.simplified_graph_extraction.model.*;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.DefaultGenerator;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.ExpandedGenerator;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.FlatGenerator;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.generators.NTriplesGenerator;
+import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.representation.generators.DefaultGenerator;
+import org.lambda3.graphene.core.relation_extraction.representation.generators.ExpandedGenerator;
+import org.lambda3.graphene.core.relation_extraction.representation.generators.FlatGenerator;
+import org.lambda3.graphene.core.relation_extraction.representation.generators.NTriplesGenerator;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 /**
  *
  */
-public abstract class RDFGenerator {
+public abstract class RepGenerator {
     protected static final String ELEMENT_STR = "ELEM";
     protected static final String NCONTEXT_STR = "NCON";
     protected static final String VCONTEXT_STR = "VCON";
@@ -100,18 +100,18 @@ public abstract class RDFGenerator {
 
     public abstract List<String> format(ExContent content);
 
-    public static String getRDFRepresentation(ExContent content, RDFStyle style) {
+    public static String getRDFRepresentation(ExContent content, RepStyle style) {
         return getRDFRepresentation(content, style, 5);
     }
 
-    public static String getRDFRepresentation(ExContent content, RDFStyle style, Integer maxContextDepth) {
-        if (style.equals(RDFStyle.DEFAULT)) {
+    public static String getRDFRepresentation(ExContent content, RepStyle style, Integer maxContextDepth) {
+        if (style.equals(RepStyle.DEFAULT)) {
             return new DefaultGenerator().format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RDFStyle.FLAT)) {
+        } else if (style.equals(RepStyle.FLAT)) {
             return new FlatGenerator().format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RDFStyle.EXPANDED)) {
+        } else if (style.equals(RepStyle.EXPANDED)) {
             return new ExpandedGenerator((maxContextDepth == null)? 3 : maxContextDepth).format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RDFStyle.N_TRIPLES)) {
+        } else if (style.equals(RepStyle.N_TRIPLES)) {
             return new NTriplesGenerator().format(content).stream().collect(Collectors.joining("\n"));
         } else {
             throw new AssertionError("Unknown RDF style.");
