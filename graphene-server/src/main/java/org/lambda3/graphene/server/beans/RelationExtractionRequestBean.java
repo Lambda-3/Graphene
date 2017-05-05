@@ -28,7 +28,7 @@ import javax.ws.rs.DefaultValue;
 /**
  *
  */
-public class GraphExtractionRequestBean extends AbstractRequestBean {
+public class RelationExtractionRequestBean extends AbstractRequestBean {
 
 	@NotNull
 	private String text;
@@ -36,8 +36,8 @@ public class GraphExtractionRequestBean extends AbstractRequestBean {
 	@DefaultValue("true")
 	private boolean doCoreference;
 
-	@DefaultValue("true")
-	private boolean doSimplification;
+    @DefaultValue("rdf")
+    private String format;
 
 	public String getText() {
 		return text;
@@ -55,20 +55,20 @@ public class GraphExtractionRequestBean extends AbstractRequestBean {
 		this.doCoreference = doCoreference;
 	}
 
-	public boolean isDoSimplification() {
-		return doSimplification;
+	public String getFormat() {
+		return format;
 	}
 	@SuppressWarnings({"unused"})
-	public void setDoSimplification(boolean doSimplification) {
-		this.doSimplification = doSimplification;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 	@Override
 	public String toString() {
-		return "GraphExtractionRequestBean{" +
+		return "RelationExtractionRequestBean{" +
 				"text='" + truncateText(text) + '\'' +
 				", doCoreference=" + doCoreference +
-				", doSimplification=" + doSimplification +
+				", format=" + format +
 				'}';
 	}
 }

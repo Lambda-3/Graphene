@@ -24,7 +24,6 @@ package org.lambda3.graphene.server;
 
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.test.JerseyTestNg;
-import org.jblas.util.Random;
 import org.testng.annotations.Test;
 
 import javax.inject.Singleton;
@@ -33,6 +32,8 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
 
@@ -43,6 +44,7 @@ import static org.testng.Assert.assertEquals;
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
 public class JerseyTestTest extends JerseyTestNg.ContainerPerClassTest {
+    private static final Random RAND = new Random();
 
 	protected Application configure() {
 		return new ResourceConfig(TestResource.class);
@@ -74,7 +76,7 @@ public class JerseyTestTest extends JerseyTestNg.ContainerPerClassTest {
 
 		@GET
 		public Number getRandom() {
-			return new Number(Random.nextInt(100000));
+			return new Number(RAND.nextInt(100000));
 		}
 
 		@POST

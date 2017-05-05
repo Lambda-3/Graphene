@@ -89,8 +89,7 @@ class GrapheneRESTServer {
 
 		rc.register(factory.createResource(AdminResource.class));
 		rc.register(factory.createResource(CoreferenceResource.class));
-		rc.register(factory.createResource(SimplificationResource.class));
-		rc.register(factory.createResource(GraphExtractionResource.class));
+		rc.register(factory.createResource(RelationExtractionResource.class));
 
 		return rc;
 	}
