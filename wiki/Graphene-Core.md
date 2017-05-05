@@ -20,25 +20,21 @@ CoreferenceContent cc = graphene.doCoreference("The text.");
 String substituted = cc.getSubstitutedText();
 ```
 
-### Simplification
-
-```java
-SimplificationContent sc = graphene.doSimplification("The text.", true);
-```
-
-### Open Information Extraction (without Simplification)
-
-```java
-ExtractionContent ec = graphene.doGraphExtraction("The text.", true);
-```
-
 ### Open Information Extraction (with Simplification)
 
 ```java
-ExSimplificationContent esc = graphene.doSimplificationAndGraphExtraction("The text.", true);
+ExContent ec = graphene.doRelationExtraction("The text.", true);
 
-// output as RDF.NL
-String rdfnl = graphene.getRDFOutputStr(esc);
+// ### OUTPUT AS RDF.NL #####
+// default
+String rdfnl1 = graphene.getRepresentation(ec, RepStyle.DEFAULT)
+// flat 
+String rdfnl2 = graphene.getRepresentation(ec, RepStyle.FLAT)
+// extended
+String rdfnl3 = graphene.getRepresentation(ec, RepStyle.EXTENDED)
+
+// ### OUTPUT AS PROPER RDF (N-Triples) ###
+String rdf = graphene.getRepresentation(ec, RepStyle.N_TRIPLES)
 ```
 
 [Back to the home page](../README.md)

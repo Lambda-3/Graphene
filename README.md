@@ -6,19 +6,22 @@
 
 _Graphene_ is an information extraction pipeline which extracts _Knowledge Graphs_ from texts (n-ary relations and rhetorical structures extracted from complex factoid discourse). Given a sentence or a text, Graphene outputs a semantic representation of the text which is a labeled directed graph (a knowledge graph). This knowledge graph can be later used for addressing different AI tasks, such as building Question Answering systems, extracting structured data from text, supporting semantic inference, among other tasks. Differently from existing open relation extraction tools, which focus on the main relation expressed in a sentence, Graphene aims at maximizing the extraction of contextual relations. For example: 
 
-`In mid-1981 , Obama traveled to Indonesia to visit his mother and half-sister Maya , and visited the families of college friends in Pakistan and India for three weeks .`
+`Trump withdrew his sponsorship after the second Tour
+de Trump in 1990 because his business ventures were
+experiencing financial woes.`
 
 ![Graphene-Extraction](wiki/images/Graphene-Extraction.jpg)
 
 In order to capture all the contextual information, Graphene performs the following steps:
 * Resolves co-references.
-* Identifies rhetorical relations between sentences and clauses.
 * Transforms complex sentences (for example, containing subordinations, coordinations, appositive phrases, etc), into simple independent sentences (one clause per sentence).
-* Extract binary relations from each sentence.
+* Identifies rhetorical relations between those sentences
+* Extract binary relations (`subject`,  `predicate` and  `object`) from each sentence.
 * Merge all the extracted relations into a relation graph (knowledge graph).
 
-Graphene’s extracted graphs are represented using the RDF.NL format, an extension of the RDF format which facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A short description of the RDF.NL format can be found [here](wiki/RDF.NL-Format.md).
-Alternative to the RDF.NL representation, developers can use the direct output class of the API, which is serializable and deserializable as a JSON object.
+Graphene’s extracted graphs are represented by our RDF.NL format, an simple format that facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A description of the RDF.NL format can be found [here](wiki/RDF.NL-Format.md).
+In order to increase further processability of the extracted relations, Graphene can materialize its relations into a proper RDF graph serialized under the N-Triples specification of the RDF standard. A description of the RDF format can be found [here](wiki/RDF-Format.md).
+Alternatively, developers can use the direct output class of the API, which is serializable and deserializable as a JSON object.
 
 ## Example Extractions
 
@@ -26,38 +29,67 @@ Alternative to the RDF.NL representation, developers can use the direct output c
 
 `The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .`
 
-The serialized class: [JSON](wiki/files/example2.json)  
-The corresponding RDF.NL format:
+The serialized class: [JSON](wiki/files/example.json)   
+The RDF.NL format:
 
 ```
-# original sentence: 'The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .'
-
-## core sentence: 'the café arrived in Paris in the 17th century .'
-DIS_TYPE:		CORE-8874b563-12ce-4e67-9f59-3b4d7f0882c1		DISCOURSE_TYPE		DISCOURSE_CORE
-CORE_EXT:		CORE-8874b563-12ce-4e67-9f59-3b4d7f0882c1		the café		arrived		in Paris
-RHET_REL:		CORE-8874b563-12ce-4e67-9f59-3b4d7f0882c1		JOINT_LIST		CORE-c0123203-3227-4b8f-9744-9fc1b64f4607
-RHET_REL:		CORE-8874b563-12ce-4e67-9f59-3b4d7f0882c1		BACKGROUND		CORE-852b01fd-6a17-42c7-bd1a-30385b8c2acb
-
-## core sentence: 'Parisian cafés were centres of the city 's political and cultural life .'
-DIS_TYPE:		CORE-c0123203-3227-4b8f-9744-9fc1b64f4607		DISCOURSE_TYPE		DISCOURSE_CORE
-CORE_EXT:		CORE-c0123203-3227-4b8f-9744-9fc1b64f4607		Parisian cafés		were		centres of the city 's political and cultural life
-RHET_REL:		CORE-c0123203-3227-4b8f-9744-9fc1b64f4607		JOINT_LIST		CORE-8874b563-12ce-4e67-9f59-3b4d7f0882c1
-### context sentence: 'This was by the 18th century .'
-CONT_EXT:		CONTEXT-343e1c2a-f6be-45ca-a9f2-55b0d9eb2d8a		This		was		by the 18th century
-RHET_REL:		CORE-c0123203-3227-4b8f-9744-9fc1b64f4607		UNKNOWN_SENT_SIM		CONTEXT-343e1c2a-f6be-45ca-a9f2-55b0d9eb2d8a
-
-## core sentence: 'the beverage was first brought .'
-DIS_TYPE:		CORE-852b01fd-6a17-42c7-bd1a-30385b8c2acb		DISCOURSE_TYPE		DISCOURSE_CONTEXT
-CORE_EXT:		CORE-852b01fd-6a17-42c7-bd1a-30385b8c2acb		the beverage		was brought		null
-### context sentence: 'This was from Turkey .'
-CONT_EXT:		CONTEXT-2aec8b1c-9d48-478c-bfdc-ab5031378137		This		was		from Turkey
-RHET_REL:		CORE-852b01fd-6a17-42c7-bd1a-30385b8c2acb		LOCATION		CONTEXT-2aec8b1c-9d48-478c-bfdc-ab5031378137
+# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
+ 
+3469c5159933484a8bbdb5b1df36136f    0    The café    arrived    in Paris in the 17th century
+    ELEM-BACKGROUND    fcbcb5c547f248cc88f8aa3033178d12
+ 
+fcbcb5c547f248cc88f8aa3033178d12    1    The beverage    was first brought    
+    VCON-SPATIAL    from Turkey .
+ 
+394d55aacc064bcc82912689dc0500b9    0    Parisian cafés    were    centres of the city 's political and cultural life
+    VCON-TEMPORAL    by the 18th century .
 ```
 
-### Full text extraction of the [Barack Obama Wikipedia Page](https://en.wikipedia.org/wiki/Barack_Obama) (2017-02-23):
+The RDF N-Triples format:
 
-The serialized class: [JSON](wiki/files/Barack_Obama_2017-02-23.json)  
-The corresponding RDF.NL format: [RDF.NL](wiki/files/Barack_Obama_2017-02-23.RDF.NL)
+```
+# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
+ 
+_:d677f6b6798041228711fa74b98bbf1a <http://lambda3.org/graphene/sentence#original-text> "The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life ."^^<http://www.w3.org/2001/XMLSchema#string> .
+ 
+_:d677f6b6798041228711fa74b98bbf1a <http://lambda3.org/graphene/sentence#has-extraction> _:3084aa537b134d179cc7c09a2f87f27c .
+_:3084aa537b134d179cc7c09a2f87f27c <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#The café> .
+_:3084aa537b134d179cc7c09a2f87f27c <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#arrived> .
+_:3084aa537b134d179cc7c09a2f87f27c <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#in Paris in the 17th century> .
+_:3084aa537b134d179cc7c09a2f87f27c <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://lambda3.org/graphene/text#The café> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "The café"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#arrived> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "arrived"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#in Paris in the 17th century> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "in Paris in the 17th century"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:3084aa537b134d179cc7c09a2f87f27c <http://lambda3.org/graphene/extraction#ELEM-BACKGROUND> _:e5f346b7470e46f287577451c898378d .
+ 
+_:d677f6b6798041228711fa74b98bbf1a <http://lambda3.org/graphene/sentence#has-extraction> _:e5f346b7470e46f287577451c898378d .
+_:e5f346b7470e46f287577451c898378d <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#The beverage> .
+_:e5f346b7470e46f287577451c898378d <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#was first brought> .
+_:e5f346b7470e46f287577451c898378d <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#> .
+_:e5f346b7470e46f287577451c898378d <http://lambda3.org/graphene/extraction#context-layer> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://lambda3.org/graphene/text#The beverage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "The beverage"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#was first brought> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "was first brought"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ""^^<http://www.w3.org/2001/XMLSchema#string> .
+_:e5f346b7470e46f287577451c898378d <http://lambda3.org/graphene/extraction#VCON-SPATIAL> <http://lambda3.org/graphene/text#from Turkey .> .
+<http://lambda3.org/graphene/text#from Turkey .> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "from Turkey ."^^<http://www.w3.org/2001/XMLSchema#string> .
+ 
+_:d677f6b6798041228711fa74b98bbf1a <http://lambda3.org/graphene/sentence#has-extraction> _:6f51a07ceb914c1096b64592a5078bed .
+_:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#Parisian cafés> .
+_:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#were> .
+_:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#centres of the city 's political and cultural life> .
+_:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+<http://lambda3.org/graphene/text#Parisian cafés> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "Parisian cafés"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#were> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "were"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#centres of the city 's political and cultural life> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "centres of the city 's political and cultural life"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#VCON-TEMPORAL> <http://lambda3.org/graphene/text#by the 18th century .> .
+<http://lambda3.org/graphene/text#by the 18th century .> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "by the 18th century ."^^<http://www.w3.org/2001/XMLSchema#string> .
+```
+
+### Full text extraction of the [Barack Obama Wikipedia Page](https://en.wikipedia.org/wiki/Barack_Obama) (2017-05-05):
+
+The serialized class: [JSON](wiki/files/Barack_Obama_2017-05-05.json)   
+The RDF.NL format: [RDF.NL](wiki/files/Barack_Obama_2017-05-05.RDF.NL)   
+The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017-05-05.nt)   
 
 ## Requirements
 
@@ -106,7 +138,7 @@ If you want the server part, you have to specify that profile:
 If you want the command line part, you have to specify that profile:
 
     mvn -P cli clean package -DskipTests
-    
+   
 To build both interfaces, you can specify both profiles:
 
     mvn -P cli -P server clean package -DskipTests
