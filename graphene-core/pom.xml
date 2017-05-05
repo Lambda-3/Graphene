@@ -77,19 +77,6 @@
             <artifactId>sentence-simplification</artifactId>
             <version>${simplification.version}</version>
         </dependency>
-
-		<!-- Graph Extraction -->
-		<dependency>
-			<groupId>edu.washington.cs.knowitall.openie</groupId>
-			<artifactId>openie_2.10</artifactId>
-			<version>${openie.version}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>junit</groupId>
-					<artifactId>junit</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 	</dependencies>
 
 	<build>
