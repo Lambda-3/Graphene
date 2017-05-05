@@ -72,7 +72,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
         ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
 
         RepStyle style = RepStyle.N_TRIPLES;
-        if (bean.getFormat().equals("rfd")) {
+        if (bean.getFormat().equals("rdf")) {
             style = RepStyle.N_TRIPLES;
         } else if (bean.getFormat().equals("default")) {
             style = RepStyle.DEFAULT;
