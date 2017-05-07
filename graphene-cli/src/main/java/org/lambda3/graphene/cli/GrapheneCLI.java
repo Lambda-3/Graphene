@@ -68,12 +68,8 @@ public class GrapheneCLI {
 	private OutputFormat outputFormat;
 	@Option(name = "--coref")
 	private boolean doCoref = false;
-	@Option(name = "--simplify")
-	private boolean doSimplification = false;
-	@Option(name = "--discourse")
-	private boolean doDiscourse = false;
 	@Option(name = "--extract")
-	private boolean doExtraction = false;
+	private boolean doRelationExtraction = false;
 	@Argument(usage = "Input texts/files/articles")
 	private List<String> input;
 
@@ -165,39 +161,18 @@ public class GrapheneCLI {
 
 		Optional<List<Content>> result = Optional.empty();
 
-		if (doCoref && !doSimplification && !doDiscourse && !doExtraction) {
+		if (doCoref && !doRelationExtraction) {
 			result = Optional.of(
 					inputTexts
 							.stream()
 							.map(graphene::doCoreference)
 							.collect(Collectors.toList()));
-		} else if (doExtraction) {
-
-			if (doSimplification && doDiscourse) {
-				result = Optional.of(
-						inputTexts
-								.stream()
-								.map(text -> graphene.doSimplificationAndGraphExtraction(text, doCoref))
-								.collect(Collectors.toList()));
-			} else if (doSimplification) {
-				result = Optional.of(
-						inputTexts
-								.stream()
-								.map(text -> graphene.doSimplification(text, doCoref))
-								.collect(Collectors.toList()));
-			} else if (doDiscourse) {
-				result = Optional.of(
-						inputTexts
-								.stream()
-								.map(text -> graphene.doGraphExtraction(text, doCoref))
-								.collect(Collectors.toList()));
-			}
-		} else if (doSimplification && !doDiscourse) {
-			result = Optional.of(
-					inputTexts
-							.stream()
-							.map(text -> graphene.doSimplification(text, doCoref))
-							.collect(Collectors.toList()));
+		} else if (doRelationExtraction) {
+            result = Optional.of(
+                    inputTexts
+                            .stream()
+                            .map(text -> graphene.doRelationExtraction(text, doCoref))
+                            .collect(Collectors.toList()));
 		}
 
 		result.orElseThrow(() -> new IllegalArgumentException("No valid configuration"));
@@ -211,9 +186,7 @@ public class GrapheneCLI {
 		StringBuilder outputName = new StringBuilder();
 		outputName.append("output_");
 		if (doCoref) outputName.append("coref_");
-		if (doSimplification) outputName.append("simplify_");
-		if (doDiscourse) outputName.append("discourse_");
-		if (doExtraction) outputName.append("graph_");
+		if (doRelationExtraction) outputName.append("extr_");
 
 		for (int i = 0; i < contents.size(); ++i) {
 

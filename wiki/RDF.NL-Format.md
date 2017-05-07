@@ -1,53 +1,69 @@
 # RDF.NL Format
 
-The RDF.NL format was designed to act as an abstract RDF-representation, which is able to cover complex contextual relations, keeping the simplicity to be parsed and further processed by programs. The abstract representation also allows for customized RDF-generation where content from RDF.NL can be adapted or discarded depending on the user's needs.
+The RDF.NL format was designed to act as an easy representation, which is able to cover complex contextual relations, keeping the simplicity to be parsed and further processed by programs. The RDF.NL format can be printed in the following ways:
 
-The RDF.NL elements are:
-* **DIS_TYPE:** Specifies whether the core-sentence plays a major role within discourse context (DISCOURSE_CORE) or a subordinate role (DISCOURSE_CONTEXT). It has the format:
-
-    `CoreID DISCOURSE_TYPE DISCOURSE_CORE/DISCOURSE_CONTEXT`
-* **CORE_EXTR:** An extraction of a core-sentence which has the format:
-
-    `CoreID subject predicate object/NULL`
-* **CONTEXT_EXTR:** An extraction of a context-sentence which has the format:
-
-    `ContextID subject predicate object/NULL`
-* **RHET_REL:** A rhetorical link between two core-sentences or between a core-sentence and a context-sentence. It has the format:
-
-    `CoreID relation CoreID/ContextID`
-
-For clarification, here is the corresponding RDF.NL representation for the visualization of the example in the [home page](../wiki):
-
-`In mid-1981 , Obama traveled to Indonesia to visit his mother and half-sister Maya , and visited the families of college friends in Pakistan and India for three weeks .`
-
-[[images/Graphene-Extraction.jpg]]
+## Default-Format
 
 ```
-# original sentence: 'In mid-1981 , Obama traveled to Indonesia to visit his mother and half-sister Maya , and visited the families of college friends in Pakistan and India for three weeks .'
-
-## core sentence: 'Obama traveled .'
-DIS_TYPE:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		DISCOURSE_TYPE		DISCOURSE_CORE
-CORE_EXT:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		Obama		traveled		null
-RHET_REL:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		JOINT_LIST		CORE-8a3d79ae-129a-483b-948f-5a99058b182c
-### context sentence: 'This was in mid-1981 .'
-CONT_EXT:		CONTEXT-597339dd-0084-4410-9ae4-0425784a47fc		This		was		in mid-1981
-RHET_REL:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		UNKNOWN_SENT_SIM		CONTEXT-597339dd-0084-4410-9ae4-0425784a47fc
-### context sentence: 'This was to Indonesia .'
-CONT_EXT:		CONTEXT-00641e4e-49eb-4ca7-a1a5-304cb3702269		This		was		to Indonesia
-RHET_REL:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		LOCATION		CONTEXT-00641e4e-49eb-4ca7-a1a5-304cb3702269
-### context sentence: 'This was to visit his mother and half-sister Maya .'
-CONT_EXT:		CONTEXT-36125a8f-6f11-4ad4-9786-75252c018ab1		This		was		to visit his mother and half-sister
-CONT_EXT:		CONTEXT-36125a8f-6f11-4ad4-9786-75252c018ab1		This		to visit		his mother and half-sister
-CONT_EXT:		CONTEXT-36125a8f-6f11-4ad4-9786-75252c018ab1		Maya		[is] sister [of]		[UNKNOWN]
-RHET_REL:		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d		ENABLEMENT		CONTEXT-36125a8f-6f11-4ad4-9786-75252c018ab1
-
-## core sentence: 'Obama visited the families of college friends in Pakistan and India for three weeks .'
-DIS_TYPE:		CORE-8a3d79ae-129a-483b-948f-5a99058b182c		DISCOURSE_TYPE		DISCOURSE_CORE
-CORE_EXT:		CORE-8a3d79ae-129a-483b-948f-5a99058b182c		Obama		visited		the families of college friends in Pakistan and India
-RHET_REL:		CORE-8a3d79ae-129a-483b-948f-5a99058b182c		JOINT_LIST		CORE-87a64b24-7887-4141-a1f2-a9d13c2ab36d
-### context sentence: 'This was in mid-1981 .'
-CONT_EXT:		CONTEXT-16b15a92-0f0d-41da-84c7-143bb1a9cc48		This		was		in mid-1981
-RHET_REL:		CORE-8a3d79ae-129a-483b-948f-5a99058b182c		TIME		CONTEXT-16b15a92-0f0d-41da-84c7-143bb1a9cc48
+# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
+ 
+3469c5159933484a8bbdb5b1df36136f    0   The café    arrived in Paris in the 17th century
+    ELEM-BACKGROUND fcbcb5c547f248cc88f8aa3033178d12
+ 
+fcbcb5c547f248cc88f8aa3033178d12    1   The beverage    was first brought   
+    VCON-SPATIAL    from Turkey .
+ 
+394d55aacc064bcc82912689dc0500b9    0   Parisian cafés  were    centres of the city 's political and cultural life
+    VCON-TEMPORAL   by the 18th century .
 ```
+
+In the Default-Format, extractions are grouped by sentences in which they occur and represented by tab-separated values for the `identifier`, the `context_layer`, as well as `subject`, `predicate` and `object`.
+
+The numerical `context_layer` value determines the layer of contextual assignment. Extractions with a `context-layer = 0` provide core-information of the input sentence while those with `context-layer > 0` provide contextual information about extractions with `context-layer - 1`.
+
+Contextual dependencies are indicated by an extra indentation level to their parent extractions, followed by a `type_string`.
+
+The `type_string` encodes both `context_class`:
+
+* `VCON`: context mediated by verbs
+* `NCON`: context mediated by nouns
+* `ELEM`: relation to another extraction
+
+and the classified `rhetorical_relation` (e.g. CAUSE, ENABLEMENT, LOCATION) separated by a `-` character.
+
+After the `type_string`, there follow tab-separated values for:
+* `object` (if `type_string = VCON`)
+* `subject`, `predicate` and `object` (if `type_string = NCON`)
+* the `identifier` of another referenced extraction (if `type_string = ELEM`)
+
+## Flat-Format
+
+```
+# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
+ 
+3469c5159933484a8bbdb5b1df36136f    0   The café    arrived in Paris in the 17th century    ELEM-BACKGROUND(fcbcb5c547f248cc88f8aa3033178d12)
+fcbcb5c547f248cc88f8aa3033178d12    1   The beverage    was first brought       VCON-SPATIAL(from Turkey .)
+394d55aacc064bcc82912689dc0500b9    0   Parisian cafés  were    centres of the city 's political and cultural life  VCON-TEMPORAL(by the 18th century .)
+```
+
+In the Flat-Format, each extraction is shown in one line. Contextual dependencies are appended at the end of the `identifier`, the `context_layer`, `subject`, `predicate` and `object`, all separated by tabs. The contexts are represented by the `type_string` that is encoded just like in the Default-Format and their content in round brackets.
+
+## Expanded-Format
+
+```
+# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
+ 
+0   The café    arrived in Paris in the 17th century
+    ELEM-BACKGROUND The beverage    was first brought   
+        VCON-SPATIAL    from Turkey .
+ 
+1   The beverage    was first brought   
+    VCON-SPATIAL    from Turkey .
+ 
+0   Parisian cafés  were    centres of the city 's political and cultural life
+    VCON-TEMPORAL   by the 18th century .
+```
+
+The Expanded-Format is like the Default-Format but without identifiers. Thereby, references to contextual extractions are resolved and represented as a nested hierarchy by their indentations.
 
 [Back to the home page](../README.md)

@@ -18,53 +18,28 @@ Example:
 curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text."}' -H "Accept: application/json" "http://localhost:8080/coreference/text"
 ```
 
-### Simplification
-The simplification service accepts the following endpoints with parameters:
+### Open Relation Extraction
+The Open Relation Extraction service accepts the following endpoints with parameters:
 
-#### Endpoint: /simplification/text
-Returns the JSON-serialized version of the `SimplificationContent` class.
-
-* **text**: The text that should be resolved (mandatory). 
-* **doCoreference**: Specifies, whether coreference should be executed before the simplification (true/false). 
-
-Example:
-
-```sh
-curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true"}' -H "Accept: application/json" "http://localhost:8080/simplification/text"
-```
-
-### Open Information Extraction
-The open information extraction service accepts the following endpoints with parameters:
-
-#### Endpoint: /graphExtraction/text
-Returns the JSON-serialized versions of the `ExtractionContent` or `ExSimplificationContent` class depending on the `doSimplification` parameter.
+#### Endpoint: /relationExtraction/text
+Returns the JSON-serialized versions of the `ExContent` class or a textual representation depending on the value of the `Accept` header in the POST request:
+* `Accept: application/json`: returns JSON-serialized versions of `ExContent`
+* `Accept: text/plain`: returns a textual representation specified by the `format` parameter
 
 * **text**: The text that should be resolved (mandatory). 
 * **doCoreference**: Specifies, whether coreference should be executed before the simplification (true/false).
-* **doSimplification**: Specifies, whether simplification should be executed before the open information extraction (true/false). 
-
-Example:
-
-```sh
-curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true", "doSimplification": "true"}' -H "Accept: application/json" "http://localhost:8080/graphExtraction/text"
-```
-
-#### Endpoint: /graphExtraction/rdf (with Simplification only)
-Returns the JSON-serialized versions of the `RDFOutput` or the RDF.NL representation as plain text depending on the value of the `Accept` header in the POST request:
-* `Accept: application/json`: returns SON-serialized versions of `RDFOutput`
-* `Accept: text/plain`: RDF.NL representation as plain text
-
-* **text**: The text that should be resolved (mandatory). 
-* **doCoreference**: Specifies, whether coreference should be executed before the simplification (true/false).
+* **format**: Specifies, which textual representation should be returned:
+    * `default`: The default RDF.NL format
+    * `flat`: The flat RDF.NL format
+    * `extended`: The extended RDF.NL format
+    * `rdf`: The RDF N-Triples format
 
 Examples:
 
 ```sh
-curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true"}' -H "Accept: application/json" "http://localhost:8080/graphExtraction/rdf"
+curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true"}' -H "Accept: application/json" "http://localhost:8080/relationExtraction/text"
 ```
 
 ```sh
-curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true"}' -H "Accept: text/plain" "http://localhost:8080/graphExtraction/rdf"
+curl -X POST -H "Content-Type: application/json"  -d '{"text": "The text.", "doCoreference": "true", "format": "default"}' -H "Accept: text/plain" "http://localhost:8080/relationExtraction/text"
 ```
-
-[Back to the home page](../README.md)

@@ -27,14 +27,10 @@ import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.Coreference;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.coreference.model.Link;
-import org.lambda3.graphene.core.graph_extraction.GraphExtraction;
-import org.lambda3.graphene.core.graph_extraction.model.ExtractionContent;
-import org.lambda3.graphene.core.simplification.Simplification;
-import org.lambda3.graphene.core.simplification.model.SimplificationContent;
-import org.lambda3.graphene.core.simplified_graph_extraction.SimplifiedGraphExtraction;
-import org.lambda3.graphene.core.simplified_graph_extraction.model.ExSimplificationContent;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFGenerator;
-import org.lambda3.graphene.core.simplified_graph_extraction.rdf_output.RDFOutput;
+import org.lambda3.graphene.core.relation_extraction.RelationExtraction;
+import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
+import org.lambda3.graphene.core.relation_extraction.representation.RepStyle;
 import org.lambda3.graphene.core.utils.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,9 +44,7 @@ public class Graphene {
 	private final Config config;
 
 	private final Coreference coreference;
-	private final GraphExtraction graphExtraction;
-	private final SimplifiedGraphExtraction simplifiedGraphExtraction;
-	private final Simplification simplification;
+	private final RelationExtraction relationExtraction;
 
 	public Graphene() {
 		this(ConfigFactory.load());
@@ -63,9 +57,7 @@ public class Graphene {
 				.getConfig("graphene");
 
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
-		this.graphExtraction = new GraphExtraction();
-		this.simplifiedGraphExtraction = new SimplifiedGraphExtraction();
-		this.simplification = new Simplification();
+		this.relationExtraction = new RelationExtraction();
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
@@ -92,63 +84,23 @@ public class Graphene {
 		return content;
 	}
 
-	public SimplificationContent doSimplification(String text, boolean doCoreference) {
-
-		log.debug("doSimplification for text");
-
-		if (doCoreference) {
-			CoreferenceContent cc = doCoreference(text);
-			text = cc.getSubstitutedText();
-		}
-
-		SimplificationContent sc = simplification.doSimplification(text);
-		sc.setCoreferenced(doCoreference);
-
-		log.debug("Simplification for text finished");
-		return sc;
-	}
-
-	public ExtractionContent doGraphExtraction(String text, boolean doCoreference) {
-		log.debug("doGraphExtraction for text");
-
-		if (doCoreference) {
-			CoreferenceContent cc = doCoreference(text);
-			text = cc.getSubstitutedText();
-		}
-
-		ExtractionContent ec = graphExtraction.extract(text);
+	public ExContent doRelationExtraction(String text, boolean doCoreference) {
+		log.debug("doRelationExtraction for text");
+		final ExContent ec = relationExtraction.doRelationExtraction(text);
 		ec.setCoreferenced(doCoreference);
-
-		log.debug("Extraction for text finished");
+		log.debug("Relation Extraction for text finished");
 		return ec;
 	}
 
-	public ExSimplificationContent doSimplificationAndGraphExtraction(String text, boolean doCoreference) {
-		log.debug("doSimplificationAndGraphExtraction for text");
-		SimplificationContent sc = doSimplification(text, doCoreference);
-
-		ExSimplificationContent ec = simplifiedGraphExtraction.extract(sc);
-		ec.setCoreferenced(doCoreference);
-
-		log.debug("Extraction and Simplification for text finished");
-
-		return ec;
+	public String getRepresentation(ExContent exContent, RepStyle repStyle, int maxContextDepth) {
+		log.debug("generate output representation for exContent");
+		return RepGenerator.getRDFRepresentation(exContent, repStyle, maxContextDepth);
 	}
 
-	public RDFOutput getRDFOutput(ExSimplificationContent exSimplificationContent) {
-		log.debug("generate RDF for exSimplificationContent");
-		final RDFOutput rdfOutput = RDFGenerator.generateOutput(exSimplificationContent);
-		log.debug("RDF generation finished");
-		return rdfOutput;
-	}
-
-	public String getRDFOutputStr(ExSimplificationContent exSimplificationContent) {
-		log.debug("generate RDF as string for exSimplificationContent");
-
-		final String rdfOutput = RDFGenerator.generateOuputStr(exSimplificationContent);
-		log.debug("RDF string generation finished");
-		return rdfOutput;
-	}
+    public String getRepresentation(ExContent exContent, RepStyle repStyle) {
+        log.debug("generate output representation for exContent");
+        return RepGenerator.getRDFRepresentation(exContent, repStyle);
+    }
 
 
 	public VersionInfo getVersionInfo() {

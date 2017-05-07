@@ -23,7 +23,7 @@
 package org.lambda3.graphene.core.coreference;
 
 import com.typesafe.config.Config;
-import org.apache.commons.lang.NotImplementedException;
+import org.apache.commons.lang3.NotImplementedException;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.lambda3.graphene.core.coreference.model.*;
 import org.slf4j.Logger;

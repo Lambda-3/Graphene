@@ -1,0 +1,71 @@
+{
+  "coreferenced": false,
+  "sentences": [
+    {
+      "originalSentence": "The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .",
+      "sentenceIdx": 0,
+      "elementMap": {
+        "3469c5159933484a8bbdb5b1df36136f": {
+          "id": "3469c5159933484a8bbdb5b1df36136f",
+          "text": "The café arrived in Paris in the 17th century .",
+          "notSimplifiedText": "The café arrived in Paris in the 17th century .",
+          "sentenceIdx": 0,
+          "contextLayer": 0,
+          "relations": [
+            {
+              "targetElementID": "fcbcb5c547f248cc88f8aa3033178d12",
+              "classification": "BACKGROUND"
+            }
+          ],
+          "nContexts": [],
+          "vContexts": [],
+          "spo": {
+            "subject": "The café",
+            "predicate": "arrived",
+            "object": "in Paris in the 17th century"
+          }
+        },
+        "fcbcb5c547f248cc88f8aa3033178d12": {
+          "id": "fcbcb5c547f248cc88f8aa3033178d12",
+          "text": "The beverage was first brought .",
+          "notSimplifiedText": "The beverage was first brought from Turkey .",
+          "sentenceIdx": 0,
+          "contextLayer": 1,
+          "relations": [],
+          "nContexts": [],
+          "vContexts": [
+            {
+              "text": "from Turkey .",
+              "classification": "SPATIAL"
+            }
+          ],
+          "spo": {
+            "subject": "The beverage",
+            "predicate": "was first brought",
+            "object": ""
+          }
+        },
+        "394d55aacc064bcc82912689dc0500b9": {
+          "id": "394d55aacc064bcc82912689dc0500b9",
+          "text": "Parisian cafés were centres of the city 's political and cultural life .",
+          "notSimplifiedText": "By the 18th century Parisian cafés were centres of the city 's political and cultural life .",
+          "sentenceIdx": 0,
+          "contextLayer": 0,
+          "relations": [],
+          "nContexts": [],
+          "vContexts": [
+            {
+              "text": "by the 18th century .",
+              "classification": "TEMPORAL"
+            }
+          ],
+          "spo": {
+            "subject": "Parisian cafés",
+            "predicate": "were",
+            "object": "centres of the city 's political and cultural life"
+          }
+        }
+      }
+    }
+  ]
+}
