@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFOutput
+ * graphene-core : ExpandedGenerator
  *
  * Copyright © 2017 Lambda³
  *
@@ -44,17 +44,17 @@ public class ExpandedGenerator extends RepGenerator {
             return;
         }
         ExSPO spo = element.getSpo().get();
-        String indent = "";
-        for (int i = 0; i < contextDepth; i++) {
-            indent += "\t";
-        }
+		StringBuilder indent = new StringBuilder();
+		for (int i = 0; i < contextDepth; i++) {
+			indent.append("\t");
+		}
 
         // element
         if (contextDepth == 0) {
-            res.add(indent + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
-        } else {
-            res.add(indent + elemContextRep(element, classification, false, false).get());
-        }
+			res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+		} else {
+			elemContextRep(element, classification, false, false).ifPresent(e -> res.add(indent + e));
+		}
 
         if (contextDepth < maxContextDepth) {
             // vContexts
@@ -66,10 +66,8 @@ public class ExpandedGenerator extends RepGenerator {
             // nContexts
             for (ExNContext context : element.getNContexts()) {
                 Optional<String> nContextRep = nContextRep(context, false);
-                if (nContextRep.isPresent()) {
-                    res.add(indent + "\t" + nContextRep.get());
-                }
-            }
+				nContextRep.ifPresent(s -> res.add(indent + "\t" + s));
+			}
 
             // element contexts
             for (ExElementRelation relation : element.getRelations()) {

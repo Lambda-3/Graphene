@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFOutput
+ * graphene-core : NTriplesGenerator
  *
  * Copyright © 2017 Lambda³
  *
@@ -53,23 +53,23 @@ public class NTriplesGenerator extends RepGenerator {
         return "\"" + text + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
     }
 
-    private static String rdfRescource(String text) {
+    private static String rdfResource(String text) {
         return "<" + RDF_NAMESPACE + text + ">";
     }
 
-    private static String rdfsRescource(String text) {
+    private static String rdfsResource(String text) {
         return "<" + RDFS_NAMESPACE + text + ">";
     }
 
-    private static String grapheneSentenceRescource(String text) {
+    private static String grapheneSentenceResource(String text) {
         return "<" + GRAPHENE_SENTENCE_NAMESPACE + text + ">";
     }
 
-    private static String grapheneExtractionRescource(String text) {
+    private static String grapheneExtractionResource(String text) {
         return "<" + GRAPHENE_EXTRACTION_NAMESPACE + text + ">";
     }
 
-    private static String grapheneTextRescource(String text) {
+    private static String grapheneTextResource(String text) {
         return "<" + GRAPHENE_TEXT_NAMESPACE + text + ">";
     }
 
@@ -92,7 +92,7 @@ public class NTriplesGenerator extends RepGenerator {
             res.add("");
             String sentenceId = IDGenerator.generateUUID();
             String sentenceBlankNode = rdfBlankNode(sentenceId);
-            res.add(rdfTriple(sentenceBlankNode, grapheneSentenceRescource("original-text"), rdfLiteral(exSentence.getOriginalSentence(), null)));
+            res.add(rdfTriple(sentenceBlankNode, grapheneSentenceResource("original-text"), rdfLiteral(exSentence.getOriginalSentence(), null)));
             res.add("");
 
             for (ExElement element : exSentence.getElements()) {
@@ -104,24 +104,24 @@ public class NTriplesGenerator extends RepGenerator {
                 // element
                 String elementBlankNode = rdfBlankNode(element.getId());
 
-                res.add(rdfTriple(sentenceBlankNode, grapheneSentenceRescource("has-extraction"), elementBlankNode));
-                res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource("subject"), grapheneTextRescource(element.getSpo().get().getSubject())));
-                res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource("predicate"), grapheneTextRescource(element.getSpo().get().getPredicate())));
-                res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource("object"), grapheneTextRescource(element.getSpo().get().getObject())));
-                res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource("context-layer"), rdfLiteral(element.getContextLayer())));
+                res.add(rdfTriple(sentenceBlankNode, grapheneSentenceResource("has-extraction"), elementBlankNode));
+                res.add(rdfTriple(elementBlankNode, grapheneExtractionResource("subject"), grapheneTextResource(element.getSpo().get().getSubject())));
+                res.add(rdfTriple(elementBlankNode, grapheneExtractionResource("predicate"), grapheneTextResource(element.getSpo().get().getPredicate())));
+                res.add(rdfTriple(elementBlankNode, grapheneExtractionResource("object"), grapheneTextResource(element.getSpo().get().getObject())));
+                res.add(rdfTriple(elementBlankNode, grapheneExtractionResource("context-layer"), rdfLiteral(element.getContextLayer())));
 
                 // element-values
-                res.add(rdfTriple(grapheneTextRescource(element.getSpo().get().getSubject()), rdfRescource("value"), rdfLiteral(element.getSpo().get().getSubject(), null)));
-                res.add(rdfTriple(grapheneTextRescource(element.getSpo().get().getPredicate()), rdfRescource("value"), rdfLiteral(element.getSpo().get().getPredicate(), null)));
-                res.add(rdfTriple(grapheneTextRescource(element.getSpo().get().getObject()), rdfRescource("value"), rdfLiteral(element.getSpo().get().getObject(), null)));
+                res.add(rdfTriple(grapheneTextResource(element.getSpo().get().getSubject()), rdfResource("value"), rdfLiteral(element.getSpo().get().getSubject(), null)));
+                res.add(rdfTriple(grapheneTextResource(element.getSpo().get().getPredicate()), rdfResource("value"), rdfLiteral(element.getSpo().get().getPredicate(), null)));
+                res.add(rdfTriple(grapheneTextResource(element.getSpo().get().getObject()), rdfResource("value"), rdfLiteral(element.getSpo().get().getObject(), null)));
 
                 // vContexts
                 for (ExVContext context : element.getVContexts()) {
                     String vContextAbbrev = vContextAbbrev(context);
-                    res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource(vContextAbbrev), grapheneTextRescource(context.getText())));
+                    res.add(rdfTriple(elementBlankNode, grapheneExtractionResource(vContextAbbrev), grapheneTextResource(context.getText())));
 
                     // vContext-value
-                    res.add(rdfTriple(grapheneTextRescource(context.getText()), rdfRescource("value"), rdfLiteral(context.getText(), null)));
+                    res.add(rdfTriple(grapheneTextResource(context.getText()), rdfResource("value"), rdfLiteral(context.getText(), null)));
                 }
 
                 // element contexts
@@ -130,7 +130,7 @@ public class NTriplesGenerator extends RepGenerator {
                     if (target.getSpo().isPresent()) {
                         String targetBlankNode = rdfBlankNode(target.getId());
                         String elementAbbrev = elementAbbrev(target, relation.getClassification());
-                        res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource(elementAbbrev), targetBlankNode));
+                        res.add(rdfTriple(elementBlankNode, grapheneExtractionResource(elementAbbrev), targetBlankNode));
                     }
                 }
 
@@ -140,19 +140,19 @@ public class NTriplesGenerator extends RepGenerator {
                         String nContextAbbrev = nContextAbbrev(context);
                         String nContextId = IDGenerator.generateUUID();
                         String nContextBlankNode = rdfBlankNode(nContextId);
-                        res.add(rdfTriple(elementBlankNode, grapheneExtractionRescource(nContextAbbrev), nContextBlankNode));
+                        res.add(rdfTriple(elementBlankNode, grapheneExtractionResource(nContextAbbrev), nContextBlankNode));
 
                         // nContext
                         res.add("");
-                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionRescource("subject"), grapheneTextRescource(context.getSpo().get().getSubject())));
-                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionRescource("predicate"), grapheneTextRescource(context.getSpo().get().getPredicate())));
-                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionRescource("object"), grapheneTextRescource(context.getSpo().get().getObject())));
-                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionRescource("context-layer"), rdfLiteral(element.getContextLayer() + 1)));
+                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionResource("subject"), grapheneTextResource(context.getSpo().get().getSubject())));
+                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionResource("predicate"), grapheneTextResource(context.getSpo().get().getPredicate())));
+                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionResource("object"), grapheneTextResource(context.getSpo().get().getObject())));
+                        res.add(rdfTriple(nContextBlankNode, grapheneExtractionResource("context-layer"), rdfLiteral(element.getContextLayer() + 1)));
 
                         // nContext-values
-                        res.add(rdfTriple(grapheneTextRescource(context.getSpo().get().getSubject()), rdfRescource("value"), rdfLiteral(context.getSpo().get().getSubject(), null)));
-                        res.add(rdfTriple(grapheneTextRescource(context.getSpo().get().getPredicate()), rdfRescource("value"), rdfLiteral(context.getSpo().get().getPredicate(), null)));
-                        res.add(rdfTriple(grapheneTextRescource(context.getSpo().get().getObject()), rdfRescource("value"), rdfLiteral(context.getSpo().get().getObject(), null)));
+                        res.add(rdfTriple(grapheneTextResource(context.getSpo().get().getSubject()), rdfResource("value"), rdfLiteral(context.getSpo().get().getSubject(), null)));
+                        res.add(rdfTriple(grapheneTextResource(context.getSpo().get().getPredicate()), rdfResource("value"), rdfLiteral(context.getSpo().get().getPredicate(), null)));
+                        res.add(rdfTriple(grapheneTextResource(context.getSpo().get().getObject()), rdfResource("value"), rdfLiteral(context.getSpo().get().getObject(), null)));
                     }
                 }
 

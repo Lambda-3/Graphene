@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-server : GraphExtractionRequestBean
+ * graphene-server : RelationExtractionRequestBean
  *
  * Copyright © 2017 Lambda³
  *
@@ -36,8 +36,8 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	@DefaultValue("true")
 	private boolean doCoreference;
 
-    @DefaultValue("rdf")
-    private String format;
+	@DefaultValue("RDF")
+	private RelationOutputFormat format;
 
 	public String getText() {
 		return text;
@@ -55,11 +55,11 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		this.doCoreference = doCoreference;
 	}
 
-	public String getFormat() {
+	public RelationOutputFormat getFormat() {
 		return format;
 	}
 	@SuppressWarnings({"unused"})
-	public void setFormat(String format) {
+	public void setFormat(RelationOutputFormat format) {
 		this.format = format;
 	}
 
@@ -70,5 +70,13 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 				", doCoreference=" + doCoreference +
 				", format=" + format +
 				'}';
+	}
+
+
+	public enum RelationOutputFormat {
+		RDF,
+		DEFAULT,
+		FLAT,
+		EXPANDED
 	}
 }

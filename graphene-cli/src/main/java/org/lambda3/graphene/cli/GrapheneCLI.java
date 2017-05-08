@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 /**
  *
  */
-@SuppressWarnings({"FieldCanBeLocal", "CanBeFinal"})
 public class GrapheneCLI {
 
 	private final static Logger LOG = LoggerFactory.getLogger(GrapheneCLI.class);
@@ -55,21 +54,28 @@ public class GrapheneCLI {
 	private static final ObjectWriter JSON = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
 	private final CmdLineParser cli;
+
 	@Option(name = "--help", aliases = {"-h"},
 			usage = "Prints help")
 	private boolean help = false;
+
 	@Option(name = "--version", aliases = {"-v"},
 			usage = "Prints the version of Graphene")
 	private boolean version = false;
+
 	@Option(name = "--input", usage = "Choose the format TEXT/FILE/WIKI")
 	private InputFormat inputFormat;
+
 	@Option(name = "--output",
 			usage = "Choose whether to create files or print result on commandline.")
 	private OutputFormat outputFormat;
+
 	@Option(name = "--coref")
 	private boolean doCoref = false;
+
 	@Option(name = "--extract")
 	private boolean doRelationExtraction = false;
+
 	@Argument(usage = "Input texts/files/articles")
 	private List<String> input;
 
@@ -133,7 +139,6 @@ public class GrapheneCLI {
 			inputError(e.getMessage(), true);
 			return;
 		}
-
 
 		if (help) {
 			printHelp();

@@ -39,7 +39,6 @@
 	<properties>
         <discourse_simplification.version>6.0.0</discourse_simplification.version>
         <simplification.version>5.0.0</simplification.version>
-        <openie.version>4.2.1</openie.version>
 	</properties>
 
 	<dependencies>

@@ -27,21 +27,21 @@ import org.lambda3.graphene.core.Content;
 /**
  *
  */
-public class Result {
+class Result {
 
 	private final String name;
 	private final Content content;
 
-	public Result(String name, Content content) {
+	Result(String name, Content content) {
 		this.name = name;
 		this.content = content;
 	}
 
-	public String getName() {
+	String getName() {
 		return name;
 	}
 
-	public Content getContent() {
+	Content getContent() {
 		return content;
 	}
 }

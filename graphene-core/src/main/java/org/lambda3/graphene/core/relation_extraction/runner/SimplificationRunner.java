@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFOutput
+ * graphene-core : SimplificationRunner
  *
  * Copyright © 2017 Lambda³
  *
@@ -139,6 +139,6 @@ public class SimplificationRunner {
         }
 
         // add newElements
-        newElements.forEach(e -> content.addElement(e));
+        newElements.forEach(content::addElement);
     }
 }

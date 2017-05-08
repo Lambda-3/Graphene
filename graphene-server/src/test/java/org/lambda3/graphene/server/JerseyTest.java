@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-server : JerseyTestTest
+ * graphene-server : JerseyTest
  *
  * Copyright © 2017 Lambda³
  *
@@ -32,7 +32,6 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
@@ -43,8 +42,8 @@ import static org.testng.Assert.assertEquals;
  * It uses TestNG, because JUnit (and especially JUnit5) are not compatible.
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class JerseyTestTest extends JerseyTestNg.ContainerPerClassTest {
-    private static final Random RAND = new Random();
+public class JerseyTest extends JerseyTestNg.ContainerPerClassTest {
+	private static final Random RAND = new Random();
 
 	protected Application configure() {
 		return new ResourceConfig(TestResource.class);

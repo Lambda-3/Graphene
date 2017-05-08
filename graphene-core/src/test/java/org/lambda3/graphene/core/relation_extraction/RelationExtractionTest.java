@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : SimplifiedGraphExtractionTest
+ * graphene-core : RelationExtractionTest
  *
  * Copyright © 2017 Lambda³
  *
@@ -54,13 +54,13 @@ public class RelationExtractionTest {
 
 	@Test
 	public void testRDFOutput() throws IOException {
-        RelationExtraction relationExtraction = new RelationExtraction();
+		RelationExtraction relationExtraction = new RelationExtraction();
 
-        ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
+		ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
 
-        log.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
-        log.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
-        log.info(RepGenerator.getRDFRepresentation(content, RepStyle.EXPANDED));
-        log.info(RepGenerator.getRDFRepresentation(content, RepStyle.N_TRIPLES));
+		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
+		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
+		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.EXPANDED));
+		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.N_TRIPLES));
 	}
 }

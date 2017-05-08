@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-server : GraphExtractionResource
+ * graphene-server : RelationExtractionResource
  *
  * Copyright © 2017 Lambda³
  *
@@ -47,9 +47,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response relationExtractionFromText(@Valid RelationExtractionRequestBean bean) {
 
-		if (LOG.isDebugEnabled()) {
-			LOG.debug("New RelationExtractionRequest: {}", bean);
-		}
+		LOG.debug("New RelationExtractionRequest: {}", bean);
 
 		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
 
@@ -65,22 +63,29 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
     @Produces(MediaType.TEXT_PLAIN)
     public Response relationExtractionFromTextAsText(@Valid RelationExtractionRequestBean bean) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("New RelationExtractionRequest: {}", bean);
-        }
+		LOG.debug("New RelationExtractionRequest: {}", bean);
 
         ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
 
-        RepStyle style = RepStyle.N_TRIPLES;
-        if (bean.getFormat().equals("rdf")) {
-            style = RepStyle.N_TRIPLES;
-        } else if (bean.getFormat().equals("default")) {
-            style = RepStyle.DEFAULT;
-        } else if (bean.getFormat().equals("flat")) {
-            style = RepStyle.FLAT;
-        } else if (bean.getFormat().equals("expanded")) {
-            style = RepStyle.EXPANDED;
-        }
+		RepStyle style;
+
+		switch (bean.getFormat()) {
+			case RDF:
+				style = RepStyle.N_TRIPLES;
+				break;
+			case DEFAULT:
+				style = RepStyle.DEFAULT;
+				break;
+			case FLAT:
+				style = RepStyle.FLAT;
+				break;
+			case EXPANDED:
+				style = RepStyle.EXPANDED;
+				break;
+			default:
+				style = RepStyle.N_TRIPLES;
+				break;
+		}
 
         String rep = graphene.getRepresentation(content, style);
 

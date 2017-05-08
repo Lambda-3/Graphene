@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFOutput
+ * graphene-core : FlatGenerator
  *
  * Copyright © 2017 Lambda³
  *
@@ -34,55 +34,59 @@ import java.util.Optional;
  */
 public class FlatGenerator extends RepGenerator {
 
-    @Override
-    public List<String> format(ExContent content) {
-        List<String> res = new ArrayList<>();
+	@Override
+	public List<String> format(ExContent content) {
+		List<String> res = new ArrayList<>();
 
-        for (ExSentence exSentence : content.getSentences()) {
+		for (ExSentence exSentence : content.getSentences()) {
 
-            // sentence
-            res.add("# " + exSentence.getOriginalSentence());
-            res.add("");
+			// sentence
+			res.add("# " + exSentence.getOriginalSentence());
+			res.add("");
 
-            for (ExElement element : exSentence.getElements()) {
-                if (!element.getSpo().isPresent()) {
-                    continue;
-                }
-                ExSPO spo = element.getSpo().get();
+			for (ExElement element : exSentence.getElements()) {
+				if (!element.getSpo().isPresent()) {
+					continue;
+				}
+				ExSPO spo = element.getSpo().get();
 
-                StringBuilder strb = new StringBuilder();
+				StringBuilder strb = new StringBuilder();
 
-                // element
-                strb.append(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+				// element
+				strb.append(element.getId())
+						.append("\t")
+						.append(element.getContextLayer())
+						.append("\t")
+						.append(spo.getSubject())
+						.append("\t")
+						.append(spo.getPredicate())
+						.append("\t")
+						.append(spo.getObject());
 
-                // vContexts
-                for (ExVContext context : element.getVContexts()) {
-                    String vContextRep = vContextRep(context, true);
-                    strb.append("\t" + vContextRep);
-                }
+				// vContexts
+				for (ExVContext context : element.getVContexts()) {
+					String vContextRep = vContextRep(context, true);
+					strb.append("\t").append(vContextRep);
+				}
 
-                // nContexts
-                for (ExNContext context : element.getNContexts()) {
-                    Optional<String> nContextRep = nContextRep(context, true);
-                    if (nContextRep.isPresent()) {
-                        strb.append("\t" + nContextRep.get());
-                    }
-                }
+				// nContexts
+				for (ExNContext context : element.getNContexts()) {
+					Optional<String> nContextRep = nContextRep(context, true);
+					nContextRep.ifPresent(s -> strb.append("\t").append(s));
+				}
 
-                // element contexts
-                for (ExElementRelation relation : element.getRelations()) {
-                    ExElement target = relation.getTargetElement(content);
-                    Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
-                    if (elemContextRep.isPresent()) {
-                        strb.append("\t" + elemContextRep.get());
-                    }
-                }
+				// element contexts
+				for (ExElementRelation relation : element.getRelations()) {
+					ExElement target = relation.getTargetElement(content);
+					Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
+					elemContextRep.ifPresent(s -> strb.append("\t").append(s));
+				}
 
-                res.add(strb.toString());
-            }
-            res.add("");
-        }
+				res.add(strb.toString());
+			}
+			res.add("");
+		}
 
-        return res;
-    }
+		return res;
+	}
 }

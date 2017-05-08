@@ -1,6 +1,6 @@
 /*
  * ==========================License-Start=============================
- * graphene-core : RDFOutput
+ * graphene-core : DefaultGenerator
  *
  * Copyright © 2017 Lambda³
  *
@@ -62,18 +62,14 @@ public class DefaultGenerator extends RepGenerator {
                 // nContexts
                 for (ExNContext context : element.getNContexts()) {
                     Optional<String> nContextRep = nContextRep(context, false);
-                    if (nContextRep.isPresent()) {
-                        res.add("\t" + nContextRep.get());
-                    }
+                    nContextRep.ifPresent(s -> res.add("\t" + s));
                 }
 
                 // element contexts
                 for (ExElementRelation relation : element.getRelations()) {
                     ExElement target = relation.getTargetElement(content);
                     Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, false);
-                    if (elemContextRep.isPresent()) {
-                        res.add("\t" + elemContextRep.get());
-                    }
+                    elemContextRep.ifPresent(s -> res.add("\t" + s));
                 }
 
                 res.add("");
