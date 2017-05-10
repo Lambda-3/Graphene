@@ -40,8 +40,8 @@ _:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#VCON-
 <http://lambda3.org/graphene/text#by the 18th century .> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "by the 18th century ."^^<http://www.w3.org/2001/XMLSchema#string> .
 ```
 
-In this format, each sentence is modelled as a a blank node, containing the original sentence and a list of core-extractions (`has-extraction`) . Each extraction is represented as a blank node with `subject`, `predicate` and `object` RDF-text-resources that represent the relational tuple. Contextual information is attached by RDF-predicates that encode both the `context_class` and the classified `rhetorical_relation` (see [RDF.NL-Format](wiki/RDF.NL-Format.md)) and link to either text-resources or to other extractions.
+In this format, each sentence is modelled as a a blank node, containing the original sentence and a list of core-extractions (`has-extraction`) . Each extraction is represented as a blank node with `subject`, `predicate` and `object` RDF-text-resources that represent the relational tuple. Contextual information is attached by RDF-predicates that encode both the `context_class` and the classified `rhetorical_relation` (see [RDFNL-Format](wiki/RDFNL-Format.md)) and link to either text-resources or to other extractions.
 
-Each extraction has an attribute `context-layer` which specifies the layer of contextual assignment (see [RDF.NL-Format](wiki/RDF.NL-Format.md))
+Each extraction has an attribute `context-layer` which specifies the layer of contextual assignment (see [RDFNL-Format](wiki/RDFNL-Format.md))
 
 Finally, all RDF-text-resources are mapped to real string attributes.
