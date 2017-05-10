@@ -26,6 +26,8 @@ import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 import org.lambda3.graphene.core.utils.IDGenerator;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,8 +51,10 @@ public class NTriplesGenerator extends RepGenerator {
     }
 
     private static String rdfLiteral(String text, String languageTag) {
+        String escapedText = text.replace("\"", "\\\"").replace("\n", "\\\n").replace("\r", "\\\r").replace("\\", "");
         String langStr = (languageTag != null)? "@" + languageTag : "";
-        return "\"" + text + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
+
+        return "\"" + escapedText + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
     }
 
     private static String rdfResource(String text) {
@@ -70,7 +74,14 @@ public class NTriplesGenerator extends RepGenerator {
     }
 
     private static String grapheneTextResource(String text) {
-        return "<" + GRAPHENE_TEXT_NAMESPACE + text + ">";
+        String escapedText = null;
+        try {
+            escapedText = URLEncoder.encode(text, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError("Unsupported encoding.");
+        }
+
+        return "<" + GRAPHENE_TEXT_NAMESPACE + escapedText + ">";
     }
 
     private static String rdfBlankNode(String id) {
