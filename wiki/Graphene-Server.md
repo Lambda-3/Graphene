@@ -29,9 +29,9 @@ Returns the JSON-serialized versions of the `ExContent` class or a textual repre
 * **text**: The text that should be resolved (mandatory). 
 * **doCoreference**: Specifies, whether coreference should be executed before the simplification (true/false).
 * **format**: Specifies, which textual representation should be returned:
-    * `default`: The default RDF.NL format
-    * `flat`: The flat RDF.NL format
-    * `extended`: The extended RDF.NL format
+    * `default`: The default RDFNL format
+    * `flat`: The flat RDFNL format
+    * `extended`: The extended RDFNL format
     * `rdf`: The RDF N-Triples format
 
 Examples:

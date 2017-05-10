@@ -25,7 +25,7 @@ String substituted = cc.getSubstitutedText();
 ```java
 ExContent ec = graphene.doRelationExtraction("The text.", true);
 
-// ### OUTPUT AS RDF.NL #####
+// ### OUTPUT AS RDFNL #####
 // default
 String rdfnl1 = graphene.getRepresentation(ec, RepStyle.DEFAULT)
 // flat 

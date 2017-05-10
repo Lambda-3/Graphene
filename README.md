@@ -19,7 +19,7 @@ In order to capture all the contextual information, Graphene performs the follow
 * Extract binary relations (`subject`,  `predicate` and  `object`) from each sentence.
 * Merge all the extracted relations into a relation graph (knowledge graph).
 
-Graphene’s extracted graphs are represented by our RDF.NL format, an simple format that facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A description of the RDF.NL format can be found [here](wiki/RDF.NL-Format.md).
+Graphene’s extracted graphs are represented by our RDFNL format, an simple format that facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A description of the RDFNL format can be found [here](wiki/RDFNL-Format.md).
 In order to increase further processability of the extracted relations, Graphene can materialize its relations into a proper RDF graph serialized under the N-Triples specification of the RDF standard. A description of the RDF format can be found [here](wiki/RDF-Format.md).
 Alternatively, developers can use the direct output class of the API, which is serializable and deserializable as a JSON object.
 
@@ -30,7 +30,7 @@ Alternatively, developers can use the direct output class of the API, which is s
 `The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .`
 
 The serialized class: [JSON](wiki/files/example.json)   
-The RDF.NL format:
+The RDFNL format:
 
 ```
 # The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
@@ -88,7 +88,7 @@ _:6f51a07ceb914c1096b64592a5078bed <http://lambda3.org/graphene/extraction#VCON-
 ### Full text extraction of the [Barack Obama Wikipedia Page](https://en.wikipedia.org/wiki/Barack_Obama) (2017-05-05):
 
 The serialized class: [JSON](wiki/files/Barack_Obama_2017-05-05.json)   
-The RDF.NL format: [RDF.NL](wiki/files/Barack_Obama_2017-05-05.RDF.NL)   
+The RDFNL format: [RDFNL](wiki/files/Barack_Obama_2017-05-05.rdfnl)   
 The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017-05-05.nt)   
 
 ## Requirements

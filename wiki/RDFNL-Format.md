@@ -1,6 +1,6 @@
-# RDF.NL Format
+# RDFNL Format
 
-The RDF.NL format was designed to act as an easy representation, which is able to cover complex contextual relations, keeping the simplicity to be parsed and further processed by programs. The RDF.NL format can be printed in the following ways:
+The RDFNL format was designed to act as an easy representation, which is able to cover complex contextual relations, keeping the simplicity to be parsed and further processed by programs. The RDFNL format can be printed in the following ways:
 
 ## Default-Format
 
