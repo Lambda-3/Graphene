@@ -22,49 +22,49 @@
 
 package org.lambda3.graphene.core.coreference.model;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class InternalCoreferenceRequest {
-	private String text;
-	private String uri;
-	private List<Link> links;
+    private String text;
+    private String uri;
+    private List<Link> links;
 
-	public InternalCoreferenceRequest(String text) {
-		this(text, "", new ArrayList<>());
-	}
+    public InternalCoreferenceRequest(String text) {
+        this(text, "");
+    }
 
-	public InternalCoreferenceRequest(String text, String uri) {
-		this(text, uri, new ArrayList<>());
-	}
+    public InternalCoreferenceRequest(String text, String uri) {
+        this(text, uri, Collections.emptyList());
+    }
 
-	public InternalCoreferenceRequest(String text, String uri, List<Link> links) {
-		this.text = text;
-		this.uri = uri;
-		this.links = links;
-	}
+    public InternalCoreferenceRequest(String text, String uri, List<Link> links) {
+        this.text = text;
+        this.uri = uri;
+        this.links = links;
+    }
 
-	public String getText() {
-		return text;
-	}
+    public String getText() {
+        return text;
+    }
 
-	public void setText(String text) {
-		this.text = text;
-	}
+    public void setText(String text) {
+        this.text = text;
+    }
 
-	public String getUri() {
-		return uri;
-	}
+    public String getUri() {
+        return uri;
+    }
 
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
 
-	public List<Link> getLinks() {
-		return links;
-	}
+    public List<Link> getLinks() {
+        return links;
+    }
 
-	public void setLinks(List<Link> links) {
-		this.links = links;
-	}
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
 }
