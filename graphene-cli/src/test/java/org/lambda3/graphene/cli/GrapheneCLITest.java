@@ -1,26 +1,28 @@
-/*
+package org.lambda3.graphene.cli;
+
+/*-
  * ==========================License-Start=============================
- * graphene-cli : GrapheneCLITest
- *
- * Copyright © 2017 Lambda³
- *
- * GNU General Public License 3
+ * GrapheneCLITest.java - Graphene CLI - Lambda^3 - 2017
+ * Graphene
+ * %%
+ * Copyright (C) 2017 Lambda^3
+ * %%
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
- * ==========================License-End==============================
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ==========================License-End===============================
  */
 
-package org.lambda3.graphene.cli;
 
 import com.typesafe.config.ConfigFactory;
 import org.testng.annotations.AfterTest;
@@ -29,44 +31,41 @@ import org.testng.annotations.BeforeTest;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-/**
- *
- */
 @SuppressWarnings("WeakerAccess")
 public abstract class GrapheneCLITest {
 
-	protected final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-	protected final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
+    protected final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    protected final ByteArrayOutputStream errContent = new ByteArrayOutputStream();
 
-	protected boolean asserted;
-	protected PrintStream originalOut;
-	protected PrintStream originalErr;
+    protected boolean asserted;
+    protected PrintStream originalOut;
+    protected PrintStream originalErr;
 
-	@BeforeTest
-	void setup() {
+    @BeforeTest
+    void setup() {
 
-		originalOut = System.out;
-		originalErr = System.err;
+        originalOut = System.out;
+        originalErr = System.err;
 
-		System.setOut(new PrintStream(outContent));
-		System.setErr(new PrintStream(errContent));
+        System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
 
-		asserted = true;
+        asserted = true;
 
-		System.setProperty("config.resource", "application-cli.local.conf");
-		ConfigFactory.invalidateCaches();
-	}
+        System.setProperty("config.resource", "application-cli.local.conf");
+        ConfigFactory.invalidateCaches();
+    }
 
 
-	@AfterTest
-	void printIfError() {
-		if (asserted) {
-			System.setOut(originalOut);
-			System.setErr(originalErr);
+    @AfterTest
+    void printIfError() {
+        if (asserted) {
+            System.setOut(originalOut);
+            System.setErr(originalErr);
 
-			System.out.println(outContent.toString());
-			System.err.println(errContent.toString());
-		}
-	}
+            System.out.println(outContent.toString());
+            System.err.println(errContent.toString());
+        }
+    }
 
 }

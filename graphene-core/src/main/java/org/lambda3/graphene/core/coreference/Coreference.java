@@ -1,26 +1,28 @@
-/*
+package org.lambda3.graphene.core.coreference;
+
+/*-
  * ==========================License-Start=============================
- * graphene-core : Coreference
- *
- * Copyright © 2017 Lambda³
- *
- * GNU General Public License 3
+ * Coreference.java - Graphene Core - Lambda^3 - 2017
+ * Graphene
+ * %%
+ * Copyright (C) 2017 Lambda^3
+ * %%
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
+ * it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see http://www.gnu.org/licenses/.
- * ==========================License-End==============================
+ * 
+ * You should have received a copy of the GNU General Public
+ * License along with this program.  If not, see
+ * <http://www.gnu.org/licenses/gpl-3.0.html>.
+ * ==========================License-End===============================
  */
 
-package org.lambda3.graphene.core.coreference;
 
 import com.typesafe.config.Config;
 import org.apache.commons.lang3.NotImplementedException;
@@ -37,9 +39,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-/**
- * Entry point to all coreference resolution related.
- */
 public class Coreference {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
