@@ -85,7 +85,12 @@ public class Graphene {
 	}
 
 	public ExContent doRelationExtraction(String text, boolean doCoreference) {
-		log.debug("doRelationExtraction for text");
+	    if (doCoreference) {
+	        final CoreferenceContent cc = doCoreference(text);
+	        text = cc.getSubstitutedText();
+        }
+
+        log.debug("doRelationExtraction for text");
 		final ExContent ec = relationExtraction.doRelationExtraction(text);
 		ec.setCoreferenced(doCoreference);
 		log.debug("Relation Extraction for text finished");
