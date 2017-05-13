@@ -37,19 +37,19 @@ public class CORSFilter implements ContainerResponseFilter {
 
 	@Override
 	public void filter(
-			ContainerRequestContext containerRequestContext,
-			ContainerResponseContext containerResponseContext) throws IOException {
+            ContainerRequestContext containerRequestContext,
+            ContainerResponseContext containerResponseContext) throws IOException {
 
 		MultivaluedMap<String, Object> headers = containerResponseContext.getHeaders();
 
 		headers.add(
-				"Access-Control-Allow-Origin",
-				"*");
-		headers.add(
-				"Access-Control-Allow-Methods",
-				"GET, POST, OPTIONS");
-		headers.add(
-				"Access-Control-Allow-Headers",
-				"Cache-Control, X-Requested-With, Origin, Content-Type, Accept, Authorization");
-	}
+                "Access-Control-Allow-Origin",
+                "*");
+        headers.add(
+                "Access-Control-Allow-Methods",
+                "GET, POST, OPTIONS");
+        headers.add(
+                "Access-Control-Allow-Headers",
+                "Cache-Control, X-Requested-With, Origin, Content-Type, Accept, Authorization");
+    }
 }

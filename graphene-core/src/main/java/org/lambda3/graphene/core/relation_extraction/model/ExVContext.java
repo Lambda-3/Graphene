@@ -37,15 +37,15 @@ public class ExVContext {
         this.classification = Classification.UNKNOWN;
     }
 
-    public void setClassification(Classification classification) {
-        this.classification = classification;
-    }
-
     public String getText() {
         return text;
     }
 
     public Classification getClassification() {
         return classification;
+    }
+
+    public void setClassification(Classification classification) {
+        this.classification = classification;
     }
 }

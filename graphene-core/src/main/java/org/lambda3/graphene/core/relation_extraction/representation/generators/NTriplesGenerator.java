@@ -51,7 +51,7 @@ public class NTriplesGenerator extends RepGenerator {
 
     private static String rdfLiteral(String text, String languageTag) {
         String escapedText = text.replace("\"", "\\\"").replace("\n", "\\\n").replace("\r", "\\\r").replace("\\", "");
-        String langStr = (languageTag != null)? "@" + languageTag : "";
+        String langStr = (languageTag != null) ? "@" + languageTag : "";
 
         return "\"" + escapedText + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
     }

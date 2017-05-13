@@ -55,14 +55,14 @@ public class Coreference {
 		webClient.register(JacksonFeature.class);
 
 		this.textTarget = webClient
-				.target(config.getString("url"))
-				.path(config.getString("text-path"));
-		this.wikiTarget = webClient
-				.target(config.getString("url"))
-				.path(config.getString("wiki-path"));
-		this.wikiLinkTarget = webClient
-				.target(config.getString("url"))
-				.path(config.getString("wiki-link-path"));
+                .target(config.getString("url"))
+                .path(config.getString("text-path"));
+        this.wikiTarget = webClient
+                .target(config.getString("url"))
+                .path(config.getString("wiki-path"));
+        this.wikiLinkTarget = webClient
+                .target(config.getString("url"))
+                .path(config.getString("wiki-link-path"));
 
 		log.info("Coreference initialized");
 	}
@@ -90,9 +90,9 @@ public class Coreference {
 		log.debug("Sending coreference request to {}", target.getUri().toString());
 
 		final Response response = target
-				.request(MediaType.APPLICATION_JSON_TYPE)
-				.accept(MediaType.APPLICATION_JSON_TYPE)
-				.post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
 
 		if (response.hasEntity()) {
 			if (response.getStatusInfo().getStatusCode() == Response.Status.OK.getStatusCode()) {
@@ -101,10 +101,10 @@ public class Coreference {
 
 			} else {
 				log.error(
-						"A request was sent, but the response code was '{}: {}'",
-						response.getStatusInfo().getStatusCode(),
-						response.getStatusInfo().getReasonPhrase());
-			}
+                        "A request was sent, but the response code was '{}: {}'",
+                        response.getStatusInfo().getStatusCode(),
+                        response.getStatusInfo().getReasonPhrase());
+            }
 		} else {
 			log.error("The response has no entity.");
 		}

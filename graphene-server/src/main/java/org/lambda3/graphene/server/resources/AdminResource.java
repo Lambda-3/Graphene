@@ -44,9 +44,9 @@ public class AdminResource extends AbstractGrapheneResource {
 		cc.setPrivate(true);
 
 		return Response
-				.status(Response.Status.OK)
-				.cacheControl(cc)
-				.entity(graphene.getVersionInfo())
-				.build();
-	}
+                .status(Response.Status.OK)
+                .cacheControl(cc)
+                .entity(graphene.getVersionInfo())
+                .build();
+    }
 }

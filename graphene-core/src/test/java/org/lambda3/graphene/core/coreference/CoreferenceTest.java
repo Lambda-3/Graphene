@@ -38,8 +38,8 @@ public class CoreferenceTest {
 	@BeforeClass
 	public static void beforeAll() {
 		Config config = ConfigFactory
-				.load("reference-core.local")
-				.withFallback(ConfigFactory.load("reference-core"));
+                .load("reference-core.local")
+                .withFallback(ConfigFactory.load("reference-core"));
 
 		coreference = new Coreference(config.getConfig("graphene.coreference"));
 	}

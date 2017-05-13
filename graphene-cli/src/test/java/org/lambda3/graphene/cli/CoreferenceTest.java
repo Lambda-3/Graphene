@@ -29,27 +29,27 @@ import org.testng.annotations.Test;
 
 public class CoreferenceTest extends GrapheneCLITest {
 
-    @Test
-    public void testCoreferenceViaCli() {
-        String[] args = new String[]{
-                "--coref",
-                "--input", "TEXT",
-                "--output", "CMDLINE",
-                "Angela Merkel is the current chancellor of Germany. She will be reelected later this year."
-        };
+	@Test
+	public void testCoreferenceViaCli() {
+		String[] args = new String[]{
+			"--coref",
+			"--input", "TEXT",
+			"--output", "CMDLINE",
+			"Angela Merkel is the current chancellor of Germany. She will be reelected later this year."
+		};
 
-        GrapheneCLI.main(args);
+		GrapheneCLI.main(args);
 
-        String actual = outContent.toString();
+		String actual = outContent.toString();
 
-        Assert.assertFalse(actual.contains("ERROR"));
+		Assert.assertFalse(actual.contains("ERROR"));
 
-        Assert.assertTrue(actual.contains("Content:"));
-        Assert.assertTrue(actual.contains("############"));
-        Assert.assertTrue(actual.contains("CoreferenceContent{originalText='"));
+		Assert.assertTrue(actual.contains("Content:"));
+		Assert.assertTrue(actual.contains("############"));
+		Assert.assertTrue(actual.contains("CoreferenceContent{originalText='"));
 
-        asserted = false;
-    }
+		asserted = false;
+	}
 
 
 }

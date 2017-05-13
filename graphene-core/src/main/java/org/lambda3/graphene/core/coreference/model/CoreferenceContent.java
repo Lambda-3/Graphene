@@ -62,9 +62,9 @@ public class CoreferenceContent extends Content {
 			CoreferenceContent otherContent = (CoreferenceContent) other;
 
 			return new EqualsBuilder()
-					.append(getOriginalText(), otherContent.getOriginalText())
-					.append(getSubstitutedText(), otherContent.getSubstitutedText())
-					.isEquals();
+				.append(getOriginalText(), otherContent.getOriginalText())
+				.append(getSubstitutedText(), otherContent.getSubstitutedText())
+				.isEquals();
 		}
 		return false;
 	}
@@ -72,8 +72,8 @@ public class CoreferenceContent extends Content {
 	@Override
 	public String toString() {
 		return "CoreferenceContent{" +
-				"originalText='" + originalText + '\'' +
-				", substitutedText='" + substitutedText + '\'' +
-				'}';
+			"originalText='" + originalText + '\'' +
+			", substitutedText='" + substitutedText + '\'' +
+			'}';
 	}
 }

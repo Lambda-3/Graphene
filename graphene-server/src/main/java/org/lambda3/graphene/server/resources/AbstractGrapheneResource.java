@@ -36,14 +36,12 @@ import javax.inject.Singleton;
 public abstract class AbstractGrapheneResource {
 
 	final static int MAX_LOG_CHARS = 30;
-
-	@SuppressWarnings("WeakerAccess")
+    @SuppressWarnings("WeakerAccess")
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+    @SuppressWarnings("WeakerAccess")
 	protected Graphene graphene;
 	@SuppressWarnings("WeakerAccess")
 	protected Config config = null;
-
-	@SuppressWarnings("WeakerAccess")
-	protected final Logger log = LoggerFactory.getLogger(getClass());
 
 	@SuppressWarnings("WeakerAccess")
 	protected void setGraphene(Graphene graphene) {

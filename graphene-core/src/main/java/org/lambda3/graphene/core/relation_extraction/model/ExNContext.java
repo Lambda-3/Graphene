@@ -27,37 +27,37 @@ package org.lambda3.graphene.core.relation_extraction.model;
 import java.util.Optional;
 
 public class ExNContext {
-    private String text;
-    private Classification classification;
-    private ExSPO spo; // optional
+	private String text;
+	private Classification classification;
+	private ExSPO spo; // optional
 
-    // for deserialization
-    public ExNContext() {
-    }
+	// for deserialization
+	public ExNContext() {
+	}
 
-    public ExNContext(String text) {
-        this.text = text;
-        this.classification = Classification.UNKNOWN;
-        this.spo = null;
-    }
+	public ExNContext(String text) {
+		this.text = text;
+		this.classification = Classification.UNKNOWN;
+		this.spo = null;
+	}
 
-    public void setClassification(Classification classification) {
-        this.classification = classification;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public void setSpo(ExSPO spo) {
-        this.spo = spo;
-    }
+	public Classification getClassification() {
+		return classification;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public void setClassification(Classification classification) {
+		this.classification = classification;
+	}
 
-    public Classification getClassification() {
-        return classification;
-    }
+	public Optional<ExSPO> getSpo() {
+		return Optional.ofNullable(spo);
+	}
 
-    public Optional<ExSPO> getSpo() {
-        return Optional.ofNullable(spo);
-    }
+	public void setSpo(ExSPO spo) {
+		this.spo = spo;
+	}
 }

@@ -28,68 +28,68 @@ import org.lambda3.text.simplification.discourse.tree.Relation;
 
 public enum Classification {
 
-    // from Discourse-Extraction
-    UNKNOWN_COORDINATION,
-    UNKNOWN_SUBORDINATION,
-    BACKGROUND,
-    CAUSE,
-    CONDITION,
-    CONTRAST,
-    ELABORATION,
-    ENABLEMENT,
-    EXPLANATION,
-    JOINT_LIST,
-    JOINT_DISJUNCTION,
-    TEMPORAL_BEFORE,
-    TEMPORAL_AFTER,
-    TEMPORAL_SEQUENCE,
-    INTRA_SENT_ATTR,
-    JOINT_NP_LIST,
-    JOINT_NP_DISJUNCTION,
+	// from Discourse-Extraction
+	UNKNOWN_COORDINATION,
+	UNKNOWN_SUBORDINATION,
+	BACKGROUND,
+	CAUSE,
+	CONDITION,
+	CONTRAST,
+	ELABORATION,
+	ENABLEMENT,
+	EXPLANATION,
+	JOINT_LIST,
+	JOINT_DISJUNCTION,
+	TEMPORAL_BEFORE,
+	TEMPORAL_AFTER,
+	TEMPORAL_SEQUENCE,
+	INTRA_SENT_ATTR,
+	JOINT_NP_LIST,
+	JOINT_NP_DISJUNCTION,
 
-    // new ones
-    UNKNOWN,
-    TEMPORAL,
-    SPATIAL;
+	// new ones
+	UNKNOWN,
+	TEMPORAL,
+	SPATIAL;
 
-    public static Classification convert(Relation relation) {
-        switch (relation) {
-            case UNKNOWN_COORDINATION:
-                return UNKNOWN_COORDINATION;
-            case UNKNOWN_SUBORDINATION:
-                return UNKNOWN_SUBORDINATION;
-            case BACKGROUND:
-                return BACKGROUND;
-            case CAUSE:
-                return CAUSE;
-            case CONDITION:
-                return CONDITION;
-            case CONTRAST:
-                return CONTRAST;
-            case ELABORATION:
-                return ELABORATION;
-            case ENABLEMENT:
-                return ENABLEMENT;
-            case EXPLANATION:
-                return EXPLANATION;
-            case JOINT_LIST:
-                return JOINT_LIST;
-            case JOINT_DISJUNCTION:
-                return JOINT_DISJUNCTION;
-            case TEMPORAL_BEFORE:
-                return TEMPORAL_BEFORE;
-            case TEMPORAL_AFTER:
-                return TEMPORAL_AFTER;
-            case TEMPORAL_SEQUENCE:
-                return TEMPORAL_SEQUENCE;
-            case INTRA_SENT_ATTR:
-                return INTRA_SENT_ATTR;
-            case JOINT_NP_LIST:
-                return JOINT_NP_LIST;
-            case JOINT_NP_DISJUNCTION:
-                return JOINT_NP_DISJUNCTION;
-            default:
-                throw new AssertionError("Could not convert relation");
-        }
-    }
+	public static Classification convert(Relation relation) {
+		switch (relation) {
+			case UNKNOWN_COORDINATION:
+				return UNKNOWN_COORDINATION;
+			case UNKNOWN_SUBORDINATION:
+				return UNKNOWN_SUBORDINATION;
+			case BACKGROUND:
+				return BACKGROUND;
+			case CAUSE:
+				return CAUSE;
+			case CONDITION:
+				return CONDITION;
+			case CONTRAST:
+				return CONTRAST;
+			case ELABORATION:
+				return ELABORATION;
+			case ENABLEMENT:
+				return ENABLEMENT;
+			case EXPLANATION:
+				return EXPLANATION;
+			case JOINT_LIST:
+				return JOINT_LIST;
+			case JOINT_DISJUNCTION:
+				return JOINT_DISJUNCTION;
+			case TEMPORAL_BEFORE:
+				return TEMPORAL_BEFORE;
+			case TEMPORAL_AFTER:
+				return TEMPORAL_AFTER;
+			case TEMPORAL_SEQUENCE:
+				return TEMPORAL_SEQUENCE;
+			case INTRA_SENT_ATTR:
+				return INTRA_SENT_ATTR;
+			case JOINT_NP_LIST:
+				return JOINT_NP_LIST;
+			case JOINT_NP_DISJUNCTION:
+				return JOINT_NP_DISJUNCTION;
+			default:
+				throw new AssertionError("Could not convert relation");
+		}
+	}
 }

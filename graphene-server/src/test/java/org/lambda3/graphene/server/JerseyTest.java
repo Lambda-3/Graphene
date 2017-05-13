@@ -49,15 +49,15 @@ public class JerseyTest extends JerseyTestNg.ContainerPerClassTest {
 	@Test
 	public void testRandomIncrease() throws Exception {
 		final Response response = target()
-				.request(MediaType.APPLICATION_JSON_TYPE)
-				.accept(MediaType.APPLICATION_JSON_TYPE)
-				.get();
-		final Number rnd = response.readEntity(Number.class);
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .get();
+        final Number rnd = response.readEntity(Number.class);
 
 		final Response incResponse = target()
-				.request(MediaType.APPLICATION_JSON_TYPE)
-				.accept(MediaType.APPLICATION_JSON_TYPE)
-				.post(Entity.entity(rnd, MediaType.APPLICATION_JSON_TYPE));
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(rnd, MediaType.APPLICATION_JSON_TYPE));
 
 		final Number increased = incResponse.readEntity(Number.class);
 

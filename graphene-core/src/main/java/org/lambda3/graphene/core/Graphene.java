@@ -55,8 +55,8 @@ public class Graphene {
 	public Graphene(Config config) {
 
 		this.config = config
-				.withFallback(ConfigFactory.load("build"))
-				.getConfig("graphene");
+                .withFallback(ConfigFactory.load("build"))
+                .getConfig("graphene");
 
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
 		this.relationExtraction = new RelationExtraction();
@@ -87,13 +87,13 @@ public class Graphene {
 	}
 
 	public ExContent doRelationExtraction(String text, boolean doCoreference) {
-	    if (doCoreference) {
-	        final CoreferenceContent cc = doCoreference(text);
-	        text = cc.getSubstitutedText();
+        if (doCoreference) {
+            final CoreferenceContent cc = doCoreference(text);
+            text = cc.getSubstitutedText();
         }
 
         log.debug("doRelationExtraction for text");
-		final ExContent ec = relationExtraction.doRelationExtraction(text);
+        final ExContent ec = relationExtraction.doRelationExtraction(text);
 		ec.setCoreferenced(doCoreference);
 		log.debug("Relation Extraction for text finished");
 		return ec;
@@ -115,10 +115,10 @@ public class Graphene {
 			log.debug("getVersionInfo");
 		}
 		return new VersionInfo(
-				config.getString("version.name"),
-				config.getString("version.version"),
-				config.getString("version.build-number")
-		);
+                config.getString("version.name"),
+                config.getString("version.version"),
+                config.getString("version.build-number")
+        );
 	}
 
 }

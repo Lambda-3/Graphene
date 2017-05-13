@@ -15,8 +15,8 @@
 	<packaging>jar</packaging>
 
 	<properties>
-        <discourse_simplification.version>6.0.0</discourse_simplification.version>
-        <simplification.version>5.0.0</simplification.version>
+		<discourse_simplification.version>6.0.0</discourse_simplification.version>
+		<simplification.version>5.0.0</simplification.version>
 	</properties>
 
 	<dependencies>
@@ -48,12 +48,12 @@
 			<version>${discourse_simplification.version}</version>
 		</dependency>
 
-        <!-- Sentence Simplification -->
-        <dependency>
-            <groupId>org.lambda3.text.simplification</groupId>
-            <artifactId>sentence-simplification</artifactId>
-            <version>${simplification.version}</version>
-        </dependency>
+		<!-- Sentence Simplification -->
+		<dependency>
+			<groupId>org.lambda3.text.simplification</groupId>
+			<artifactId>sentence-simplification</artifactId>
+			<version>${simplification.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

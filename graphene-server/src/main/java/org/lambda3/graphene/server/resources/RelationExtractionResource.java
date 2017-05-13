@@ -54,10 +54,10 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
 
 		return Response
-				.status(Response.Status.OK)
-				.entity(content)
-				.build();
-	}
+                .status(Response.Status.OK)
+                .entity(content)
+                .build();
+    }
 
     @POST
     @Path("text")

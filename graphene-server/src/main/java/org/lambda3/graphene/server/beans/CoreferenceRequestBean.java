@@ -37,11 +37,11 @@ public class CoreferenceRequestBean extends AbstractRequestBean {
 	@Override
 	public String toString() {
 		return "CoreferenceRequestBean{" +
-				"text='" + truncateText(text) + '\'' +
-				", uri='" + uri + '\'' +
-				", links=" + links +
-				'}';
-	}
+                "text='" + truncateText(text) + '\'' +
+                ", uri='" + uri + '\'' +
+                ", links=" + links +
+                '}';
+    }
 
 	public String getText() {
 		return text;

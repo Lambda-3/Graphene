@@ -43,14 +43,14 @@ public class ExpandedGenerator extends RepGenerator {
             return;
         }
         ExSPO spo = element.getSpo().get();
-		StringBuilder indent = new StringBuilder();
+        StringBuilder indent = new StringBuilder();
 		for (int i = 0; i < contextDepth; i++) {
 			indent.append("\t");
 		}
 
         // element
         if (contextDepth == 0) {
-			res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+            res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
 		} else {
 			elemContextRep(element, classification, false, false).ifPresent(e -> res.add(indent + e));
 		}
@@ -65,7 +65,7 @@ public class ExpandedGenerator extends RepGenerator {
             // nContexts
             for (ExNContext context : element.getNContexts()) {
                 Optional<String> nContextRep = nContextRep(context, false);
-				nContextRep.ifPresent(s -> res.add(indent + "\t" + s));
+                nContextRep.ifPresent(s -> res.add(indent + "\t" + s));
 			}
 
             // element contexts

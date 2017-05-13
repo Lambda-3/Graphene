@@ -48,233 +48,233 @@ import java.util.stream.Collectors;
 
 public class GrapheneCLI {
 
-    private final static Logger LOG = LoggerFactory.getLogger(GrapheneCLI.class);
+	private final static Logger LOG = LoggerFactory.getLogger(GrapheneCLI.class);
 
-    private static final ObjectWriter JSON = new ObjectMapper().writerWithDefaultPrettyPrinter();
+	private static final ObjectWriter JSON = new ObjectMapper().writerWithDefaultPrettyPrinter();
 
-    private final CmdLineParser cli;
+	private final CmdLineParser cli;
 
-    @Option(name = "--help", aliases = {"-h"},
-            usage = "Prints help")
-    private boolean help = false;
+	@Option(name = "--help", aliases = {"-h"},
+		usage = "Prints help")
+	private boolean help = false;
 
-    @Option(name = "--version", aliases = {"-v"},
-            usage = "Prints the version of Graphene")
-    private boolean version = false;
+	@Option(name = "--version", aliases = {"-v"},
+		usage = "Prints the version of Graphene")
+	private boolean version = false;
 
-    @Option(name = "--input", usage = "Choose the format TEXT/FILE/WIKI")
-    private InputFormat inputFormat;
+	@Option(name = "--input", usage = "Choose the format TEXT/FILE/WIKI")
+	private InputFormat inputFormat;
 
-    @Option(name = "--output",
-            usage = "Choose whether to create files or print result on commandline.")
-    private OutputFormat outputFormat;
+	@Option(name = "--output",
+		usage = "Choose whether to create files or print result on commandline.")
+	private OutputFormat outputFormat;
 
-    @Option(name = "--coref")
-    private boolean doCoref = false;
+	@Option(name = "--coref")
+	private boolean doCoref = false;
 
-    @Option(name = "--extract")
-    private boolean doRelationExtraction = false;
+	@Option(name = "--extract")
+	private boolean doRelationExtraction = false;
 
-    @Argument(usage = "Input texts/files/articles")
-    private List<String> input;
+	@Argument(usage = "Input texts/files/articles")
+	private List<String> input;
 
-    private GrapheneCLI() {
-        this.cli = new CmdLineParser(this);
-    }
+	private GrapheneCLI() {
+		this.cli = new CmdLineParser(this);
+	}
 
-    public static void main(String[] args) {
-        new GrapheneCLI().doMain(args);
-    }
+	public static void main(String[] args) {
+		new GrapheneCLI().doMain(args);
+	}
 
-    private static List<String> getInput(List<String> input, InputFormat format) {
+	private static List<String> getInput(List<String> input, InputFormat format) {
 
-        List<String> result = null;
+		List<String> result = null;
 
-        switch (format) {
-            case TEXT:
-                result = input;
-                break;
-            case FILE:
-                result = input.stream().map(GrapheneCLI::readFromFile).collect(Collectors.toList());
-                break;
-            case WIKI:
-                throw new IllegalArgumentException("This is not (yet) implemented.");
-        }
+		switch (format) {
+			case TEXT:
+				result = input;
+				break;
+			case FILE:
+				result = input.stream().map(GrapheneCLI::readFromFile).collect(Collectors.toList());
+				break;
+			case WIKI:
+				throw new IllegalArgumentException("This is not (yet) implemented.");
+		}
 
-        return result;
-    }
+		return result;
+	}
 
-    private static String readFromFile(String filename) {
+	private static String readFromFile(String filename) {
 
-        final StringBuilder sb = new StringBuilder();
+		final StringBuilder sb = new StringBuilder();
 
-        try (BufferedReader br = Files.newBufferedReader(new File(filename).toPath())) {
-            br.lines().forEach(l -> sb.append(l).append(" "));
-        } catch (IOException e) {
-            LOG.warn("Can't read from file.", e);
-        }
+		try (BufferedReader br = Files.newBufferedReader(new File(filename).toPath())) {
+			br.lines().forEach(l -> sb.append(l).append(" "));
+		} catch (IOException e) {
+			LOG.warn("Can't read from file.", e);
+		}
 
-        return sb.toString();
-    }
+		return sb.toString();
+	}
 
-    private static void printHelp() {
-        // TODO: Print help about all usage.
-        System.out.println("Give the configuration with -Dconfig.file=<file_name>");
-    }
+	private static void printHelp() {
+		// TODO: Print help about all usage.
+		System.out.println("Give the configuration with -Dconfig.file=<file_name>");
+	}
 
-    private static void printVersion(Graphene graphene) {
-        System.out.print("Graphene VersionInfo: ");
-        try {
-            System.out.println(JSON.writeValueAsString(graphene.getVersionInfo()));
-        } catch (JsonProcessingException e) {
-            LOG.error("Cannot convert VersionInfo to JSON", e);
-        }
-    }
+	private static void printVersion(Graphene graphene) {
+		System.out.print("Graphene VersionInfo: ");
+		try {
+			System.out.println(JSON.writeValueAsString(graphene.getVersionInfo()));
+		} catch (JsonProcessingException e) {
+			LOG.error("Cannot convert VersionInfo to JSON", e);
+		}
+	}
 
-    private void doMain(String[] args) {
-        try {
-            cli.parseArgument(args);
-        } catch (CmdLineException e) {
-            inputError(e.getMessage(), true);
-            return;
-        }
+	private void doMain(String[] args) {
+		try {
+			cli.parseArgument(args);
+		} catch (CmdLineException e) {
+			inputError(e.getMessage(), true);
+			return;
+		}
 
-        if (help) {
-            printHelp();
-            return;
-        }
+		if (help) {
+			printHelp();
+			return;
+		}
 
-        // Init graphene
+		// Init graphene
 
-        Config config = ConfigFactory.load()
-                .withFallback(ConfigFactory.load("reference-core"))
-                .withFallback(ConfigFactory.load("application-cli"));
+		Config config = ConfigFactory.load()
+			.withFallback(ConfigFactory.load("reference-core"))
+			.withFallback(ConfigFactory.load("application-cli"));
 
-        Graphene graphene = new Graphene(config);
+		Graphene graphene = new Graphene(config);
 
-        if (version) {
-            printVersion(graphene);
-            return;
-        }
+		if (version) {
+			printVersion(graphene);
+			return;
+		}
 
-        if (input == null || input.size() == 0) {
-            inputError("Input must be at least one entry.", false);
-        }
+		if (input == null || input.size() == 0) {
+			inputError("Input must be at least one entry.", false);
+		}
 
-        List<String> inputTexts = getInput(input, inputFormat);
+		List<String> inputTexts = getInput(input, inputFormat);
 
-        Optional<List<Content>> result = Optional.empty();
+		Optional<List<Content>> result = Optional.empty();
 
-        if (doCoref && !doRelationExtraction) {
-            result = Optional.of(
-                    inputTexts
-                            .stream()
-                            .map(graphene::doCoreference)
-                            .collect(Collectors.toList()));
-        } else if (doRelationExtraction) {
-            result = Optional.of(
-                    inputTexts
-                            .stream()
-                            .map(text -> graphene.doRelationExtraction(text, doCoref))
-                            .collect(Collectors.toList()));
-        }
+		if (doCoref && !doRelationExtraction) {
+			result = Optional.of(
+				inputTexts
+					.stream()
+					.map(graphene::doCoreference)
+					.collect(Collectors.toList()));
+		} else if (doRelationExtraction) {
+			result = Optional.of(
+				inputTexts
+					.stream()
+					.map(text -> graphene.doRelationExtraction(text, doCoref))
+					.collect(Collectors.toList()));
+		}
 
-        result.orElseThrow(() -> new IllegalArgumentException("No valid configuration"));
-        result.ifPresent(this::printOrWriteResult);
-    }
+		result.orElseThrow(() -> new IllegalArgumentException("No valid configuration"));
+		result.ifPresent(this::printOrWriteResult);
+	}
 
-    private List<Result> convertContents(List<Content> contents) {
+	private List<Result> convertContents(List<Content> contents) {
 
-        List<Result> results = new ArrayList<>();
+		List<Result> results = new ArrayList<>();
 
-        StringBuilder outputName = new StringBuilder();
-        outputName.append("output_");
-        if (doCoref) outputName.append("coref_");
-        if (doRelationExtraction) outputName.append("extr_");
+		StringBuilder outputName = new StringBuilder();
+		outputName.append("output_");
+		if (doCoref) outputName.append("coref_");
+		if (doRelationExtraction) outputName.append("extr_");
 
-        for (int i = 0; i < contents.size(); ++i) {
+		for (int i = 0; i < contents.size(); ++i) {
 
-            switch (inputFormat) {
-                case TEXT:
-                    outputName.append(String.format("%0" + input.size() + "d", i + 1));
-                    break;
-                case FILE:
-                    outputName.append(Paths.get(input.get(i)).getFileName().toString().replace("\\s+", "-"));
-                    break;
-                case WIKI:
-                    outputName.append(input.get(i).replace("\\s+", "-"));
-                    break;
-            }
+			switch (inputFormat) {
+				case TEXT:
+					outputName.append(String.format("%0" + input.size() + "d", i + 1));
+					break;
+				case FILE:
+					outputName.append(Paths.get(input.get(i)).getFileName().toString().replace("\\s+", "-"));
+					break;
+				case WIKI:
+					outputName.append(input.get(i).replace("\\s+", "-"));
+					break;
+			}
 
-            results.add(new Result(outputName.toString(), contents.get(i)));
-        }
+			results.add(new Result(outputName.toString(), contents.get(i)));
+		}
 
-        return results;
-    }
+		return results;
+	}
 
-    private void printOrWriteResult(List<Content> contents) {
+	private void printOrWriteResult(List<Content> contents) {
 
-        if (contents.size() != input.size()) {
-            LOG.error("The output length is not the same as the input size: {}:{}", contents.size(), input.size());
-        }
+		if (contents.size() != input.size()) {
+			LOG.error("The output length is not the same as the input size: {}:{}", contents.size(), input.size());
+		}
 
-        switch (outputFormat) {
-            case CMDLINE:
-                convertContents(contents).forEach(this::printResult);
-                break;
-            case FILE:
-                convertContents(contents).forEach(this::writeResult);
-                break;
-        }
-    }
+		switch (outputFormat) {
+			case CMDLINE:
+				convertContents(contents).forEach(this::printResult);
+				break;
+			case FILE:
+				convertContents(contents).forEach(this::writeResult);
+				break;
+		}
+	}
 
-    private void printResult(Result result) {
+	private void printResult(Result result) {
 
-        StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 
-        sb.append("############\n");
-        sb.append("Name: ").append(result.getName()).append(" →\n");
+		sb.append("############\n");
+		sb.append("Name: ").append(result.getName()).append(" →\n");
 
-        try {
-            sb.append(JSON.writeValueAsString(result.getContent()));
-        } catch (JsonProcessingException e) {
-            LOG.error("Could not convert the result of '{}' to JSON", result.getName());
-            LOG.info("Exception:", e);
-            return; // error, we have nothing to print
-        }
+		try {
+			sb.append(JSON.writeValueAsString(result.getContent()));
+		} catch (JsonProcessingException e) {
+			LOG.error("Could not convert the result of '{}' to JSON", result.getName());
+			LOG.info("Exception:", e);
+			return; // error, we have nothing to print
+		}
 
-        System.out.println(sb.toString());
+		System.out.println(sb.toString());
 
-    }
+	}
 
-    private void writeResult(Result result) {
-        File outfile = new File(String.format("%s.txt", result.getName()));
-        try (FileWriter fw = new FileWriter(outfile)) {
+	private void writeResult(Result result) {
+		File outfile = new File(String.format("%s.txt", result.getName()));
+		try (FileWriter fw = new FileWriter(outfile)) {
 
-            fw.write(result.getContent().toString());
-        } catch (FileNotFoundException e) {
-            LOG.error("Could not write file, file not found!", e);
-        } catch (IOException e) {
-            LOG.error("Could not write file", e);
-        }
-    }
+			fw.write(result.getContent().toString());
+		} catch (FileNotFoundException e) {
+			LOG.error("Could not write file, file not found!", e);
+		} catch (IOException e) {
+			LOG.error("Could not write file", e);
+		}
+	}
 
-    private void inputError(String message, boolean withUsage) {
-        System.err.println(message);
-        if (withUsage) {
-            cli.printUsage(System.err);
-            System.err.println();
-        }
-    }
+	private void inputError(String message, boolean withUsage) {
+		System.err.println(message);
+		if (withUsage) {
+			cli.printUsage(System.err);
+			System.err.println();
+		}
+	}
 
-    private enum OutputFormat {
-        CMDLINE,
-        FILE
-    }
+	private enum OutputFormat {
+		CMDLINE,
+		FILE
+	}
 
-    private enum InputFormat {
-        TEXT,
-        FILE,
-        WIKI
-    }
+	private enum InputFormat {
+		TEXT,
+		FILE,
+		WIKI
+	}
 }

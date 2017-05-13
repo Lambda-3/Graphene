@@ -24,7 +24,6 @@ package org.lambda3.graphene.core.relation_extraction.representation.generators;
  */
 
 
-
 import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 

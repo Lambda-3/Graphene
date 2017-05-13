@@ -24,7 +24,6 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
-
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.lambda3.graphene.core.Content;
@@ -46,15 +45,15 @@ public class ExContent extends Content {
     }
 
     public void addElement(ExElement element) {
-	    sentences.get(element.getSentenceIdx()).addElement(element);
-    }
-
-    public void setCoreferenced(boolean coreferenced) {
-        this.coreferenced = coreferenced;
+        sentences.get(element.getSentenceIdx()).addElement(element);
     }
 
     public boolean isCoreferenced() {
         return coreferenced;
+    }
+
+    public void setCoreferenced(boolean coreferenced) {
+        this.coreferenced = coreferenced;
     }
 
     public List<ExSentence> getSentences() {
@@ -73,14 +72,14 @@ public class ExContent extends Content {
     }
 
     public List<ExElement> getElements() {
-	    List<ExElement> res = new ArrayList<>();
-	    sentences.forEach(s -> res.addAll(s.getElements()));
+        List<ExElement> res = new ArrayList<>();
+        sentences.forEach(s -> res.addAll(s.getElements()));
 
-	    return res;
+        return res;
     }
 
     @Override
-	public boolean equals(Object o) {
+    public boolean equals(Object o) {
 		if (this == o) return true;
 
 		if (!(o instanceof ExContent)) return false;
@@ -88,18 +87,18 @@ public class ExContent extends Content {
 		ExContent that = (ExContent) o;
 
 		return new EqualsBuilder()
-				.append(isCoreferenced(), that.isCoreferenced())
-				.append(getSentences(), that.getSentences())
-				.isEquals();
-	}
+                .append(isCoreferenced(), that.isCoreferenced())
+                .append(getSentences(), that.getSentences())
+                .isEquals();
+    }
 
 	@Override
 	public int hashCode() {
 		return new HashCodeBuilder(17, 37)
-				.append(isCoreferenced())
-				.append(getSentences())
-				.toHashCode();
-	}
+                .append(isCoreferenced())
+                .append(getSentences())
+                .toHashCode();
+    }
 
     @Override
     public String toString() {

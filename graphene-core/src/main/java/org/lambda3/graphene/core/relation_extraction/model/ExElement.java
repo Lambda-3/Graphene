@@ -24,7 +24,6 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
-
 import org.lambda3.graphene.core.utils.IDGenerator;
 
 import java.util.ArrayList;
@@ -32,96 +31,96 @@ import java.util.List;
 import java.util.Optional;
 
 public class ExElement {
-    private String id;
-    private String text;
-    private String notSimplifiedText;
-    private int sentenceIdx;
-    private int contextLayer;
-    private List<ExElementRelation> relations;
-    private List<ExNContext> nContexts;
-    private List<ExVContext> vContexts;
-    private ExSPO spo; // optional
+	private String id;
+	private String text;
+	private String notSimplifiedText;
+	private int sentenceIdx;
+	private int contextLayer;
+	private List<ExElementRelation> relations;
+	private List<ExNContext> nContexts;
+	private List<ExVContext> vContexts;
+	private ExSPO spo; // optional
 
-    // for deserialization
-    public ExElement() {
-    }
+	// for deserialization
+	public ExElement() {
+	}
 
-    public ExElement(String text, int sentenceIdx, int contextLayer) {
-        this.id = IDGenerator.generateUUID();
-        this.text = text;
-        this.notSimplifiedText = text;
-        this.sentenceIdx = sentenceIdx;
-        this.contextLayer = contextLayer;
-        this.relations = new ArrayList<>();
-        this.nContexts = new ArrayList<>();
-        this.vContexts = new ArrayList<>();
-        this.spo = null;
-    }
+	public ExElement(String text, int sentenceIdx, int contextLayer) {
+		this.id = IDGenerator.generateUUID();
+		this.text = text;
+		this.notSimplifiedText = text;
+		this.sentenceIdx = sentenceIdx;
+		this.contextLayer = contextLayer;
+		this.relations = new ArrayList<>();
+		this.nContexts = new ArrayList<>();
+		this.vContexts = new ArrayList<>();
+		this.spo = null;
+	}
 
-    public void setText(String text) {
-        this.text = text;
-    }
+	public void addRelation(ExElementRelation relation) {
+		if (!relations.contains(relation)) {
+			relations.add(relation);
+		}
+	}
 
-    public void addRelation(ExElementRelation relation) {
-        if (!relations.contains(relation)) {
-            relations.add(relation);
-        }
-    }
+	public void addNContext(ExNContext context) {
+		if (!nContexts.contains(context)) {
+			nContexts.add(context);
+		}
+	}
 
-    public void addNContext(ExNContext context) {
-        if (!nContexts.contains(context)) {
-            nContexts.add(context);
-        }
-    }
+	public void addVContext(ExVContext context) {
+		if (!vContexts.contains(context)) {
+			vContexts.add(context);
+		}
+	}
 
-    public void addVContext(ExVContext context) {
-        if (!vContexts.contains(context)) {
-            vContexts.add(context);
-        }
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setSpo(ExSPO spo) {
-        this.spo = spo;
-    }
+	public String getText() {
+		return text;
+	}
 
-    public String getId() {
-        return id;
-    }
+	public void setText(String text) {
+		this.text = text;
+	}
 
-    public String getText() {
-        return text;
-    }
+	public String getNotSimplifiedText() {
+		return notSimplifiedText;
+	}
 
-    public String getNotSimplifiedText() {
-        return notSimplifiedText;
-    }
+	public int getSentenceIdx() {
+		return sentenceIdx;
+	}
 
-    public int getSentenceIdx() {
-        return sentenceIdx;
-    }
+	public int getContextLayer() {
+		return contextLayer;
+	}
 
-    public int getContextLayer() {
-        return contextLayer;
-    }
+	public List<ExElementRelation> getRelations() {
+		return relations;
+	}
 
-    public List<ExElementRelation> getRelations() {
-        return relations;
-    }
+	public List<ExNContext> getNContexts() {
+		return nContexts;
+	}
 
-    public List<ExNContext> getNContexts() {
-        return nContexts;
-    }
+	public List<ExVContext> getVContexts() {
+		return vContexts;
+	}
 
-    public List<ExVContext> getVContexts() {
-        return vContexts;
-    }
+	public Optional<ExSPO> getSpo() {
+		return Optional.ofNullable(spo);
+	}
 
-    public Optional<ExSPO> getSpo() {
-        return Optional.ofNullable(spo);
-    }
+	public void setSpo(ExSPO spo) {
+		this.spo = spo;
+	}
 
-    @Override
-    public boolean equals(Object obj) {
-        return ((obj instanceof ExElement) && (((ExElement) obj).getId().equals(getId())));
-    }
+	@Override
+	public boolean equals(Object obj) {
+		return ((obj instanceof ExElement) && (((ExElement) obj).getId().equals(getId())));
+	}
 }

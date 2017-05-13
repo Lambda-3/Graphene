@@ -33,11 +33,11 @@ public class GrapheneServerException extends WebApplicationException {
 
 	public GrapheneServerException(Response.Status status, String message) {
 		super(Response
-				.status(status)
-				.entity(new ExceptionMessage(message))
-				.type(MediaType.APPLICATION_JSON)
-				.build()
-		);
+                .status(status)
+                .entity(new ExceptionMessage(message))
+                .type(MediaType.APPLICATION_JSON)
+                .build()
+        );
 	}
 
 	public GrapheneServerException(String message) {

@@ -24,7 +24,6 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
-
 public class ExElementRelation {
 	private String targetElementID;
 	private Classification classification;
@@ -43,17 +42,17 @@ public class ExElementRelation {
 	}
 
 	public ExElement getTargetElement(ExContent content) {
-        return content.getElement(targetElementID);
-    }
+		return content.getElement(targetElementID);
+	}
 
 	public Classification getClassification() {
 		return classification;
 	}
 
-    @Override
+	@Override
 	public boolean equals(Object o) {
 		return ((o instanceof ExElementRelation)
-				&& (((ExElementRelation) o).targetElementID.equals(targetElementID))
-				&& (((ExElementRelation) o).classification.equals(classification)));
-    }
+			&& (((ExElementRelation) o).targetElementID.equals(targetElementID))
+			&& (((ExElementRelation) o).classification.equals(classification)));
+	}
 }

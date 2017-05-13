@@ -84,11 +84,11 @@ public class PassageContent extends Content {
 			PassageContent otherContent = (PassageContent) other;
 
 			return new EqualsBuilder()
-					.append(getPassage(), otherContent.getPassage())
-					.append(getType(), otherContent.getType())
-					.append(getTerm(), otherContent.getTerm())
-					.append(getId(), otherContent.getId())
-					.isEquals();
+				.append(getPassage(), otherContent.getPassage())
+				.append(getType(), otherContent.getType())
+				.append(getTerm(), otherContent.getTerm())
+				.append(getId(), otherContent.getId())
+				.isEquals();
 		}
 		return false;
 	}
@@ -96,10 +96,10 @@ public class PassageContent extends Content {
 	@Override
 	public String toString() {
 		return "PassageContent{" +
-				"id='" + id + '\'' +
-				", passage='" + passage + '\'' +
-				", type='" + type + '\'' +
-				", term='" + term + '\'' +
-				'}';
+			"id='" + id + '\'' +
+			", passage='" + passage + '\'' +
+			", type='" + type + '\'' +
+			", term='" + term + '\'' +
+			'}';
 	}
 }

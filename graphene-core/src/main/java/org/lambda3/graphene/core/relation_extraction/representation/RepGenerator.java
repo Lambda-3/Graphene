@@ -97,8 +97,6 @@ public abstract class RepGenerator {
         }
     }
 
-    public abstract List<String> format(ExContent content);
-
     public static String getRDFRepresentation(ExContent content, RepStyle style) {
         return getRDFRepresentation(content, style, 5);
     }
@@ -109,11 +107,13 @@ public abstract class RepGenerator {
         } else if (style.equals(RepStyle.FLAT)) {
             return new FlatGenerator().format(content).stream().collect(Collectors.joining("\n"));
         } else if (style.equals(RepStyle.EXPANDED)) {
-            return new ExpandedGenerator((maxContextDepth == null)? 3 : maxContextDepth).format(content).stream().collect(Collectors.joining("\n"));
+            return new ExpandedGenerator((maxContextDepth == null) ? 3 : maxContextDepth).format(content).stream().collect(Collectors.joining("\n"));
         } else if (style.equals(RepStyle.N_TRIPLES)) {
             return new NTriplesGenerator().format(content).stream().collect(Collectors.joining("\n"));
         } else {
             throw new AssertionError("Unknown RDF style.");
         }
     }
+
+    public abstract List<String> format(ExContent content);
 }

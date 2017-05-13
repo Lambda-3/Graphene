@@ -46,10 +46,10 @@ public class GrapheneRESTServerTest extends JerseyTestNg.ContainerPerClassTest {
 	protected Application configure() {
 
 		Config config = ConfigFactory
-				.load("application-server.local")
-				.resolveWith(ConfigFactory.load())
-				.withFallback(ConfigFactory.load("reference-core"));
-		Graphene graphene = new Graphene(config);
+                .load("application-server.local")
+                .resolveWith(ConfigFactory.load())
+                .withFallback(ConfigFactory.load("reference-core"));
+        Graphene graphene = new Graphene(config);
 
 		return GrapheneRESTServer.generateResourceConfig(config, graphene);
 	}
@@ -59,17 +59,17 @@ public class GrapheneRESTServerTest extends JerseyTestNg.ContainerPerClassTest {
 		String text = "Angela Merkel is the current chancellor of Germany. She will be reelected later this year.";
 
 		CoreferenceContent expected = new CoreferenceContent(
-				"Angela Merkel is the current chancellor of Germany. She will be reelected later this year.",
-				"Angela Merkel is the current chancellor of Germany.\nAngela Merkel will be reelected later this year."
-		);
+                "Angela Merkel is the current chancellor of Germany. She will be reelected later this year.",
+                "Angela Merkel is the current chancellor of Germany.\nAngela Merkel will be reelected later this year."
+        );
 
 		CoreferenceRequestBean requestBean = new CoreferenceRequestBean();
 		requestBean.setText(text);
 		final Response response = target("/coreference")
-				.path("text")
-				.request(MediaType.APPLICATION_JSON_TYPE)
-				.accept(MediaType.APPLICATION_JSON_TYPE)
-				.post(Entity.entity(requestBean, MediaType.APPLICATION_JSON_TYPE));
+                .path("text")
+                .request(MediaType.APPLICATION_JSON_TYPE)
+                .accept(MediaType.APPLICATION_JSON_TYPE)
+                .post(Entity.entity(requestBean, MediaType.APPLICATION_JSON_TYPE));
 
 		assertEquals(response.getStatus(), 200);
 

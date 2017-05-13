@@ -57,10 +57,10 @@ public class ExSentence {
     }
 
     public ExElement getElement(String id) {
-	    return elementMap.getOrDefault(id, null);
+        return elementMap.getOrDefault(id, null);
     }
 
     public List<ExElement> getElements() {
-	    return elementMap.values().stream().collect(Collectors.toList());
+        return elementMap.values().stream().collect(Collectors.toList());
     }
 }

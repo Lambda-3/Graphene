@@ -33,11 +33,20 @@ import java.io.File;
 import java.io.IOException;
 
 public abstract class Content {
-    private static final ObjectMapper MAPPER = new ObjectMapper();
-    static {
-        MAPPER.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
-        MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-    }
+	private static final ObjectMapper MAPPER = new ObjectMapper();
+
+	static {
+		MAPPER.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.NONE);
+		MAPPER.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+	}
+
+	public static <T extends Content> T deserializeFromJSON(String json, Class<T> clazz) throws IOException {
+		return MAPPER.readValue(json, clazz);
+	}
+
+	public static <T extends Content> T deserializeFromJSON(File file, Class<T> clazz) throws IOException {
+		return MAPPER.readValue(file, clazz);
+	}
 
 	@Override
 	public abstract boolean equals(Object other);
@@ -46,18 +55,10 @@ public abstract class Content {
 	public abstract String toString();
 
 	public String serializeToJSON() throws JsonProcessingException {
-        return MAPPER.writeValueAsString(this);
-    }
+		return MAPPER.writeValueAsString(this);
+	}
 
-    public void serializeToJSON(File file) throws IOException {
-        MAPPER.writeValue(file, this);
-    }
-
-    public static <T extends Content> T deserializeFromJSON(String json, Class<T> clazz) throws IOException {
-	    return MAPPER.readValue(json, clazz);
-    }
-
-    public static <T extends Content> T deserializeFromJSON(File file, Class<T> clazz) throws IOException {
-        return MAPPER.readValue(file, clazz);
-    }
+	public void serializeToJSON(File file) throws IOException {
+		MAPPER.writeValue(file, this);
+	}
 }

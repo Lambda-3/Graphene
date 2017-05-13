@@ -41,6 +41,7 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	public String getText() {
 		return text;
 	}
+
 	@SuppressWarnings({"unused"})
 	public void setText(String text) {
 		this.text = text;
@@ -49,7 +50,8 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	public boolean isDoCoreference() {
 		return doCoreference;
 	}
-	@SuppressWarnings({"unused"})
+
+    @SuppressWarnings({"unused"})
 	public void setDoCoreference(boolean doCoreference) {
 		this.doCoreference = doCoreference;
 	}
@@ -57,7 +59,8 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	public RelationOutputFormat getFormat() {
 		return format;
 	}
-	@SuppressWarnings({"unused"})
+
+    @SuppressWarnings({"unused"})
 	public void setFormat(RelationOutputFormat format) {
 		this.format = format;
 	}
@@ -65,11 +68,11 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	@Override
 	public String toString() {
 		return "RelationExtractionRequestBean{" +
-				"text='" + truncateText(text) + '\'' +
-				", doCoreference=" + doCoreference +
-				", format=" + format +
-				'}';
-	}
+                "text='" + truncateText(text) + '\'' +
+                ", doCoreference=" + doCoreference +
+                ", format=" + format +
+                '}';
+    }
 
 
 	public enum RelationOutputFormat {

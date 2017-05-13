@@ -107,17 +107,17 @@ public class SimplificationRunner {
                             exElement.addNContext(newContext);
                         } else
 
-                        // create DContext
-                        if (dct.isPresent()) {
-                            ExVContext newContext = dct.get();
+                            // create DContext
+                            if (dct.isPresent()) {
+                                ExVContext newContext = dct.get();
 
-                            // classify context
-                            Classification classification = ExContextClassifier.classify(newContext.getText());
-                            newContext.setClassification(classification);
+                                // classify context
+                                Classification classification = ExContextClassifier.classify(newContext.getText());
+                                newContext.setClassification(classification);
 
-                            // add new context
-                            exElement.addVContext(newContext);
-                        }
+                                // add new context
+                                exElement.addVContext(newContext);
+                            }
                     }
                 }
             }

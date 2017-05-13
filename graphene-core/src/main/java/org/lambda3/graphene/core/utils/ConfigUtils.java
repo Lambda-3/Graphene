@@ -31,8 +31,8 @@ public class ConfigUtils {
 
 	public static String prettyPrint(Config config) {
 		return config == null
-				? null
-				: config.root().render(ConfigRenderOptions.concise().setFormatted(true));
-	}
+                ? null
+                : config.root().render(ConfigRenderOptions.concise().setFormatted(true));
+    }
 
 }

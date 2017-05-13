@@ -32,9 +32,9 @@ public class VersionTest extends GrapheneCLITest {
 	@Test
 	public void testVersionInfo() {
 		String expected = "Graphene VersionInfo: {\n" +
-				"  \"name\": \"Graphene-Core-DEV\",\n" +
-				"  \"version\": \"1.0.0-SNAPSHOT\",\n" +
-				"  \"buildNumber\":";
+                "  \"name\": \"Graphene-Core-DEV\",\n" +
+                "  \"version\": \"1.0.0-SNAPSHOT\",\n" +
+                "  \"buildNumber\":";
 
 		GrapheneCLI.main(new String[]{"--version"});
 
