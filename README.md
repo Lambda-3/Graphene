@@ -91,9 +91,17 @@ The serialized class: [JSON](wiki/files/Barack_Obama_2017-05-05.json)
 The RDFNL format: [RDFNL](wiki/files/Barack_Obama_2017-05-05.rdfnl)   
 The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017-05-05.nt)   
 
+## Contributors (alphabetical order)
+- Andre Freitas
+- Bernhard Bermeitinger
+- Christina Niklaus
+- Leonardo Souza
+- Matthias Cetto
+- Siegfried Handschuh
+
 ## Requirements
 
-* Java 8
+* Java 8 (OpenJDK or Oracle)
 * Maven 3.3.9
 * Docker version 17.03+
 * docker-compose version 1.12+
