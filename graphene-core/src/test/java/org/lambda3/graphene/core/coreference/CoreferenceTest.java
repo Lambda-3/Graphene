@@ -38,8 +38,8 @@ public class CoreferenceTest {
 	@BeforeClass
 	public static void beforeAll() {
 		Config config = ConfigFactory
-                .load("reference-core.local")
-                .withFallback(ConfigFactory.load("reference-core"));
+                .load("reference.local")
+                .withFallback(ConfigFactory.load("reference"));
 
 		coreference = new Coreference(config.getConfig("graphene.coreference"));
 	}
@@ -65,6 +65,7 @@ public class CoreferenceTest {
 
 		CoreferenceContent expected = new CoreferenceContent(sentence, "Barack Obama was born in 1961.\nBarack Obama is now 55 years old.");
 
+		// TODO: Will fail with current PyCobalt version (1.1.x-1.2.x) because sentences are split and returned as list.
 		CoreferenceContent actual = coreference.substituteCoreferences(sentence, uri);
 
 		Assert.assertEquals(actual, expected);

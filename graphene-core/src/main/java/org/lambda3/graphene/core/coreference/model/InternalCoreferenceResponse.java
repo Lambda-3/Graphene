@@ -27,12 +27,7 @@ package org.lambda3.graphene.core.coreference.model;
 public class InternalCoreferenceResponse {
 	private String text;
 
-	public InternalCoreferenceResponse() {
-	}
-
-	public InternalCoreferenceResponse(String text) {
-		this.text = text;
-	}
+	public InternalCoreferenceResponse() {}
 
 	public String getText() {
 		return text;

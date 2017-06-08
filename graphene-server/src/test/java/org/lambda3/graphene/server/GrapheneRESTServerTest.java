@@ -48,7 +48,7 @@ public class GrapheneRESTServerTest extends JerseyTestNg.ContainerPerClassTest {
 		Config config = ConfigFactory
                 .load("application-server.local")
                 .resolveWith(ConfigFactory.load())
-                .withFallback(ConfigFactory.load("reference-core"));
+                .withFallback(ConfigFactory.load("reference"));
         Graphene graphene = new Graphene(config);
 
 		return GrapheneRESTServer.generateResourceConfig(config, graphene);
