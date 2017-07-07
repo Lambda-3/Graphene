@@ -27,11 +27,15 @@ package org.lambda3.graphene.core.coreference;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
+import org.lambda3.graphene.core.utils.ConfigUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class CoreferenceTest {
+	private static final Logger LOG = LoggerFactory.getLogger(CoreferenceTest.class);
 
 	private static Coreference coreference;
 

@@ -44,13 +44,17 @@ public class DefaultGenerator extends RepGenerator {
             res.add("");
 
             for (ExElement element : exSentence.getElements()) {
-                if (!element.getSpo().isPresent()) {
+                if (!this.showText && !element.getSpo().isPresent()) {
                     continue;
                 }
-                ExSPO spo = element.getSpo().get();
 
                 // element
-                res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+                if (showText) {
+					res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + element.getText());
+				} else {
+					ExSPO spo = element.getSpo().get();
+					res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+				}
 
                 // vContexts
                 for (ExVContext context : element.getVContexts()) {

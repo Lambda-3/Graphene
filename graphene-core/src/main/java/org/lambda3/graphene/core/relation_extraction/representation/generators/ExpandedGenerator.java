@@ -38,11 +38,11 @@ public class ExpandedGenerator extends RepGenerator {
         this.maxContextDepth = maxContextDepth;
     }
 
-    private static void addElementRec(List<String> res, int contextDepth, int maxContextDepth, ExContent content, ExElement element, Classification classification) {
-        if (!element.getSpo().isPresent()) {
+    private void addElementRec(List<String> res, int contextDepth, int maxContextDepth, ExContent content, ExElement element, Classification classification) {
+        if (!showText && !element.getSpo().isPresent()) {
             return;
         }
-        ExSPO spo = element.getSpo().get();
+
         StringBuilder indent = new StringBuilder();
 		for (int i = 0; i < contextDepth; i++) {
 			indent.append("\t");
@@ -50,7 +50,12 @@ public class ExpandedGenerator extends RepGenerator {
 
         // element
         if (contextDepth == 0) {
-            res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+			if (showText) {
+				res.add(indent.toString() + element.getContextLayer() + "\t" + element.getText());
+			} else {
+				ExSPO spo = element.getSpo().get();
+				res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+			}
 		} else {
 			elemContextRep(element, classification, false, false).ifPresent(e -> res.add(indent + e));
 		}

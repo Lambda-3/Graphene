@@ -34,7 +34,10 @@ import java.util.Optional;
 
 public class SPORunner {
 
-    public static void doSPOExtraction(ExContent content) {
+	public SPORunner() {
+	}
+
+	public void doSPOExtraction(ExContent content) {
 
         // process all elements
         for (ExElement element : content.getElements()) {
