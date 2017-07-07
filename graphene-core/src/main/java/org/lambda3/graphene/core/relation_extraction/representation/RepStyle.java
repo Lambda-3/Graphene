@@ -26,7 +26,11 @@ package org.lambda3.graphene.core.relation_extraction.representation;
 
 public enum RepStyle {
     DEFAULT,
+    DEFAULT_TEXT,
     FLAT,
+    FLAT_TEXT,
     EXPANDED,
-    N_TRIPLES
+    EXPANDED_TEXT,
+    N_TRIPLES,
+    N_TRIPLES_TEXT,
 }
