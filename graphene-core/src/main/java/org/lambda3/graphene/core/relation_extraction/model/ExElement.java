@@ -33,7 +33,6 @@ import java.util.Optional;
 public class ExElement {
 	private String id;
 	private String text;
-	private String notSimplifiedText;
 	private int sentenceIdx;
 	private int contextLayer;
 	private List<ExElementRelation> relations;
@@ -48,7 +47,6 @@ public class ExElement {
 	public ExElement(String text, int sentenceIdx, int contextLayer) {
 		this.id = IDGenerator.generateUUID();
 		this.text = text;
-		this.notSimplifiedText = text;
 		this.sentenceIdx = sentenceIdx;
 		this.contextLayer = contextLayer;
 		this.relations = new ArrayList<>();
@@ -85,10 +83,6 @@ public class ExElement {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public String getNotSimplifiedText() {
-		return notSimplifiedText;
 	}
 
 	public int getSentenceIdx() {

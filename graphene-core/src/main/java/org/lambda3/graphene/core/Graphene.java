@@ -40,7 +40,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class Graphene {
-
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final Config config;
@@ -49,17 +48,15 @@ public class Graphene {
 	private final RelationExtraction relationExtraction;
 
 	public Graphene() {
-		this(ConfigFactory.load());
+		this(ConfigFactory.load()
+			.withFallback(ConfigFactory.load("build"))
+			.getConfig("graphene"));
 	}
 
 	public Graphene(Config config) {
-
-		this.config = config
-                .withFallback(ConfigFactory.load("build"))
-                .getConfig("graphene");
-
+		this.config = config;
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
-		this.relationExtraction = new RelationExtraction();
+		this.relationExtraction = new RelationExtraction(this.config.getConfig("relation-extraction"));
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));

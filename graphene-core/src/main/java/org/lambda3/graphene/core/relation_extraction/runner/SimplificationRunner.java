@@ -43,7 +43,10 @@ public class SimplificationRunner {
     private static final Logger LOG = LoggerFactory.getLogger(SimplificationRunner.class);
     private static final Pattern VCONTEXT_PATTERN = Pattern.compile("^\\W*this\\W+\\w+\\W+(?<text>.*\\w+.*)$", Pattern.CASE_INSENSITIVE);
 
-    private static Optional<ExVContext> isVContext(String text) {
+	public SimplificationRunner() {
+	}
+
+	private static Optional<ExVContext> isVContext(String text) {
         Matcher matcher = VCONTEXT_PATTERN.matcher(text);
 
         if (matcher.matches()) {
@@ -128,7 +131,7 @@ public class SimplificationRunner {
         return newElements;
     }
 
-    public static void doSimplification(ExContent content) {
+    public void doSimplification(ExContent content) {
 
         // simplify all elements
         List<ExElement> newElements = new ArrayList<>();

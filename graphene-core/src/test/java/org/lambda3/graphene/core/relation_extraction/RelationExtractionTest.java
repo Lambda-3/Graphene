@@ -24,28 +24,42 @@ package org.lambda3.graphene.core.relation_extraction;
  */
 
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
+import org.lambda3.graphene.core.coreference.Coreference;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
 import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
 import org.lambda3.graphene.core.relation_extraction.representation.RepStyle;
+import org.lambda3.graphene.core.utils.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.IOException;
 
 public class RelationExtractionTest {
-	private final Logger log = LoggerFactory.getLogger(getClass());
+	private final static Logger LOG = LoggerFactory.getLogger(RelationExtractionTest.class);
+
+	private static RelationExtraction relationExtraction;
+
+	@BeforeClass
+	public static void beforeAll() {
+		Config config = ConfigFactory
+			.load("reference.local")
+			.withFallback(ConfigFactory.load("reference"));
+
+		relationExtraction = new RelationExtraction(config.getConfig("graphene.relation-extraction"));
+	}
 
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
-		RelationExtraction relationExtraction = new RelationExtraction();
-
 		ExContent serializeContent = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
 
 		// serialize
 		String json = serializeContent.serializeToJSON();
 
-		log.info(json);
+		LOG.info(json);
 
 		// deserialization
 		ExContent deserializeContent = ExContent.deserializeFromJSON(json, ExContent.class);
@@ -53,13 +67,11 @@ public class RelationExtractionTest {
 
 	@Test
 	public void testRDFOutput() throws IOException {
-		RelationExtraction relationExtraction = new RelationExtraction();
-
 		ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
 
-		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
-		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
-		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.EXPANDED));
-		log.info(RepGenerator.getRDFRepresentation(content, RepStyle.N_TRIPLES));
+		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
+		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
+		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.EXPANDED));
+		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.N_TRIPLES));
 	}
 }
