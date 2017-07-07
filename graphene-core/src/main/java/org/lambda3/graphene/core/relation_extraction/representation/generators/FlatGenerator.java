@@ -44,23 +44,31 @@ public class FlatGenerator extends RepGenerator {
             res.add("");
 
             for (ExElement element : exSentence.getElements()) {
-                if (!element.getSpo().isPresent()) {
+                if (!showText && !element.getSpo().isPresent()) {
                     continue;
                 }
-                ExSPO spo = element.getSpo().get();
 
                 StringBuilder strb = new StringBuilder();
 
                 // element
-                strb.append(element.getId())
-                        .append("\t")
-                        .append(element.getContextLayer())
-                        .append("\t")
-                        .append(spo.getSubject())
-                        .append("\t")
-                        .append(spo.getPredicate())
-                        .append("\t")
-                        .append(spo.getObject());
+				if (showText) {
+					strb.append(element.getId())
+						.append("\t")
+						.append(element.getContextLayer())
+						.append("\t")
+						.append(element.getText());
+				} else {
+					ExSPO spo = element.getSpo().get();
+					strb.append(element.getId())
+						.append("\t")
+						.append(element.getContextLayer())
+						.append("\t")
+						.append(spo.getSubject())
+						.append("\t")
+						.append(spo.getPredicate())
+						.append("\t")
+						.append(spo.getObject());
+				}
 
                 // vContexts
                 for (ExVContext context : element.getVContexts()) {

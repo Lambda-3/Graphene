@@ -39,7 +39,17 @@ public abstract class RepGenerator {
     protected static final String NCONTEXT_STR = "NCON";
     protected static final String VCONTEXT_STR = "VCON";
 
-    protected static String elementAbbrev(ExElement element, Classification classification) {
+    protected boolean showText;
+
+	public RepGenerator() {
+		this.showText = false;
+	}
+
+	public void setShowText(boolean showText) {
+		this.showText = showText;
+	}
+
+	protected static String elementAbbrev(ExElement element, Classification classification) {
         return ELEMENT_STR + "-" + classification.name();
     }
 
@@ -51,11 +61,10 @@ public abstract class RepGenerator {
         return VCONTEXT_STR + "-" + vContext.getClassification().name();
     }
 
-    protected static Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
-        if (!element.getSpo().isPresent()) {
+    protected Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
+        if (!this.showText && !element.getSpo().isPresent()) {
             return Optional.empty();
         }
-        ExSPO spo = element.getSpo().get();
         String abbrev = elementAbbrev(element, classification);
 
         if (linked) {
@@ -66,24 +75,43 @@ public abstract class RepGenerator {
             }
         } else {
             if (asArg) {
-                return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+            	if (this.showText) {
+					return Optional.of(abbrev + "(" + element.getText() + ")");
+				} else {
+					ExSPO spo = element.getSpo().get();
+					return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+				}
             } else {
-                return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+            	if (this.showText) {
+					return Optional.of(abbrev + "\t" + element.getText());
+				} else {
+					ExSPO spo = element.getSpo().get();
+					return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+				}
             }
         }
     }
 
-    protected static Optional<String> nContextRep(ExNContext context, boolean asArg) {
-        if (!context.getSpo().isPresent()) {
+    protected Optional<String> nContextRep(ExNContext context, boolean asArg) {
+        if (!this.showText && !context.getSpo().isPresent()) {
             return Optional.empty();
         }
-        ExSPO spo = context.getSpo().get();
         String abbrev = nContextAbbrev(context);
 
         if (asArg) {
-            return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+        	if (this.showText) {
+        		return Optional.of(abbrev + "(" + context.getText() + ")");
+			} else {
+				ExSPO spo = context.getSpo().get();
+				return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+			}
         } else {
-            return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+        	if (this.showText) {
+				return Optional.of(abbrev + "\t" + context.getText());
+			} else {
+				ExSPO spo = context.getSpo().get();
+				return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+			}
         }
     }
 
@@ -102,17 +130,39 @@ public abstract class RepGenerator {
     }
 
     public static String getRDFRepresentation(ExContent content, RepStyle style, Integer maxContextDepth) {
-        if (style.equals(RepStyle.DEFAULT)) {
-            return new DefaultGenerator().format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RepStyle.FLAT)) {
-            return new FlatGenerator().format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RepStyle.EXPANDED)) {
-            return new ExpandedGenerator((maxContextDepth == null) ? 3 : maxContextDepth).format(content).stream().collect(Collectors.joining("\n"));
-        } else if (style.equals(RepStyle.N_TRIPLES)) {
-            return new NTriplesGenerator().format(content).stream().collect(Collectors.joining("\n"));
-        } else {
-            throw new AssertionError("Unknown RDF style.");
-        }
+		RepGenerator generator;
+		switch (style) {
+			case DEFAULT:
+				generator = new DefaultGenerator();
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case DEFAULT_TEXT:
+				generator = new DefaultGenerator();
+				generator.setShowText(true);
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case FLAT:
+				generator = new FlatGenerator();
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case FLAT_TEXT:
+				generator = new FlatGenerator();
+				generator.setShowText(true);
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case EXPANDED:
+				generator = new ExpandedGenerator((maxContextDepth == null) ? 3 : maxContextDepth);
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case EXPANDED_TEXT:
+				generator = new ExpandedGenerator((maxContextDepth == null) ? 3 : maxContextDepth);
+				generator.setShowText(true);
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case N_TRIPLES:
+				generator = new NTriplesGenerator();
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			case N_TRIPLES_TEXT:
+				generator = new NTriplesGenerator();
+				generator.setShowText(true);
+				return generator.format(content).stream().collect(Collectors.joining("\n"));
+			default:
+				throw new AssertionError("Unknown representation style.");
+		}
     }
 
     public abstract List<String> format(ExContent content);
