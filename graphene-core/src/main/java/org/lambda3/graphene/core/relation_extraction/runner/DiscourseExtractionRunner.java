@@ -24,6 +24,7 @@ package org.lambda3.graphene.core.relation_extraction.runner;
  */
 
 
+import com.typesafe.config.Config;
 import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.text.simplification.discourse.processing.OutSentence;
 import org.lambda3.text.simplification.discourse.processing.Processor;
@@ -36,9 +37,13 @@ import java.util.*;
 
 public class DiscourseExtractionRunner {
     private static final Logger LOG = LoggerFactory.getLogger(DiscourseExtractionRunner.class);
-    private static final Processor DISCOURSE_EXTRACTOR = new Processor();
+    private final Processor discourseExtractor;
 
-    private static Optional<ExVContext> isVContext(Element element) {
+	public DiscourseExtractionRunner(Config config) {
+		this.discourseExtractor = new Processor(config);
+	}
+
+	private static Optional<ExVContext> isVContext(Element element) {
         if (!element.isProperSentence()) {
             ExVContext newContext = new ExVContext(element.getText());
 
@@ -63,10 +68,10 @@ public class DiscourseExtractionRunner {
         return res;
     }
 
-    public static ExContent doDiscourseExtraction(List<String> sentences) {
+    public ExContent doDiscourseExtraction(List<String> sentences) {
         LOG.info("Running discourse extraction on {} sentences", sentences.size());
 
-        List<OutSentence> outSentences = DISCOURSE_EXTRACTOR.process(sentences, Processor.ProcessingType.WHOLE);
+        List<OutSentence> outSentences = discourseExtractor.process(sentences, Processor.ProcessingType.WHOLE);
 
         HashMap<Element, ExElement> elementMapping = new LinkedHashMap<>(); // maps (former) Elements to ExElements
         List<ExSentence> exSentences = new ArrayList<>();

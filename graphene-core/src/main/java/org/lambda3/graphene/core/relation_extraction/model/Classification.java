@@ -38,13 +38,13 @@ public enum Classification {
 	ELABORATION,
 	ENABLEMENT,
 	EXPLANATION,
-	JOINT_LIST,
+	JOINT_CONJUNCTION,
 	JOINT_DISJUNCTION,
 	TEMPORAL_BEFORE,
 	TEMPORAL_AFTER,
 	TEMPORAL_SEQUENCE,
 	INTRA_SENT_ATTR,
-	JOINT_NP_LIST,
+	JOINT_NP_CONJUNCTION,
 	JOINT_NP_DISJUNCTION,
 
 	// new ones
@@ -72,8 +72,8 @@ public enum Classification {
 				return ENABLEMENT;
 			case EXPLANATION:
 				return EXPLANATION;
-			case JOINT_LIST:
-				return JOINT_LIST;
+			case JOINT_CONJUNCTION:
+				return JOINT_CONJUNCTION;
 			case JOINT_DISJUNCTION:
 				return JOINT_DISJUNCTION;
 			case TEMPORAL_BEFORE:
@@ -84,8 +84,8 @@ public enum Classification {
 				return TEMPORAL_SEQUENCE;
 			case INTRA_SENT_ATTR:
 				return INTRA_SENT_ATTR;
-			case JOINT_NP_LIST:
-				return JOINT_NP_LIST;
+			case JOINT_NP_CONJUNCTION:
+				return JOINT_NP_CONJUNCTION;
 			case JOINT_NP_DISJUNCTION:
 				return JOINT_NP_DISJUNCTION;
 			default:

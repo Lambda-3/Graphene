@@ -24,6 +24,7 @@ package org.lambda3.graphene.core.relation_extraction;
  */
 
 
+import com.typesafe.config.Config;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
 import org.lambda3.graphene.core.relation_extraction.runner.DiscourseExtractionRunner;
 import org.lambda3.graphene.core.relation_extraction.runner.SPORunner;
@@ -37,7 +38,18 @@ import java.util.List;
 public class RelationExtraction {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
-	public RelationExtraction() {
+	private final DiscourseExtractionRunner discourseExtractionRunner;
+	private final SimplificationRunner simplificationRunner;
+	private final SPORunner spoRunner;
+
+	private final boolean simplificationEnabled;
+
+	public RelationExtraction(Config config) {
+		this.discourseExtractionRunner = new DiscourseExtractionRunner(config.getConfig("discourse-simplification"));
+		Config simplificationConfig = config.getConfig("sentence-simplification");
+		this.simplificationEnabled = !simplificationConfig.hasPath("enabled") || simplificationConfig.getBoolean("enabled");
+		this.simplificationRunner = new SimplificationRunner();
+		this.spoRunner = new SPORunner();
 		log.info("RelationExtraction initialized");
 	}
 
@@ -50,13 +62,15 @@ public class RelationExtraction {
         log.info("Running RelationExtraction on {} sentences", sentences.size());
 
         // Step 1) do discourse extraction
-        ExContent content = DiscourseExtractionRunner.doDiscourseExtraction(sentences);
+        ExContent content = this.discourseExtractionRunner.doDiscourseExtraction(sentences);
 
         // Step 2) do simplification
-        SimplificationRunner.doSimplification(content);
+		if (this.simplificationEnabled) {
+			this.simplificationRunner.doSimplification(content);
+		}
 
         // Step 3) do SPO
-        SPORunner.doSPOExtraction(content);
+        this.spoRunner.doSPOExtraction(content);
 
         return content;
     }
