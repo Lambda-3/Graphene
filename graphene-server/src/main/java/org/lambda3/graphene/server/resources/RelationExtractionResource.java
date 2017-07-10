@@ -75,14 +75,26 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 			case RDF:
 				style = RepStyle.N_TRIPLES;
 				break;
+			case RDF_TEXT:
+				style = RepStyle.N_TRIPLES_TEXT;
+				break;
 			case DEFAULT:
 				style = RepStyle.DEFAULT;
+				break;
+			case DEFAULT_TEXT:
+				style = RepStyle.DEFAULT_TEXT;
 				break;
 			case FLAT:
 				style = RepStyle.FLAT;
 				break;
+			case FLAT_TEXT:
+				style = RepStyle.FLAT_TEXT;
+				break;
 			case EXPANDED:
 				style = RepStyle.EXPANDED;
+				break;
+			case EXPANDED_TEXT:
+				style = RepStyle.EXPANDED_TEXT;
 				break;
 			default:
 				style = RepStyle.N_TRIPLES;
