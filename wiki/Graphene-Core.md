@@ -20,18 +20,24 @@ CoreferenceContent cc = graphene.doCoreference("The text.");
 String substituted = cc.getSubstitutedText();
 ```
 
-### Open Information Extraction (with Simplification)
+### Open Information Extraction
+
+Parameters:
+* **text**: The input text.
+* **doCoreference**: Specifies whether coreference resolution should be applied.
+* **isolateSentences**: Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set **true**, if you run Graphene over a collection of independent sentences and **false** for a full coherent text.
 
 ```java
-ExContent ec = graphene.doRelationExtraction("The text.", true);
+ExContent ec = graphene.doRelationExtraction("The text.", true, false);
 
 // ### OUTPUT AS RDFNL #####
 // default
-String rdfnl1 = graphene.getRepresentation(ec, RepStyle.DEFAULT)
+String defaultRep = graphene.getRepresentation(ec, RepStyle.DEFAULT)
+
 // flat 
-String rdfnl2 = graphene.getRepresentation(ec, RepStyle.FLAT)
+String flatRep = graphene.getRepresentation(ec, RepStyle.FLAT)
 // extended
-String rdfnl3 = graphene.getRepresentation(ec, RepStyle.EXTENDED)
+String extendedRep = graphene.getRepresentation(ec, RepStyle.EXTENDED)
 
 // ### OUTPUT AS PROPER RDF (N-Triples) ###
 String rdf = graphene.getRepresentation(ec, RepStyle.N_TRIPLES)

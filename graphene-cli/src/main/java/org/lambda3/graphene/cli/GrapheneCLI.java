@@ -72,6 +72,9 @@ public class GrapheneCLI {
 	@Option(name = "--coref")
 	private boolean doCoref = false;
 
+	@Option(name = "--isolate")
+	private boolean isolateSentences = false;
+
 	@Option(name = "--extract")
 	private boolean doRelationExtraction = false;
 
@@ -175,7 +178,7 @@ public class GrapheneCLI {
 			result = Optional.of(
 				inputTexts
 					.stream()
-					.map(text -> graphene.doRelationExtraction(text, doCoref))
+					.map(text -> graphene.doRelationExtraction(text, doCoref, isolateSentences))
 					.collect(Collectors.toList()));
 		}
 

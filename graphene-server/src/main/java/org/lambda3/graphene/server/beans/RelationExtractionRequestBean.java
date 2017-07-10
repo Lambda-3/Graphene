@@ -35,6 +35,9 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	@DefaultValue("true")
 	private boolean doCoreference;
 
+	@DefaultValue("false")
+	private boolean isolateSentences;
+
 	@DefaultValue("RDF")
 	private RelationOutputFormat format;
 
@@ -56,6 +59,15 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		this.doCoreference = doCoreference;
 	}
 
+	public boolean isIsolateSentences() {
+		return isolateSentences;
+	}
+
+	@SuppressWarnings({"unused"})
+	public void setIsolateSentences(boolean isolateSentences) {
+		this.isolateSentences = isolateSentences;
+	}
+
 	public RelationOutputFormat getFormat() {
 		return format;
 	}
@@ -70,6 +82,7 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		return "RelationExtractionRequestBean{" +
                 "text='" + truncateText(text) + '\'' +
                 ", doCoreference=" + doCoreference +
+				", isolateSentences=" + isolateSentences +
                 ", format=" + format +
                 '}';
     }
@@ -77,8 +90,12 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 
 	public enum RelationOutputFormat {
 		RDF,
+		RDF_TEXT,
 		DEFAULT,
+		DEFAULT_TEXT,
 		FLAT,
-		EXPANDED
+		FLAT_TEXT,
+		EXPANDED,
+		EXPANDED_TEXT
 	}
 }

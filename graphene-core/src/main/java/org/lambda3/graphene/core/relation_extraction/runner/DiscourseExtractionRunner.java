@@ -68,10 +68,11 @@ public class DiscourseExtractionRunner {
         return res;
     }
 
-    public ExContent doDiscourseExtraction(List<String> sentences) {
+    public ExContent doDiscourseExtraction(List<String> sentences, boolean isolateSentences) {
         LOG.info("Running discourse extraction on {} sentences", sentences.size());
 
-        List<OutSentence> outSentences = discourseExtractor.process(sentences, Processor.ProcessingType.WHOLE);
+		Processor.ProcessingType processingType = (isolateSentences)? Processor.ProcessingType.SEPARATE : Processor.ProcessingType.WHOLE;
+        List<OutSentence> outSentences = discourseExtractor.process(sentences, processingType);
 
         HashMap<Element, ExElement> elementMapping = new LinkedHashMap<>(); // maps (former) Elements to ExElements
         List<ExSentence> exSentences = new ArrayList<>();
