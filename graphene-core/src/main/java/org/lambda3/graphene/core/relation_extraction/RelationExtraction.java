@@ -53,16 +53,16 @@ public class RelationExtraction {
 		log.info("RelationExtraction initialized");
 	}
 
-	public ExContent doRelationExtraction(String text) {
-        return doRelationExtraction(SentencesUtils.splitIntoSentences(text));
+	public ExContent doRelationExtraction(String text, boolean isolateSentences) {
+        return doRelationExtraction(SentencesUtils.splitIntoSentences(text), isolateSentences);
     }
 
     @SuppressWarnings("WeakerAccess")
-    public ExContent doRelationExtraction(List<String> sentences) {
+    public ExContent doRelationExtraction(List<String> sentences, boolean isolateSentences) {
         log.info("Running RelationExtraction on {} sentences", sentences.size());
 
         // Step 1) do discourse extraction
-        ExContent content = this.discourseExtractionRunner.doDiscourseExtraction(sentences);
+        ExContent content = this.discourseExtractionRunner.doDiscourseExtraction(sentences, isolateSentences);
 
         // Step 2) do simplification
 		if (this.simplificationEnabled) {

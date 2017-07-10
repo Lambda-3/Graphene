@@ -51,7 +51,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
+		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
 		return Response
                 .status(Response.Status.OK)
@@ -67,7 +67,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-        ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference());
+        ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
 		RepStyle style;
 

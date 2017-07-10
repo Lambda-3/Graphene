@@ -54,7 +54,7 @@ public class RelationExtractionTest {
 
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
-		ExContent serializeContent = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
+		ExContent serializeContent = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.", true);
 
 		// serialize
 		String json = serializeContent.serializeToJSON();
@@ -67,7 +67,7 @@ public class RelationExtractionTest {
 
 	@Test
 	public void testRDFOutput() throws IOException {
-		ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.");
+		ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.", true);
 
 		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
 		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
