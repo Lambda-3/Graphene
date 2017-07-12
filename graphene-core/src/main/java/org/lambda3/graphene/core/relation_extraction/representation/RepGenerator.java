@@ -103,7 +103,7 @@ public abstract class RepGenerator {
         		return Optional.of(abbrev + "(" + context.getText() + ")");
 			} else {
 				ExSPO spo = context.getSpo().get();
-				return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+				return Optional.of(abbrev + "(" + spo.getSubject() + "|||" + spo.getPredicate() + "|||" + spo.getObject() + ")");
 			}
         } else {
         	if (this.showText) {
