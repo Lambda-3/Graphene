@@ -48,13 +48,13 @@ public class Graphene {
 	private final RelationExtraction relationExtraction;
 
 	public Graphene() {
-		this(ConfigFactory.load()
-			.withFallback(ConfigFactory.load("build"))
-			.getConfig("graphene"));
+		this(ConfigFactory.load());
 	}
 
 	public Graphene(Config config) {
-		this.config = config.getConfig("graphene");
+		this.config = config
+			.withFallback(ConfigFactory.load("build"))
+			.getConfig("graphene");
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
 		this.relationExtraction = new RelationExtraction(this.config.getConfig("relation-extraction"));
 
