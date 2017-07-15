@@ -54,7 +54,7 @@ public class Graphene {
 	}
 
 	public Graphene(Config config) {
-		this.config = config;
+		this.config = config.getConfig("graphene");
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
 		this.relationExtraction = new RelationExtraction(this.config.getConfig("relation-extraction"));
 
