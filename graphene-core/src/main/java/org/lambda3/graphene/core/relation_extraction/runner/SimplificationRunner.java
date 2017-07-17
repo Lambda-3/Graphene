@@ -26,6 +26,8 @@ package org.lambda3.graphene.core.relation_extraction.runner;
 
 import edu.stanford.nlp.trees.Tree;
 import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.runner.context_classifier.ExContextClassifierOwn;
+import org.lambda3.graphene.core.relation_extraction.runner.context_classifier.ExContextClassifierStanford;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
 import org.lambda3.text.simplification.sentence.transformation.CoreContextSentence;
 import org.lambda3.text.simplification.sentence.transformation.SentenceSimplifyingException;
@@ -41,6 +43,7 @@ import java.util.regex.Pattern;
 
 public class SimplificationRunner {
     private static final Logger LOG = LoggerFactory.getLogger(SimplificationRunner.class);
+    private static final ExContextClassifier CONTEXT_CLASSIFIER = new ExContextClassifierStanford();
     private static final Pattern VCONTEXT_PATTERN = Pattern.compile("^\\W*this\\W+\\w+\\W+(?<text>.*\\w+.*)$", Pattern.CASE_INSENSITIVE);
 
 	public SimplificationRunner() {
@@ -110,13 +113,14 @@ public class SimplificationRunner {
                             exElement.addNContext(newContext);
                         } else
 
-                            // create DContext
+                            // create VContext
                             if (dct.isPresent()) {
                                 ExVContext newContext = dct.get();
 
                                 // classify context
-                                Classification classification = ExContextClassifier.classify(newContext.getText());
-                                newContext.setClassification(classification);
+                                ClassificationResult cr = CONTEXT_CLASSIFIER.classify(newContext.getText());
+                                newContext.setClassification(cr.getClassification());
+                                cr.getTimeInformation().ifPresent(t -> newContext.setTimeInformation(t));
 
                                 // add new context
                                 exElement.addVContext(newContext);
