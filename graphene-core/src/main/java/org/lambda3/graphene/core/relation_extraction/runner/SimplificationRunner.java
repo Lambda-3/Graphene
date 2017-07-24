@@ -26,7 +26,6 @@ package org.lambda3.graphene.core.relation_extraction.runner;
 
 import edu.stanford.nlp.trees.Tree;
 import org.lambda3.graphene.core.relation_extraction.model.*;
-import org.lambda3.graphene.core.relation_extraction.runner.context_classifier.ExContextClassifierOwn;
 import org.lambda3.graphene.core.relation_extraction.runner.context_classifier.ExContextClassifierStanford;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
 import org.lambda3.text.simplification.sentence.transformation.CoreContextSentence;
@@ -44,16 +43,25 @@ import java.util.regex.Pattern;
 public class SimplificationRunner {
     private static final Logger LOG = LoggerFactory.getLogger(SimplificationRunner.class);
     private static final ExContextClassifier CONTEXT_CLASSIFIER = new ExContextClassifierStanford();
-    private static final Pattern VCONTEXT_PATTERN = Pattern.compile("^\\W*this\\W+\\w+\\W+(?<text>.*\\w+.*)$", Pattern.CASE_INSENSITIVE);
+    private static final Pattern SIMPLE_CONTEXT_PATTERN = Pattern.compile("^\\W*this\\W+\\w+\\W+(?<text>.*\\w+.*)$", Pattern.CASE_INSENSITIVE);
 
 	public SimplificationRunner() {
 	}
 
-	private static Optional<ExVContext> isVContext(String text) {
-        Matcher matcher = VCONTEXT_PATTERN.matcher(text);
+	private static Optional<Extraction> contains(List<Extraction> extractions, Extraction extraction) {
+		for (Extraction ex : extractions) {
+			if (ex.getSentenceIdx() == extraction.getSentenceIdx() && ex.getText().equals(extraction.getText())) {
+				return Optional.of(ex);
+			}
+		}
+		return Optional.empty();
+	}
+
+	private static Optional<SimpleContext> isSimpleContext(String text) {
+        Matcher matcher = SIMPLE_CONTEXT_PATTERN.matcher(text);
 
         if (matcher.matches()) {
-            ExVContext res = new ExVContext(matcher.group("text"));
+            SimpleContext res = new SimpleContext(matcher.group("text"));
 
             return Optional.of(res);
         } else {
@@ -61,90 +69,88 @@ public class SimplificationRunner {
         }
     }
 
-    private static Optional<ExNContext> isNContext(String text) {
-        Matcher matcher = VCONTEXT_PATTERN.matcher(text);
-
-        if (!matcher.matches()) {
-            ExNContext res = new ExNContext(text);
-
-            return Optional.of(res);
-        } else {
-            return Optional.empty();
-        }
-    }
-
-    private static List<ExElement> createNewElements(ExElement exElement) {
-        LOG.debug("Simplifying: '{}'", exElement.getText());
-
-        List<ExElement> newElements = new ArrayList<>();
+    private static void processExtraction(Extraction extraction, List<Extraction> newExtractions) {
+        LOG.debug("Simplifying: '{}'", extraction.getText());
 
         // apply sentence simplification
         Transformer transformer = new Transformer();
+		CoreContextSentence s;
         try {
-            CoreContextSentence s = transformer.simplify(exElement.getText());
+            s = transformer.simplify(extraction.getText());
+		} catch (SentenceSimplifyingException e) {
+			LOG.warn("Failed to simplify text: \"{}\"", extraction.getText());
+			return;
+		}
 
-            // set simplified text
-            if ((s.getCore() != null) && (s.getCore().size() > 0)) {
-                Tree c = s.getCore().get(0);
-                if (c != null) {
-                    String text = WordsUtils.wordsToProperSentenceString(c.yieldWords());
-                    exElement.setText(text);
-                }
-            }
+		// set simplified text
+		if ((s.getCore() != null) && (s.getCore().size() > 0)) {
+			Tree c = s.getCore().get(0);
+			if (c != null) {
+				String text = WordsUtils.wordsToProperSentenceString(c.yieldWords());
+				extraction.setText(text);
+			}
+		}
 
-            // process (sentence simplification) contexts
-            if (s.getContext() != null) {
-                for (Tree c : s.getContext()) {
-                    if (c != null) {
-                        String text = WordsUtils.wordsToProperSentenceString(c.yieldWords());
+		// process (sentence simplification) contexts
+		if (s.getContext() != null) {
+			for (Tree c : s.getContext()) {
+				if (c != null) {
+					String text = WordsUtils.wordsToProperSentenceString(c.yieldWords());
 
-                        Optional<ExNContext> ict = isNContext(text);
-                        Optional<ExVContext> dct = isVContext(text);
+					// create SimpleContext
+					Optional<SimpleContext> sc = isSimpleContext(text);
+					if (sc.isPresent()) {
+						SimpleContext newContext = sc.get();
 
-                        // create NContext
-                        if (ict.isPresent()) {
-                            ExNContext newContext = ict.get();
+						// classify SimpleContext
+						ClassificationResult cr = CONTEXT_CLASSIFIER.classify(newContext.getText());
+						newContext.setClassification(cr.getClassification());
+						cr.getTimeInformation().ifPresent(t -> newContext.setTimeInformation(t));
 
-                            // classify context
-                            Classification classification = Classification.UNKNOWN;
-                            newContext.setClassification(classification);
+						// add new SimpleContext
+						extraction.addSimpleContext(newContext);
+					} else {
 
-                            // add new context
-                            exElement.addNContext(newContext);
-                        } else
+						// create new Extraction
+						Extraction newExtraction = new Extraction(
+							ExtractionType.NOUN_BASED,
+							text,
+							extraction.getSentenceIdx(),
+							extraction.getContextLayer() + 1
+						);
 
-                            // create VContext
-                            if (dct.isPresent()) {
-                                ExVContext newContext = dct.get();
+						String linkID;
 
-                                // classify context
-                                ClassificationResult cr = CONTEXT_CLASSIFIER.classify(newContext.getText());
-                                newContext.setClassification(cr.getClassification());
-                                cr.getTimeInformation().ifPresent(t -> newContext.setTimeInformation(t));
+						// new Extraction already contained?
+						Optional<Extraction> e = contains(newExtractions, newExtraction);
+						if (e.isPresent()) {
+							// link to already existing Extraction (instead of creating a new one)
+							linkID = e.get().getId();
+						} else {
+							linkID = newExtraction.getId();
 
-                                // add new context
-                                exElement.addVContext(newContext);
-                            }
-                    }
-                }
-            }
-        } catch (SentenceSimplifyingException e) {
-            // nothing
-        }
+							// add new Extraction
+							newExtractions.add(newExtraction);
+						}
 
-        return newElements;
+						// link
+						extraction.addLinkedContext(new LinkedContext(linkID, Classification.NOUN_BASED));
+					}
+				}
+			}
+		}
+
     }
 
     public void doSimplification(ExContent content) {
 
-        // simplify all elements
-        List<ExElement> newElements = new ArrayList<>();
-        for (ExElement exElement : content.getElements()) {
-            List<ExElement> nes = createNewElements(exElement);
-            newElements.addAll(nes);
+        // simplify all Extractions
+		ArrayList<Extraction> newExtractions = new ArrayList<>();
+        for (Extraction extraction : content.getExtractions()) {
+            processExtraction(extraction, newExtractions);
         }
 
-        // add newElements
-        newElements.forEach(content::addElement);
+        // add new Extractions
+		newExtractions.forEach(e -> content.addExtraction(e));
     }
 }

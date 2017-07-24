@@ -49,6 +49,7 @@ public enum Classification {
 
 	// new ones
 	UNKNOWN,
+	NOUN_BASED,
 	TEMPORAL,
 	TEMPORAL_TIME, // indicating a particular instance on a time scale (e.g. “Next Sunday 2 pm”).
 	TEMPORAL_DURATION, // the amount of time between the two end-points of a time interval (e.g. “2 weeks").

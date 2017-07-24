@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExVContext.java - Graphene Core - Lambda^3 - 2017
+ * SimpleContext.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -26,16 +26,16 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 import java.util.Optional;
 
-public class ExVContext {
+public class SimpleContext {
     private String text;
     private Classification classification;
     private TimeInformation timeInformation; // optional
 
     // for deserialization
-    public ExVContext() {
+    public SimpleContext() {
     }
 
-    public ExVContext(String text) {
+    public SimpleContext(String text) {
         this.text = text;
         this.classification = Classification.UNKNOWN;
         this.timeInformation = null;

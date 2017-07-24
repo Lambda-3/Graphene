@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 public class ExSentence {
 	private String originalSentence;
 	private int sentenceIdx;
-    private HashMap<String, ExElement> elementMap; // all elements extracted from this sentence
+    private HashMap<String, Extraction> extractionMap; // all extractions extracted from this sentence
 
 	// for deserialization
 	public ExSentence() {
@@ -41,11 +41,11 @@ public class ExSentence {
     public ExSentence(String originalSentence, int sentenceIdx) {
         this.originalSentence = originalSentence;
         this.sentenceIdx = sentenceIdx;
-        this.elementMap = new LinkedHashMap<>();
+        this.extractionMap = new LinkedHashMap<>();
     }
 
-    public void addElement(ExElement exElement) {
-        elementMap.putIfAbsent(exElement.getId(), exElement);
+    public void addExtraction(Extraction extraction) {
+        extractionMap.putIfAbsent(extraction.getId(), extraction);
     }
 
     public String getOriginalSentence() {
@@ -56,11 +56,11 @@ public class ExSentence {
         return sentenceIdx;
     }
 
-    public ExElement getElement(String id) {
-        return elementMap.getOrDefault(id, null);
+    public Extraction getExtraction(String id) {
+        return extractionMap.getOrDefault(id, null);
     }
 
-    public List<ExElement> getElements() {
-        return elementMap.values().stream().collect(Collectors.toList());
+    public List<Extraction> getExtractions() {
+        return extractionMap.values().stream().collect(Collectors.toList());
     }
 }

@@ -54,6 +54,10 @@ public abstract class Content {
 	@Override
 	public abstract String toString();
 
+	public String prettyPrint() throws JsonProcessingException {
+		return MAPPER.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+	}
+
 	public String serializeToJSON() throws JsonProcessingException {
 		return MAPPER.writeValueAsString(this);
 	}

@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExElement.java - Graphene Core - Lambda^3 - 2017
+ * Extraction.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -30,51 +30,49 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ExElement {
+public class Extraction {
+	private ExtractionType type;
 	private String id;
 	private String text;
 	private int sentenceIdx;
 	private int contextLayer;
-	private List<ExElementRelation> relations;
-	private List<ExNContext> nContexts;
-	private List<ExVContext> vContexts;
-	private ExSPO spo; // optional
+	private List<LinkedContext> linkedContexts;
+	private List<SimpleContext> simpleContexts;
+	private SPO spo; // optional
 
 	// for deserialization
-	public ExElement() {
+	public Extraction() {
 	}
 
-	public ExElement(String text, int sentenceIdx, int contextLayer) {
+	public Extraction(ExtractionType type, String text, int sentenceIdx, int contextLayer) {
 		this.id = IDGenerator.generateUUID();
+		this.type = type;
 		this.text = text;
 		this.sentenceIdx = sentenceIdx;
 		this.contextLayer = contextLayer;
-		this.relations = new ArrayList<>();
-		this.nContexts = new ArrayList<>();
-		this.vContexts = new ArrayList<>();
+		this.linkedContexts = new ArrayList<>();
+		this.simpleContexts = new ArrayList<>();
 		this.spo = null;
 	}
 
-	public void addRelation(ExElementRelation relation) {
-		if (!relations.contains(relation)) {
-			relations.add(relation);
+	public void addLinkedContext(LinkedContext context) {
+		if (!linkedContexts.contains(context)) {
+			linkedContexts.add(context);
 		}
 	}
 
-	public void addNContext(ExNContext context) {
-		if (!nContexts.contains(context)) {
-			nContexts.add(context);
-		}
-	}
-
-	public void addVContext(ExVContext context) {
-		if (!vContexts.contains(context)) {
-			vContexts.add(context);
+	public void addSimpleContext(SimpleContext context) {
+		if (!simpleContexts.contains(context)) {
+			simpleContexts.add(context);
 		}
 	}
 
 	public String getId() {
 		return id;
+	}
+
+	public ExtractionType getType() {
+		return type;
 	}
 
 	public String getText() {
@@ -93,28 +91,36 @@ public class ExElement {
 		return contextLayer;
 	}
 
-	public List<ExElementRelation> getRelations() {
-		return relations;
+	public List<LinkedContext> getLinkedContexts() {
+		return linkedContexts;
 	}
 
-	public List<ExNContext> getNContexts() {
-		return nContexts;
+	public List<SimpleContext> getSimpleContexts() {
+		return simpleContexts;
 	}
 
-	public List<ExVContext> getVContexts() {
-		return vContexts;
-	}
-
-	public Optional<ExSPO> getSpo() {
+	public Optional<SPO> getSpo() {
 		return Optional.ofNullable(spo);
 	}
 
-	public void setSpo(ExSPO spo) {
+	public void setSpo(SPO spo) {
 		this.spo = spo;
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		return ((obj instanceof ExElement) && (((ExElement) obj).getId().equals(getId())));
+		return ((obj instanceof Extraction) && (((Extraction) obj).getId().equals(getId())));
+	}
+
+	@Override
+	public String toString() {
+		return "Extraction{" +
+			"type=" + type +
+			", id='" + id + '\'' +
+			", text='" + text + '\'' +
+			", sentenceIdx=" + sentenceIdx +
+			", contextLayer=" + contextLayer +
+			", spo=" + spo +
+			'}';
 	}
 }

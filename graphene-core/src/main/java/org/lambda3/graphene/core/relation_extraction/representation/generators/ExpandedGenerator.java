@@ -38,7 +38,7 @@ public class ExpandedGenerator extends RepGenerator {
         this.maxContextDepth = maxContextDepth;
     }
 
-    private void addElementRec(List<String> res, int contextDepth, int maxContextDepth, ExContent content, ExElement element, Classification classification) {
+    private void addElementRec(List<String> res, int contextDepth, int maxContextDepth, ExContent content, Extraction element, Classification classification) {
         if (!showText && !element.getSpo().isPresent()) {
             return;
         }
@@ -48,35 +48,46 @@ public class ExpandedGenerator extends RepGenerator {
 			indent.append("\t");
 		}
 
-        // element
+        // Extraction
         if (contextDepth == 0) {
+			StringBuilder extractionLine = new StringBuilder();
 			if (showText) {
-				res.add(indent.toString() + element.getContextLayer() + "\t" + element.getText());
+				extractionLine
+					.append(element.getType())
+					.append("\t")
+					.append(element.getContextLayer())
+					.append("\t")
+					.append(element.getText());
 			} else {
-				ExSPO spo = element.getSpo().get();
-				res.add(indent.toString() + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+				SPO spo = element.getSpo().get();
+				extractionLine
+					.append(element.getType())
+					.append("\t")
+					.append(element.getContextLayer())
+					.append("\t")
+					.append(spo.getSubject())
+					.append("\t")
+					.append(spo.getPredicate())
+					.append("\t")
+					.append(spo.getObject().orElse(""));
 			}
+			res.add(indent + extractionLine.toString());
 		} else {
-			elemContextRep(element, classification, false, false).ifPresent(e -> res.add(indent + e));
+			linkedContextRep(element, classification, false, false).ifPresent(e -> res.add(indent + e));
 		}
 
         if (contextDepth < maxContextDepth) {
-            // vContexts
-            for (ExVContext context : element.getVContexts()) {
-                String vContextRep = vContextRep(context, false);
+
+            // SimpleContexts
+            for (SimpleContext context : element.getSimpleContexts()) {
+                String vContextRep = simpleContextRep(context, false);
                 res.add(indent + "\t" + vContextRep);
             }
 
-            // nContexts
-            for (ExNContext context : element.getNContexts()) {
-                Optional<String> nContextRep = nContextRep(context, false);
-                nContextRep.ifPresent(s -> res.add(indent + "\t" + s));
-			}
-
-            // element contexts
-            for (ExElementRelation relation : element.getRelations()) {
-                ExElement target = relation.getTargetElement(content);
-                addElementRec(res, contextDepth + 1, maxContextDepth, content, target, relation.getClassification());
+            // LinkedContexts
+            for (LinkedContext context : element.getLinkedContexts()) {
+                Extraction target = context.getTargetElement(content);
+                addElementRec(res, contextDepth + 1, maxContextDepth, content, target, context.getClassification());
             }
         }
     }
@@ -91,7 +102,7 @@ public class ExpandedGenerator extends RepGenerator {
             res.add("# " + exSentence.getOriginalSentence());
             res.add("");
 
-            for (ExElement element : exSentence.getElements()) {
+            for (Extraction element : exSentence.getExtractions()) {
                 addElementRec(res, 0, maxContextDepth, content, element, null);
                 res.add("");
             }

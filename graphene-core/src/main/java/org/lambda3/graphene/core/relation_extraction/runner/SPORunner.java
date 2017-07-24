@@ -25,9 +25,8 @@ package org.lambda3.graphene.core.relation_extraction.runner;
 
 
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
-import org.lambda3.graphene.core.relation_extraction.model.ExElement;
-import org.lambda3.graphene.core.relation_extraction.model.ExNContext;
-import org.lambda3.graphene.core.relation_extraction.model.ExSPO;
+import org.lambda3.graphene.core.relation_extraction.model.Extraction;
+import org.lambda3.graphene.core.relation_extraction.model.SPO;
 import org.lambda3.text.simplification.discourse.utils.SPOSplitter;
 
 import java.util.Optional;
@@ -39,27 +38,15 @@ public class SPORunner {
 
 	public void doSPOExtraction(ExContent content) {
 
-        // process all elements
-        for (ExElement element : content.getElements()) {
-            Optional<SPOSplitter.Result> elemspo = SPOSplitter.split(element.getText());
-            if (elemspo.isPresent()) {
-                element.setSpo(new ExSPO(
-                        elemspo.get().getSubject(),
-                        elemspo.get().getPredicate(),
-                        elemspo.get().getObject()
+        // process all Extractions
+        for (Extraction extraction : content.getExtractions()) {
+            Optional<SPOSplitter.Result> spo = SPOSplitter.split(extraction.getText());
+            if (spo.isPresent()) {
+                extraction.setSpo(new SPO(
+                        spo.get().getSubject(),
+                        spo.get().getPredicate(),
+                        (spo.get().getObject().length() > 0)? spo.get().getObject() : null
                 ));
-            }
-
-            // process NContexts
-            for (ExNContext context : element.getNContexts()) {
-                Optional<SPOSplitter.Result> contspo = SPOSplitter.split(context.getText());
-                if (contspo.isPresent()) {
-                    context.setSpo(new ExSPO(
-                            contspo.get().getSubject(),
-                            contspo.get().getPredicate(),
-                            contspo.get().getObject()
-                    ));
-                }
             }
         }
     }

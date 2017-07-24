@@ -35,9 +35,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public abstract class RepGenerator {
-    protected static final String ELEMENT_STR = "ELEM";
-    protected static final String NCONTEXT_STR = "NCON";
-    protected static final String VCONTEXT_STR = "VCON";
+    protected static final String LINKED_CONTEXT_STR = "LCON";
+    protected static final String SIMPLE_CONTEXT_STR = "SCON";
 
     protected boolean showText;
 
@@ -49,74 +48,47 @@ public abstract class RepGenerator {
 		this.showText = showText;
 	}
 
-	protected static String elementAbbrev(ExElement element, Classification classification) {
-        return ELEMENT_STR + "-" + classification.name();
+	protected static String linkedContextAbbrev(Extraction element, Classification classification) {
+        return LINKED_CONTEXT_STR + "-" + classification.name();
     }
 
-    protected static String nContextAbbrev(ExNContext nContext) {
-        return NCONTEXT_STR + "-" + nContext.getClassification().name();
+    protected static String simpleContextAbbrev(SimpleContext vContext) {
+        return SIMPLE_CONTEXT_STR + "-" + vContext.getClassification().name();
     }
 
-    protected static String vContextAbbrev(ExVContext vContext) {
-        return VCONTEXT_STR + "-" + vContext.getClassification().name();
-    }
-
-    protected Optional<String> elemContextRep(ExElement element, Classification classification, boolean linked, boolean asArg) {
-        if (!this.showText && !element.getSpo().isPresent()) {
+    protected Optional<String> linkedContextRep(Extraction extraction, Classification classification, boolean linked, boolean asArg) {
+        if (!this.showText && !extraction.getSpo().isPresent()) {
             return Optional.empty();
         }
-        String abbrev = elementAbbrev(element, classification);
+        String abbrev = linkedContextAbbrev(extraction, classification);
 
         if (linked) {
             if (asArg) {
-                return Optional.of(abbrev + "(" + element.getId() + ")");
+                return Optional.of(abbrev + "(" + extraction.getId() + ")");
             } else {
-                return Optional.of(abbrev + "\t" + element.getId());
+                return Optional.of(abbrev + "\t" + extraction.getId());
             }
         } else {
             if (asArg) {
             	if (this.showText) {
-					return Optional.of(abbrev + "(" + element.getText() + ")");
+					return Optional.of(abbrev + "(" + extraction.getText() + ")");
 				} else {
-					ExSPO spo = element.getSpo().get();
-					return Optional.of(abbrev + "(" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject() + ")");
+					SPO spo = extraction.getSpo().get();
+					return Optional.of(abbrev + "(" + spo.getSubject() + "||" + spo.getPredicate() + "||" + spo.getObject().orElse("") + ")");
 				}
             } else {
             	if (this.showText) {
-					return Optional.of(abbrev + "\t" + element.getText());
+					return Optional.of(abbrev + "\t" + extraction.getText());
 				} else {
-					ExSPO spo = element.getSpo().get();
-					return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+					SPO spo = extraction.getSpo().get();
+					return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject().orElse(""));
 				}
             }
         }
     }
 
-    protected Optional<String> nContextRep(ExNContext context, boolean asArg) {
-        if (!this.showText && !context.getSpo().isPresent()) {
-            return Optional.empty();
-        }
-        String abbrev = nContextAbbrev(context);
-
-        if (asArg) {
-        	if (this.showText) {
-        		return Optional.of(abbrev + "(" + context.getText() + ")");
-			} else {
-				ExSPO spo = context.getSpo().get();
-				return Optional.of(abbrev + "(" + spo.getSubject() + "|||" + spo.getPredicate() + "|||" + spo.getObject() + ")");
-			}
-        } else {
-        	if (this.showText) {
-				return Optional.of(abbrev + "\t" + context.getText());
-			} else {
-				ExSPO spo = context.getSpo().get();
-				return Optional.of(abbrev + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
-			}
-        }
-    }
-
-    protected static String vContextRep(ExVContext context, boolean asArg) {
-        String abbrev = vContextAbbrev(context);
+    protected static String simpleContextRep(SimpleContext context, boolean asArg) {
+        String abbrev = simpleContextAbbrev(context);
 
         if (asArg) {
             return abbrev + "(" + context.getText() + ")";
