@@ -43,7 +43,7 @@ public class FlatGenerator extends RepGenerator {
             res.add("# " + exSentence.getOriginalSentence());
             res.add("");
 
-            for (ExElement element : exSentence.getElements()) {
+            for (Extraction element : exSentence.getExtractions()) {
                 if (!showText && !element.getSpo().isPresent()) {
                     continue;
                 }
@@ -54,12 +54,16 @@ public class FlatGenerator extends RepGenerator {
 				if (showText) {
 					strb.append(element.getId())
 						.append("\t")
+						.append(element.getType())
+						.append("\t")
 						.append(element.getContextLayer())
 						.append("\t")
 						.append(element.getText());
 				} else {
-					ExSPO spo = element.getSpo().get();
+					SPO spo = element.getSpo().get();
 					strb.append(element.getId())
+						.append("\t")
+						.append(element.getType())
 						.append("\t")
 						.append(element.getContextLayer())
 						.append("\t")
@@ -67,25 +71,19 @@ public class FlatGenerator extends RepGenerator {
 						.append("\t")
 						.append(spo.getPredicate())
 						.append("\t")
-						.append(spo.getObject());
+						.append(spo.getObject().orElse(""));
 				}
 
-                // vContexts
-                for (ExVContext context : element.getVContexts()) {
-                    String vContextRep = vContextRep(context, true);
+                // SimpleContexts
+                for (SimpleContext context : element.getSimpleContexts()) {
+                    String vContextRep = simpleContextRep(context, true);
                     strb.append("\t").append(vContextRep);
                 }
 
-                // nContexts
-                for (ExNContext context : element.getNContexts()) {
-                    Optional<String> nContextRep = nContextRep(context, true);
-                    nContextRep.ifPresent(s -> strb.append("\t").append(s));
-                }
-
-                // element contexts
-                for (ExElementRelation relation : element.getRelations()) {
-                    ExElement target = relation.getTargetElement(content);
-                    Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, true);
+                // LinkedContexts
+                for (LinkedContext context : element.getLinkedContexts()) {
+                    Extraction target = context.getTargetElement(content);
+                    Optional<String> elemContextRep = linkedContextRep(target, context.getClassification(), true, true);
                     elemContextRep.ifPresent(s -> strb.append("\t").append(s));
                 }
 

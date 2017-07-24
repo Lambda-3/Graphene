@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExElementRelation.java - Graphene Core - Lambda^3 - 2017
+ * SPO.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -24,35 +24,35 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
-public class ExElementRelation {
-	private String targetElementID;
-	private Classification classification;
+import java.util.Optional;
 
-	// for deserialization
-	public ExElementRelation() {
-	}
+public class SPO {
+    private String subject;
+    private String predicate;
+    private String object; // optional
 
-	public ExElementRelation(String targetElementID, Classification classification) {
-		this.targetElementID = targetElementID;
-		this.classification = classification;
-	}
+    // for deserialization
+    public SPO() {
+    }
 
-	public String getTargetElementID() {
-		return targetElementID;
-	}
+    public SPO(String subject, String predicate, String object) {
+    	if (subject == null || predicate == null) {
+    		throw new IllegalArgumentException();
+		}
+        this.subject = subject;
+        this.predicate = predicate;
+        this.object = object;
+    }
 
-	public ExElement getTargetElement(ExContent content) {
-		return content.getElement(targetElementID);
-	}
+    public String getSubject() {
+        return subject;
+    }
 
-	public Classification getClassification() {
-		return classification;
-	}
+    public String getPredicate() {
+        return predicate;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		return ((o instanceof ExElementRelation)
-			&& (((ExElementRelation) o).targetElementID.equals(targetElementID))
-			&& (((ExElementRelation) o).classification.equals(classification)));
-	}
+    public Optional<String> getObject() {
+        return Optional.ofNullable(object);
+    }
 }

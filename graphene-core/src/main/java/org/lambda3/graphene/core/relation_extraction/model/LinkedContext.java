@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExNContext.java - Graphene Core - Lambda^3 - 2017
+ * LinkedContext.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -24,40 +24,35 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
-import java.util.Optional;
-
-public class ExNContext {
-	private String text;
+public class LinkedContext {
+	private String targetExtractionID;
 	private Classification classification;
-	private ExSPO spo; // optional
 
 	// for deserialization
-	public ExNContext() {
+	public LinkedContext() {
 	}
 
-	public ExNContext(String text) {
-		this.text = text;
-		this.classification = Classification.UNKNOWN;
-		this.spo = null;
+	public LinkedContext(String targetExtractionID, Classification classification) {
+		this.targetExtractionID = targetExtractionID;
+		this.classification = classification;
 	}
 
-	public String getText() {
-		return text;
+	public String getTargetExtractionID() {
+		return targetExtractionID;
+	}
+
+	public Extraction getTargetElement(ExContent content) {
+		return content.getExtraction(targetExtractionID);
 	}
 
 	public Classification getClassification() {
 		return classification;
 	}
 
-	public void setClassification(Classification classification) {
-		this.classification = classification;
-	}
-
-	public Optional<ExSPO> getSpo() {
-		return Optional.ofNullable(spo);
-	}
-
-	public void setSpo(ExSPO spo) {
-		this.spo = spo;
+	@Override
+	public boolean equals(Object o) {
+		return ((o instanceof LinkedContext)
+			&& (((LinkedContext) o).targetExtractionID.equals(targetExtractionID))
+			&& (((LinkedContext) o).classification.equals(classification)));
 	}
 }

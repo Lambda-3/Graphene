@@ -44,8 +44,8 @@ public class ExContent extends Content {
         this.sentences = sentences;
     }
 
-    public void addElement(ExElement element) {
-        sentences.get(element.getSentenceIdx()).addElement(element);
+    public void addExtraction(Extraction element) {
+        sentences.get(element.getSentenceIdx()).addExtraction(element);
     }
 
     public boolean isCoreferenced() {
@@ -60,9 +60,9 @@ public class ExContent extends Content {
         return sentences;
     }
 
-    public ExElement getElement(String id) {
+    public Extraction getExtraction(String id) {
         for (ExSentence sentence : sentences) {
-            ExElement e = sentence.getElement(id);
+            Extraction e = sentence.getExtraction(id);
             if (e != null) {
                 return e;
             }
@@ -71,9 +71,9 @@ public class ExContent extends Content {
         return null;
     }
 
-    public List<ExElement> getElements() {
-        List<ExElement> res = new ArrayList<>();
-        sentences.forEach(s -> res.addAll(s.getElements()));
+    public List<Extraction> getExtractions() {
+        List<Extraction> res = new ArrayList<>();
+        sentences.forEach(s -> res.addAll(s.getExtractions()));
 
         return res;
     }

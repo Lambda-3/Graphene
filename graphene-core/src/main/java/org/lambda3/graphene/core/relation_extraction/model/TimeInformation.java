@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExContent.java - Graphene Core - Lambda^3 - 2017
+ * TimeInformation.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3

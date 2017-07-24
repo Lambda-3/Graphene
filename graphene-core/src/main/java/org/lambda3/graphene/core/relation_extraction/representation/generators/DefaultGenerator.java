@@ -43,35 +43,49 @@ public class DefaultGenerator extends RepGenerator {
             res.add("# " + exSentence.getOriginalSentence());
             res.add("");
 
-            for (ExElement element : exSentence.getElements()) {
+            for (Extraction element : exSentence.getExtractions()) {
                 if (!this.showText && !element.getSpo().isPresent()) {
                     continue;
                 }
 
-                // element
-                if (showText) {
-					res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + element.getText());
+                // Extraction
+				StringBuilder extractionLine = new StringBuilder();
+				if (showText) {
+					extractionLine
+						.append(element.getId())
+						.append("\t")
+						.append(element.getType())
+						.append("\t")
+						.append(element.getContextLayer())
+						.append("\t")
+						.append(element.getText());
 				} else {
-					ExSPO spo = element.getSpo().get();
-					res.add(element.getId() + "\t" + element.getContextLayer() + "\t" + spo.getSubject() + "\t" + spo.getPredicate() + "\t" + spo.getObject());
+					SPO spo = element.getSpo().get();
+					extractionLine
+						.append(element.getId())
+						.append("\t")
+						.append(element.getType())
+						.append("\t")
+						.append(element.getContextLayer())
+						.append("\t")
+						.append(spo.getSubject())
+						.append("\t")
+						.append(spo.getPredicate())
+						.append("\t")
+						.append(spo.getObject().orElse(""));
 				}
+				res.add(extractionLine.toString());
 
-                // vContexts
-                for (ExVContext context : element.getVContexts()) {
-                    String vContextRep = vContextRep(context, false);
+                // SimpleContexts
+                for (SimpleContext context : element.getSimpleContexts()) {
+                    String vContextRep = simpleContextRep(context, false);
                     res.add("\t" + vContextRep);
                 }
 
-                // nContexts
-                for (ExNContext context : element.getNContexts()) {
-                    Optional<String> nContextRep = nContextRep(context, false);
-                    nContextRep.ifPresent(s -> res.add("\t" + s));
-                }
-
-                // element contexts
-                for (ExElementRelation relation : element.getRelations()) {
-                    ExElement target = relation.getTargetElement(content);
-                    Optional<String> elemContextRep = elemContextRep(target, relation.getClassification(), true, false);
+                // LinkedContexts
+                for (LinkedContext context : element.getLinkedContexts()) {
+                    Extraction target = context.getTargetElement(content);
+                    Optional<String> elemContextRep = linkedContextRep(target, context.getClassification(), true, false);
                     elemContextRep.ifPresent(s -> res.add("\t" + s));
                 }
 

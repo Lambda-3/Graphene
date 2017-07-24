@@ -43,9 +43,9 @@ public class DiscourseExtractionRunner {
 		this.discourseExtractor = new Processor(config);
 	}
 
-	private static Optional<ExVContext> isVContext(Element element) {
+	private static Optional<SimpleContext> isSimpleContext(Element element) {
         if (!element.isProperSentence()) {
-            ExVContext newContext = new ExVContext(element.getText());
+            SimpleContext newContext = new SimpleContext(element.getText());
 
             return Optional.of(newContext);
         } else {
@@ -53,13 +53,13 @@ public class DiscourseExtractionRunner {
         }
     }
 
-    private static ExElement getElement(Element element, Map<Element, ExElement> elementMapping) {
-        ExElement res;
+    private static Extraction getElement(Element element, Map<Element, Extraction> elementMapping) {
+        Extraction res;
 
         if (elementMapping.containsKey(element)) {
             res = elementMapping.get(element);
         } else {
-            res = new ExElement(element.getText(), element.getSentenceIdx(), element.getContextLayer());
+            res = new Extraction(ExtractionType.VERB_BASED, element.getText(), element.getSentenceIdx(), element.getContextLayer());
 
             // add to map
             elementMapping.put(element, res);
@@ -74,7 +74,7 @@ public class DiscourseExtractionRunner {
 		Processor.ProcessingType processingType = (isolateSentences)? Processor.ProcessingType.SEPARATE : Processor.ProcessingType.WHOLE;
         List<OutSentence> outSentences = discourseExtractor.process(sentences, processingType);
 
-        HashMap<Element, ExElement> elementMapping = new LinkedHashMap<>(); // maps (former) Elements to ExElements
+        HashMap<Element, Extraction> elementMapping = new LinkedHashMap<>(); // maps (former) Elements to Extractions
         List<ExSentence> exSentences = new ArrayList<>();
 
         for (OutSentence outSentence : outSentences) {
@@ -82,34 +82,34 @@ public class DiscourseExtractionRunner {
 
             for (Element element : outSentence.getElements()) {
 
-                // create element
-                if (!isVContext(element).isPresent()) {
-                    ExElement newElement = getElement(element, elementMapping);
+                // create Extraction
+                if (!isSimpleContext(element).isPresent()) {
+                    Extraction newExtraction = getElement(element, elementMapping);
 
-                    // add new element
-                    exSentence.addElement(newElement);
+                    // add new Extraction
+                    exSentence.addExtraction(newExtraction);
 
-                    // add relations
+                    // process relations
                     for (ElementRelation elementRelation : element.getRelations()) {
 
-                        // create VContext
-                        Optional<ExVContext> ct = isVContext(elementRelation.getTarget());
+                        // create SimpleContext
+                        Optional<SimpleContext> ct = isSimpleContext(elementRelation.getTarget());
                         if (ct.isPresent()) {
-                            ExVContext newContext = ct.get();
+                            SimpleContext newContext = ct.get();
 
                             // set classification
                             newContext.setClassification(Classification.convert(elementRelation.getRelation()));
 
-                            // add context
-                            newElement.addVContext(newContext);
+                            // add SimpleContext
+                            newExtraction.addSimpleContext(newContext);
                         } else
 
-                        // create relation
+                        // create LinkedContext
                         {
-                            ExElement target = getElement(elementRelation.getTarget(), elementMapping);
+                            Extraction target = getElement(elementRelation.getTarget(), elementMapping);
 
-                            // add relation
-                            newElement.addRelation(new ExElementRelation(target.getId(), Classification.convert(elementRelation.getRelation())));
+                            // add LinkedContext
+                            newExtraction.addLinkedContext(new LinkedContext(target.getId(), Classification.convert(elementRelation.getRelation())));
                         }
                     }
                 }
