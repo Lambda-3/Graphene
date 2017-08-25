@@ -118,7 +118,7 @@ Compiling and packaging requires two additional packages:
 
 ### Discourse Simplification
 	cd /tmp
-	wget https://github.com/Lambda-3/DiscourseSimplification/archive/v7.1.0.tar.gz -O DiscourseSimplification.tar.gz
+	wget https://github.com/Lambda-3/DiscourseSimplification/archive/v8.0.0.tar.gz -O DiscourseSimplification.tar.gz
 	tar xfa DiscourseSimplification.tar.gz
 	cd DiscourseSimplification
 	mvn -DskipTests install

@@ -5,7 +5,7 @@
 	<parent>
 		<artifactId>graphene</artifactId>
 		<groupId>org.lambda3.graphene</groupId>
-		<version>2.0.0-SNAPSHOT</version>
+		<version>3.0.0-SNAPSHOT</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 
@@ -15,8 +15,7 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<discourse_simplification.version>7.1.0</discourse_simplification.version>
-		<simplification.version>5.0.0</simplification.version>
+		<simplification.version>8.0.0-SNAPSHOT</simplification.version>
 	</properties>
 
 	<dependencies>
@@ -45,15 +44,9 @@
 		<dependency>
 			<groupId>org.lambda3.text.simplification</groupId>
 			<artifactId>discourse-simplification</artifactId>
-			<version>${discourse_simplification.version}</version>
-		</dependency>
-
-		<!-- Sentence Simplification -->
-		<dependency>
-			<groupId>org.lambda3.text.simplification</groupId>
-			<artifactId>sentence-simplification</artifactId>
 			<version>${simplification.version}</version>
 		</dependency>
+
 	</dependencies>
 
 	<build>

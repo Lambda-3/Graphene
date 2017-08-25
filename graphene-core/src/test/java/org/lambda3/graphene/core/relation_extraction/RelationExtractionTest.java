@@ -11,12 +11,12 @@ package org.lambda3.graphene.core.relation_extraction;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -26,11 +26,9 @@ package org.lambda3.graphene.core.relation_extraction;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.lambda3.graphene.core.coreference.Coreference;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
-import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
-import org.lambda3.graphene.core.relation_extraction.representation.RepStyle;
-import org.lambda3.graphene.core.utils.ConfigUtils;
+import org.lambda3.text.simplification.discourse.model.OutSentence;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -41,7 +39,7 @@ import java.io.IOException;
 public class RelationExtractionTest {
 	private final static Logger LOG = LoggerFactory.getLogger(RelationExtractionTest.class);
 
-	private static RelationExtraction relationExtraction;
+	private static RelationExtractionRunner relationExtractionRunner;
 
 	@BeforeClass
 	public static void beforeAll() {
@@ -49,12 +47,15 @@ public class RelationExtractionTest {
 			.load("reference.local")
 			.withFallback(ConfigFactory.load("reference"));
 
-		relationExtraction = new RelationExtraction(config.getConfig("graphene.relation-extraction"));
+		relationExtractionRunner = new RelationExtractionRunner(config.getConfig("graphene.relation-extraction"));
 	}
 
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
-		ExContent serializeContent = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.", true);
+		SimplificationContent sc = new SimplificationContent();
+		sc.addSentence(new OutSentence(0, "Peter went to Berlin and went to Paris."));
+
+		ExContent serializeContent = relationExtractionRunner.doRelationExtraction(sc);
 
 		// serialize
 		String json = serializeContent.serializeToJSON();
@@ -66,12 +67,16 @@ public class RelationExtractionTest {
 	}
 
 	@Test
-	public void testRDFOutput() throws IOException {
-		ExContent content = relationExtraction.doRelationExtraction("Peter went to Berlin and went to Paris.", true);
+	public void testOutput() throws IOException {
+		SimplificationContent sc = new SimplificationContent();
+		sc.addSentence(new OutSentence(0, "Peter went to Berlin and went to Paris."));
 
-		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.DEFAULT));
-		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.FLAT));
-		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.EXPANDED));
-		LOG.info(RepGenerator.getRDFRepresentation(content, RepStyle.N_TRIPLES));
+		ExContent content = relationExtractionRunner.doRelationExtraction(sc);
+
+		LOG.info(content.defaultFormat(false));
+		LOG.info(content.defaultFormat(true));
+		LOG.info(content.flatFormat(false));
+		LOG.info(content.flatFormat(true));
+		LOG.info(content.rdfFormat());
 	}
 }

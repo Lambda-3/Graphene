@@ -27,6 +27,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ExSentence {
@@ -44,8 +45,18 @@ public class ExSentence {
         this.extractionMap = new LinkedHashMap<>();
     }
 
+    public Optional<String> containsExtraction(Extraction extraction) {
+		for (Extraction e : extractionMap.values()) {
+			if (e.equals(extraction)) {
+				return Optional.ofNullable(e.getId());
+			}
+		}
+
+		return Optional.empty();
+	}
+
     public void addExtraction(Extraction extraction) {
-        extractionMap.putIfAbsent(extraction.getId(), extraction);
+		extractionMap.putIfAbsent(extraction.getId(), extraction);
     }
 
     public String getOriginalSentence() {
