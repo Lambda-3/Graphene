@@ -46,6 +46,8 @@ public class NestedRelationExtractor extends RelationExtractor {
 		List<BinaryExtraction> extractions = new ArrayList<>();
 
 		TregexPattern pattern = TregexPattern.compile("NP=arg1 $.. (VP=vp [ <+(VP) (VP=lowestvp !< VP) | ==(VP=lowestvp !< VP) ])");
+		// this will generate nicer predicates that conform to matrix predicates (e.g. "failed to increase"), but lead to a minor decrease in P and R in benchmark test
+//		TregexPattern pattern = TregexPattern.compile("NP=arg1 $.. (VP=vp [ <+(S|VP) (VP=lowestvp !< VP !< S) | ==(VP=lowestvp !< VP !< S) ])");
 		TregexMatcher matcher = pattern.matcher(parseTree);
 		while (matcher.find()) {
 			Tree arg1 = matcher.getNode("arg1");
