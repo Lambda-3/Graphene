@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.impl;
 
 /*-
  * ==========================License-Start=============================
- * SimpleCoreRelationExtractor.java - Graphene Core - Lambda^3 - 2017
+ * NestedRelationExtractor.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -39,7 +39,7 @@ import java.util.List;
 /**
  *
  */
-public class SimpleRelationExtractor extends RelationExtractor {
+public class NestedRelationExtractor extends RelationExtractor {
 
 	@Override
 	public List<BinaryExtraction> doExtraction(Tree parseTree) {

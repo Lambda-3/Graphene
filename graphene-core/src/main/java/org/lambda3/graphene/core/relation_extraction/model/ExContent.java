@@ -89,8 +89,7 @@ public class ExContent extends Content {
 		for (ExSentence sentence : getSentences()) {
 			strb.append("\n# " + sentence.getOriginalSentence() + "\n");
 			for (Extraction extraction : sentence.getExtractions()) {
-				String conf = extraction.getConfidence().isPresent()? "" + extraction.getConfidence().get().doubleValue() : "null";
-				strb.append("\n" + extraction.getId() + "\t" + extraction.getType() + "\t" + conf + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
+				strb.append("\n" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getClassification() + "\t" + simpleContext.getText() + "\n");
 				}
@@ -114,8 +113,7 @@ public class ExContent extends Content {
 		StringBuilder strb = new StringBuilder();
 		for (ExSentence sentence : getSentences()) {
 			for (Extraction extraction : sentence.getExtractions()) {
-				String conf = extraction.getConfidence().isPresent()? "" + extraction.getConfidence().get().doubleValue() : "null";
-				strb.append(sentence.getOriginalSentence() + "\t" + extraction.getId() + "\t" + extraction.getType() + "\t" + conf + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
+				strb.append(sentence.getOriginalSentence() + "\t" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getClassification() + "(" + simpleContext.getText() + ")");
 				}

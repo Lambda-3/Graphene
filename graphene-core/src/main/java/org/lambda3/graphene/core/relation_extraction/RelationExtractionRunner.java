@@ -53,7 +53,7 @@ public class RelationExtractionRunner {
 	private final boolean exploitCore;
 	private final boolean exploitContexts;
 	private final boolean separateNounBased;
-	private final boolean separateEnablements;
+	private final boolean separatePurposes;
 	private final boolean separateAttributions;
 
 	private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -96,7 +96,7 @@ public class RelationExtractionRunner {
 		this.exploitCore = config.getBoolean("exploit-core");
 		this.exploitContexts = config.getBoolean("exploit-contexts");
 		this.separateNounBased = config.getBoolean("separate-noun-based");
-		this.separateEnablements = config.getBoolean("separate-enablements");
+		this.separatePurposes = config.getBoolean("separate-purposes");
 		this.separateAttributions = config.getBoolean("separate-attributions");
 
 		// instantiate extractor
@@ -174,9 +174,9 @@ public class RelationExtractionRunner {
 				)))
 			);
 
-		} else if (simpleContext.getRelation().equals(Relation.ENABLEMENT) && separateEnablements) {
+		} else if (simpleContext.getRelation().equals(Relation.PURPOSE) && separatePurposes) {
 
-			// ENABLEMENT
+			// PURPOSES
 			TregexPattern pattern = TregexPattern.compile("VP=vp !>> VP [ <+(VP) (VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) | ==(VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) ]");
 			TregexMatcher matcher = pattern.matcher(simpleContext.getPhrase());
 			while (matcher.find()) {

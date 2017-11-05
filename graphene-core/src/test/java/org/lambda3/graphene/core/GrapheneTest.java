@@ -1,8 +1,8 @@
-package org.lambda3.graphene.core.relation_extraction;
+package org.lambda3.graphene.core;
 
 /*-
  * ==========================License-Start=============================
- * RelationExtractionTest.java - Graphene Core - Lambda^3 - 2017
+ * GrapheneTest.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -27,19 +27,18 @@ package org.lambda3.graphene.core.relation_extraction;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
-import org.lambda3.text.simplification.discourse.model.OutSentence;
-import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.io.IOException;
 
-public class RelationExtractionTest {
-	private final static Logger LOG = LoggerFactory.getLogger(RelationExtractionTest.class);
+public class GrapheneTest {
+	private final static Logger LOG = LoggerFactory.getLogger(GrapheneTest.class);
 
-	private static RelationExtractionRunner relationExtractionRunner;
+	private static Graphene graphene;
 
 	@BeforeClass
 	public static void beforeAll() {
@@ -47,36 +46,36 @@ public class RelationExtractionTest {
 			.load("reference.local")
 			.withFallback(ConfigFactory.load("reference"));
 
-		relationExtractionRunner = new RelationExtractionRunner(config.getConfig("graphene.relation-extraction"));
+		graphene = new Graphene();
 	}
 
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
-		SimplificationContent sc = new SimplificationContent();
-		sc.addSentence(new OutSentence(0, "Peter went to Berlin and went to Paris."));
+		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
+		ExContent c = graphene.doRelationExtraction(text, false, false);
 
-		ExContent serializeContent = relationExtractionRunner.doRelationExtraction(sc);
+		final String filename = "tmp-w8weg3q493ewqieh.json";
 
-		// serialize
-		String json = serializeContent.serializeToJSON();
+		LOG.info("SAVE TO FILE...");
+		c.serializeToJSON(new File(filename));
 
-		LOG.info(json);
+		LOG.info("LOAD FROM FILE...");
+		ExContent loaded = ExContent.deserializeFromJSON(new File(filename), ExContent.class);
 
-		// deserialization
-		ExContent deserializeContent = ExContent.deserializeFromJSON(json, ExContent.class);
+		LOG.info(loaded.defaultFormat(false));
+
+		LOG.info("DELETE FILE...");
+		File file = new File(filename);
+		file.delete();
 	}
 
 	@Test
 	public void testOutput() throws IOException {
-		SimplificationContent sc = new SimplificationContent();
-		sc.addSentence(new OutSentence(0, "Peter went to Berlin and went to Paris."));
+		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
+		ExContent c = graphene.doRelationExtraction(text, false, false);
 
-		ExContent content = relationExtractionRunner.doRelationExtraction(sc);
-
-		LOG.info(content.defaultFormat(false));
-		LOG.info(content.defaultFormat(true));
-		LOG.info(content.flatFormat(false));
-		LOG.info(content.flatFormat(true));
-		LOG.info(content.rdfFormat());
+		LOG.info(c.defaultFormat(false));
+		LOG.info(c.flatFormat(false));
+		LOG.info(c.rdfFormat());
 	}
 }

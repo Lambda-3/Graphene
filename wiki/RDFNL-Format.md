@@ -29,7 +29,7 @@ The `type_string` encodes both `context_class`:
 * `NCON`: context mediated by nouns
 * `ELEM`: relation to another extraction
 
-and the classified `rhetorical_relation` (e.g. CAUSE, ENABLEMENT, LOCATION) separated by a `-` character.
+and the classified `rhetorical_relation` (e.g. CAUSE, PURPOSE, LOCATION) separated by a `-` character.
 
 After the `type_string`, there follow tab-separated values for:
 * `object` (if `type_string = VCON`)
