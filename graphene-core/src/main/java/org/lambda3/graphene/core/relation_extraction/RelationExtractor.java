@@ -45,7 +45,7 @@ public abstract class RelationExtractor {
 		List<BinaryExtraction> extractions = doExtraction(parseTree);
 		extractions.stream().forEach(e -> {
 			if (headVerb.isPresent()) {
-				e.setCoreExtraction(e.getRelation().contains(headVerb.get()));
+				e.setCoreExtraction(e.getRelation().contains(headVerb.get()) || e.getArg2().equals(headVerb.get()));
 			} else {
 				e.setCoreExtraction(false);
 			}
