@@ -27,12 +27,13 @@ Returns the JSON-serialized versions of the `ExContent` class or a textual repre
 * `Accept: text/plain`: returns a textual representation specified by the `format` parameter
 
 * **text**: The input text (mandatory). 
-* **doCoreference**: Specifies, whether coreference should be executed before the simplification (true/false).
+* **doCoreference**: Specifies whether coreference should be executed before the simplification (true/false).
 * **isolateSentences**: Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set **true**, if you run Graphene over a collection of independent sentences and **false** for a full coherent text (true/false).
-* **format**: Specifies, which textual representation should be returned:
+* **format**: Specifies which textual representation should be returned:
     * `DEFAULT`: The default RDFNL format
+    * `DEFAULT_RESOLVED`: The resolved default RDFNL format
     * `FLAT`: The flat RDFNL format
-    * `EXTENDED`: The extended RDFNL format
+    * `FLAT_RESSOLVED`: The flat resolved RDFNL format
     * `RDF`: The RDF N-Triples format
 
 Examples:
