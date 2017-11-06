@@ -87,7 +87,12 @@ public class Graphene {
 		return content;
 	}
 
-	public SimplificationContent doDiscourseSimplification(String text, boolean isolateSentences) {
+	public SimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
+		if (doCoreference) {
+			final CoreferenceContent cc = doCoreference(text);
+			text = cc.getSubstitutedText();
+		}
+
 		log.debug("doDiscourseSimplification for text");
 		final SimplificationContent simplificationContent = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
 		log.debug("Discourse Simplification for text finished");
@@ -95,12 +100,7 @@ public class Graphene {
 	}
 
 	public ExContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences) {
-        if (doCoreference) {
-            final CoreferenceContent cc = doCoreference(text);
-            text = cc.getSubstitutedText();
-        }
-
-        final SimplificationContent simplificationContent = doDiscourseSimplification(text, isolateSentences);
+        final SimplificationContent simplificationContent = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");
         final ExContent ec = relationExtractionRunner.doRelationExtraction(simplificationContent);
