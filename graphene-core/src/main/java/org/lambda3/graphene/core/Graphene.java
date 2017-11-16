@@ -29,11 +29,12 @@ import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.Coreference;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.coreference.model.Link;
-import org.lambda3.graphene.core.relation_extraction.RelationExtraction;
+import org.lambda3.graphene.core.relation_extraction.RelationExtractionRunner;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
-import org.lambda3.graphene.core.relation_extraction.representation.RepGenerator;
-import org.lambda3.graphene.core.relation_extraction.representation.RepStyle;
 import org.lambda3.graphene.core.utils.ConfigUtils;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
+import org.lambda3.text.simplification.discourse.processing.DiscourseSimplifier;
+import org.lambda3.text.simplification.discourse.processing.ProcessingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,7 +46,8 @@ public class Graphene {
 	private final Config config;
 
 	private final Coreference coreference;
-	private final RelationExtraction relationExtraction;
+	private final DiscourseSimplifier discourseSimplificationRunner;
+	private final RelationExtractionRunner relationExtractionRunner;
 
 	public Graphene() {
 		this(ConfigFactory.load());
@@ -55,8 +57,10 @@ public class Graphene {
 		this.config = config
 			.withFallback(ConfigFactory.load("build"))
 			.getConfig("graphene");
+
 		this.coreference = new Coreference(this.config.getConfig("coreference"));
-		this.relationExtraction = new RelationExtraction(this.config.getConfig("relation-extraction"));
+		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
+		this.relationExtractionRunner = new RelationExtractionRunner(this.config.getConfig("relation-extraction"));
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
@@ -83,29 +87,35 @@ public class Graphene {
 		return content;
 	}
 
+	public SimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
+		if (doCoreference) {
+			final CoreferenceContent cc = doCoreference(text);
+			text = cc.getSubstitutedText();
+		}
+
+		log.debug("doDiscourseSimplification for text");
+		final SimplificationContent simplificationContent = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
+		log.debug("Discourse Simplification for text finished");
+		return simplificationContent;
+	}
+
 	public ExContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences) {
-        if (doCoreference) {
-            final CoreferenceContent cc = doCoreference(text);
-            text = cc.getSubstitutedText();
-        }
+        final SimplificationContent simplificationContent = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");
-        final ExContent ec = relationExtraction.doRelationExtraction(text, isolateSentences);
+        final ExContent ec = relationExtractionRunner.doRelationExtraction(simplificationContent);
 		ec.setCoreferenced(doCoreference);
 		log.debug("Relation Extraction for text finished");
 		return ec;
 	}
 
-	public String getRepresentation(ExContent exContent, RepStyle repStyle, int maxContextDepth) {
-		log.debug("generate output representation for exContent");
-		return RepGenerator.getRDFRepresentation(exContent, repStyle, maxContextDepth);
+	public ExContent doRelationExtraction(SimplificationContent simplificationContent, boolean coreferenced) {
+		log.debug("doRelationExtraction for simplificationContent");
+		final ExContent ec = relationExtractionRunner.doRelationExtraction(simplificationContent);
+		ec.setCoreferenced(coreferenced);
+		log.debug("Relation Extraction for simplificationContent finished");
+		return ec;
 	}
-
-    public String getRepresentation(ExContent exContent, RepStyle repStyle) {
-        log.debug("generate output representation for exContent");
-        return RepGenerator.getRDFRepresentation(exContent, repStyle);
-    }
-
 
 	public VersionInfo getVersionInfo() {
 		if (log.isDebugEnabled()) {

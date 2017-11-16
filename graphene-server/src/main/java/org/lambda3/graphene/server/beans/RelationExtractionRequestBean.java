@@ -89,13 +89,10 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 
 
 	public enum RelationOutputFormat {
-		RDF,
-		RDF_TEXT,
 		DEFAULT,
-		DEFAULT_TEXT,
+		DEFAULT_RESOLVED,
 		FLAT,
-		FLAT_TEXT,
-		EXPANDED,
-		EXPANDED_TEXT
+		FLAT_RESOLVED,
+		RDF
 	}
 }

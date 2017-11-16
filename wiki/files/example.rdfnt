@@ -1,0 +1,17 @@
+
+# Although the Treasury will announce details of the November refunding on Monday , the funding will be delayed if Congress and President Bush fail to increase the Treasury 's borrowing capacity .
+
+bacf06771e0f4fc5a8e68c30fc77c9c4	0	the Treasury	will announce	details of the November refunding
+	S:TEMPORAL	on Monday .
+	L:CONTRAST	948eeebd73564adab7dee5c6f177b3b9
+
+948eeebd73564adab7dee5c6f177b3b9	0	the funding	will be delayed	
+	L:CONDITION	006a71e51295440fab7a8e8c697d2ba6
+	L:CONDITION	e4d86228cff443b7a8e9f6d8a5c5987b
+	L:CONTRAST	bacf06771e0f4fc5a8e68c30fc77c9c4
+
+006a71e51295440fab7a8e8c697d2ba6	1	Congress	fail	to increase the Treasury 's borrowing capacity
+	L:LIST	e4d86228cff443b7a8e9f6d8a5c5987b
+
+e4d86228cff443b7a8e9f6d8a5c5987b	1	president Bush	fail	to increase the Treasury 's borrowing capacity
+	L:LIST	006a71e51295440fab7a8e8c697d2ba6

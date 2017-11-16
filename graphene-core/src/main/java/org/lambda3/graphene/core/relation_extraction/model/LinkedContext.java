@@ -24,35 +24,37 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
+import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
+
 public class LinkedContext {
-	private String targetExtractionID;
-	private Classification classification;
+	private String targetID;
+	private Relation classification;
 
 	// for deserialization
 	public LinkedContext() {
 	}
 
-	public LinkedContext(String targetExtractionID, Classification classification) {
-		this.targetExtractionID = targetExtractionID;
+	public LinkedContext(String targetID, Relation classification) {
+		this.targetID = targetID;
 		this.classification = classification;
 	}
 
-	public String getTargetExtractionID() {
-		return targetExtractionID;
+	public String getTargetID() {
+		return targetID;
 	}
 
-	public Extraction getTargetElement(ExContent content) {
-		return content.getExtraction(targetExtractionID);
+	public Extraction getTargetExtraction(ExContent content) {
+		return content.getExtraction(targetID);
 	}
 
-	public Classification getClassification() {
+	public Relation getClassification() {
 		return classification;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		return ((o instanceof LinkedContext)
-			&& (((LinkedContext) o).targetExtractionID.equals(targetExtractionID))
+			&& (((LinkedContext) o).targetID.equals(targetID))
 			&& (((LinkedContext) o).classification.equals(classification)));
 	}
 }
