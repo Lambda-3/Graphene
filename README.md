@@ -133,6 +133,22 @@ Then, you can build and start the composed images:
 
 ### Graphene-Core
 Graphene comes with a Java API which is described [here](wiki/Graphene-Core.md).
+
+In order to use the Graphene API within your own Java application, you can import it as a Maven dependency.
+For this task, install Graphene-Core into your local repository:
+
+    mvn clean install -DskipTests
+
+and add the following lines to your project's `pom.xml` file:
+
+```
+<dependency>
+    <groupId>org.lambda3.graphene</groupId>
+    <artifactId>graphene-core</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+</dependency>
+```
+
 You must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`. Start it with `docker-compose -f docker-compose-core.yml`. You must then change the config file:
 ```
 graphene {
