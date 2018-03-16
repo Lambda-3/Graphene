@@ -1,35 +1,60 @@
-# The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life .
 
-_:65e72e14ff3f4e9bb173afd10a84050a <http://lambda3.org/graphene/sentence#original-text> "The café arrived in Paris in the 17th century , when the beverage was first brought from Turkey , and by the 18th century Parisian cafés were centres of the city 's political and cultural life ."^^<http://www.w3.org/2001/XMLSchema#string> .
+# Although the Treasury will announce details of the November refunding on Monday , the funding will be delayed if Congress and President Bush fail to increase the Treasury 's borrowing capacity .
 
-_:65e72e14ff3f4e9bb173afd10a84050a <http://lambda3.org/graphene/sentence#has-extraction> _:fcbcb5c547f248cc88f8aa3033178d12 .
-_:fcbcb5c547f248cc88f8aa3033178d12 <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#The+beverage> .
-_:fcbcb5c547f248cc88f8aa3033178d12 <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#was+first+brought> .
-_:fcbcb5c547f248cc88f8aa3033178d12 <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#> .
-_:fcbcb5c547f248cc88f8aa3033178d12 <http://lambda3.org/graphene/extraction#context-layer> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<http://lambda3.org/graphene/text#The+beverage> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "The beverage"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lambda3.org/graphene/text#was+first+brought> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "was first brought"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:1e39d1cfb167421bacc237d55b05832e <http://lambda3.org/graphene/sentence#original-text> "Although the Treasury will announce details of the November refunding on Monday , the funding will be delayed if Congress and President Bush fail to increase the Treasury 's borrowing capacity ."^^<http://www.w3.org/2001/XMLSchema#string> .
+
+_:1e39d1cfb167421bacc237d55b05832e <http://lambda3.org/graphene/sentence#has-extraction> _:bacf06771e0f4fc5a8e68c30fc77c9c4 .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#extraction-type> "VERB_BASED"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#the+Treasury> .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#will+announce> .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#details+of+the+November+refunding> .
+
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#S-TEMPORAL> <http://lambda3.org/graphene/text#on+Monday+.> .
+_:bacf06771e0f4fc5a8e68c30fc77c9c4 <http://lambda3.org/graphene/extraction#L-CONTRAST> _:948eeebd73564adab7dee5c6f177b3b9 .
+
+<http://lambda3.org/graphene/text#the+Treasury> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "the Treasury"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#will+announce> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "will announce"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#details+of+the+November+refunding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "details of the November refunding"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#on+Monday+.> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "on Monday ."^^<http://www.w3.org/2001/XMLSchema#string> .
+
+_:1e39d1cfb167421bacc237d55b05832e <http://lambda3.org/graphene/sentence#has-extraction> _:948eeebd73564adab7dee5c6f177b3b9 .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#extraction-type> "VERB_BASED"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#the+funding> .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#will+be+delayed> .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#> .
+
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#L-CONDITION> _:006a71e51295440fab7a8e8c697d2ba6 .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#L-CONDITION> _:e4d86228cff443b7a8e9f6d8a5c5987b .
+_:948eeebd73564adab7dee5c6f177b3b9 <http://lambda3.org/graphene/extraction#L-CONTRAST> _:bacf06771e0f4fc5a8e68c30fc77c9c4 .
+
+<http://lambda3.org/graphene/text#the+funding> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "the funding"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#will+be+delayed> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "will be delayed"^^<http://www.w3.org/2001/XMLSchema#string> .
 <http://lambda3.org/graphene/text#> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> ""^^<http://www.w3.org/2001/XMLSchema#string> .
-_:fcbcb5c547f248cc88f8aa3033178d12 <http://lambda3.org/graphene/extraction#VCON-SPATIAL> <http://lambda3.org/graphene/text#from+Turkey+.> .
-<http://lambda3.org/graphene/text#from+Turkey+.> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "from Turkey ."^^<http://www.w3.org/2001/XMLSchema#string> .
 
-_:65e72e14ff3f4e9bb173afd10a84050a <http://lambda3.org/graphene/sentence#has-extraction> _:3469c5159933484a8bbdb5b1df36136f .
-_:3469c5159933484a8bbdb5b1df36136f <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#The+caf%C3%A9> .
-_:3469c5159933484a8bbdb5b1df36136f <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#arrived> .
-_:3469c5159933484a8bbdb5b1df36136f <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#in+Paris+in+the+17th+century> .
-_:3469c5159933484a8bbdb5b1df36136f <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<http://lambda3.org/graphene/text#The+caf%C3%A9> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "The café"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lambda3.org/graphene/text#arrived> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "arrived"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lambda3.org/graphene/text#in+Paris+in+the+17th+century> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "in Paris in the 17th century"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:3469c5159933484a8bbdb5b1df36136f <http://lambda3.org/graphene/extraction#ELEM-BACKGROUND> _:fcbcb5c547f248cc88f8aa3033178d12 .
+_:1e39d1cfb167421bacc237d55b05832e <http://lambda3.org/graphene/sentence#has-extraction> _:006a71e51295440fab7a8e8c697d2ba6 .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#extraction-type> "VERB_BASED"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#context-layer> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#Congress> .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#fail> .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#to+increase+the+Treasury+%27s+borrowing+capacity> .
 
-_:65e72e14ff3f4e9bb173afd10a84050a <http://lambda3.org/graphene/sentence#has-extraction> _:394d55aacc064bcc82912689dc0500b9 .
-_:394d55aacc064bcc82912689dc0500b9 <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#Parisian+caf%C3%A9s> .
-_:394d55aacc064bcc82912689dc0500b9 <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#were> .
-_:394d55aacc064bcc82912689dc0500b9 <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#centres+of+the+city+%27s+political+and+cultural+life> .
-_:394d55aacc064bcc82912689dc0500b9 <http://lambda3.org/graphene/extraction#context-layer> "0"^^<http://www.w3.org/2001/XMLSchema#integer> .
-<http://lambda3.org/graphene/text#Parisian+caf%C3%A9s> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "Parisian cafés"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lambda3.org/graphene/text#were> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "were"^^<http://www.w3.org/2001/XMLSchema#string> .
-<http://lambda3.org/graphene/text#centres+of+the+city+%27s+political+and+cultural+life> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "centres of the city 's political and cultural life"^^<http://www.w3.org/2001/XMLSchema#string> .
-_:394d55aacc064bcc82912689dc0500b9 <http://lambda3.org/graphene/extraction#VCON-TEMPORAL> <http://lambda3.org/graphene/text#by+the+18th+century+.> .
-<http://lambda3.org/graphene/text#by+the+18th+century+.> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "by the 18th century ."^^<http://www.w3.org/2001/XMLSchema#string> .
+_:006a71e51295440fab7a8e8c697d2ba6 <http://lambda3.org/graphene/extraction#L-LIST> _:e4d86228cff443b7a8e9f6d8a5c5987b .
+
+<http://lambda3.org/graphene/text#Congress> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "Congress"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#fail> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "fail"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#to+increase+the+Treasury+%27s+borrowing+capacity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "to increase the Treasury 's borrowing capacity"^^<http://www.w3.org/2001/XMLSchema#string> .
+
+_:1e39d1cfb167421bacc237d55b05832e <http://lambda3.org/graphene/sentence#has-extraction> _:e4d86228cff443b7a8e9f6d8a5c5987b .
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#extraction-type> "VERB_BASED"^^<http://www.w3.org/2001/XMLSchema#string> .
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#context-layer> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#subject> <http://lambda3.org/graphene/text#president+Bush> .
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#predicate> <http://lambda3.org/graphene/text#fail> .
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#object> <http://lambda3.org/graphene/text#to+increase+the+Treasury+%27s+borrowing+capacity> .
+
+_:e4d86228cff443b7a8e9f6d8a5c5987b <http://lambda3.org/graphene/extraction#L-LIST> _:006a71e51295440fab7a8e8c697d2ba6 .
+
+<http://lambda3.org/graphene/text#president+Bush> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "president Bush"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#fail> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "fail"^^<http://www.w3.org/2001/XMLSchema#string> .
+<http://lambda3.org/graphene/text#to+increase+the+Treasury+%27s+borrowing+capacity> <http://www.w3.org/1999/02/22-rdf-syntax-ns#value> "to increase the Treasury 's borrowing capacity"^^<http://www.w3.org/2001/XMLSchema#string> .

@@ -31,28 +31,32 @@ import java.util.List;
 import java.util.Optional;
 
 public class Extraction {
-	private ExtractionType type;
 	private String id;
-	private String text;
+	private ExtractionType type;
+	private Double confidence; //optional
 	private int sentenceIdx;
 	private int contextLayer;
+	private String relation;
+	private String arg1;
+	private String arg2;
 	private List<LinkedContext> linkedContexts;
 	private List<SimpleContext> simpleContexts;
-	private SPO spo; // optional
 
 	// for deserialization
 	public Extraction() {
 	}
 
-	public Extraction(ExtractionType type, String text, int sentenceIdx, int contextLayer) {
+	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, String relation, String arg1, String arg2) {
 		this.id = IDGenerator.generateUUID();
 		this.type = type;
-		this.text = text;
+		this.confidence = confidence;
 		this.sentenceIdx = sentenceIdx;
 		this.contextLayer = contextLayer;
+		this.relation = relation;
+		this.arg1 = arg1;
+		this.arg2 = arg2;
 		this.linkedContexts = new ArrayList<>();
 		this.simpleContexts = new ArrayList<>();
-		this.spo = null;
 	}
 
 	public void addLinkedContext(LinkedContext context) {
@@ -75,12 +79,8 @@ public class Extraction {
 		return type;
 	}
 
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
+	public Optional<Double> getConfidence() {
+		return Optional.ofNullable(confidence);
 	}
 
 	public int getSentenceIdx() {
@@ -91,6 +91,18 @@ public class Extraction {
 		return contextLayer;
 	}
 
+	public String getRelation() {
+		return relation;
+	}
+
+	public String getArg1() {
+		return arg1;
+	}
+
+	public String getArg2() {
+		return arg2;
+	}
+
 	public List<LinkedContext> getLinkedContexts() {
 		return linkedContexts;
 	}
@@ -99,28 +111,30 @@ public class Extraction {
 		return simpleContexts;
 	}
 
-	public Optional<SPO> getSpo() {
-		return Optional.ofNullable(spo);
-	}
-
-	public void setSpo(SPO spo) {
-		this.spo = spo;
-	}
-
 	@Override
-	public boolean equals(Object obj) {
-		return ((obj instanceof Extraction) && (((Extraction) obj).getId().equals(getId())));
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Extraction that = (Extraction) o;
+
+		if (sentenceIdx != that.sentenceIdx) return false;
+		if (relation != null ? !relation.equals(that.relation) : that.relation != null) return false;
+		if (arg1 != null ? !arg1.equals(that.arg1) : that.arg1 != null) return false;
+		return arg2 != null ? arg2.equals(that.arg2) : that.arg2 == null;
 	}
 
 	@Override
 	public String toString() {
-		return "Extraction{" +
-			"type=" + type +
-			", id='" + id + '\'' +
-			", text='" + text + '\'' +
-			", sentenceIdx=" + sentenceIdx +
-			", contextLayer=" + contextLayer +
-			", spo=" + spo +
-			'}';
+		StringBuilder strb = new StringBuilder();
+		strb.append(id + "\t" + type + "\t" + contextLayer + "\t" + arg1 + "\t" + relation + "\t" + arg2);
+		simpleContexts.forEach(c -> {
+			strb.append("\tS:" + c.getClassification() + "(" + c.getText() + ")");
+		});
+		linkedContexts.forEach(c -> {
+			strb.append("\tL:" + c.getClassification() + "(" + c.getTargetID() + ")");
+		});
+
+		return strb.toString();
 	}
 }

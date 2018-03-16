@@ -24,20 +24,23 @@ package org.lambda3.graphene.core.relation_extraction.model;
  */
 
 
+import org.lambda3.text.simplification.discourse.model.TimeInformation;
+import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
+
 import java.util.Optional;
 
 public class SimpleContext {
     private String text;
-    private Classification classification;
+    private Relation classification;
     private TimeInformation timeInformation; // optional
 
     // for deserialization
     public SimpleContext() {
     }
 
-    public SimpleContext(String text) {
+    public SimpleContext(String text, Relation classification) {
         this.text = text;
-        this.classification = Classification.UNKNOWN;
+        this.classification = classification;
         this.timeInformation = null;
     }
 
@@ -45,13 +48,9 @@ public class SimpleContext {
         return text;
     }
 
-    public Classification getClassification() {
-        return classification;
-    }
-
-    public void setClassification(Classification classification) {
-        this.classification = classification;
-    }
+    public Relation getClassification() {
+		return classification;
+	}
 
 	public Optional<TimeInformation> getTimeInformation() {
 		return Optional.ofNullable(timeInformation);

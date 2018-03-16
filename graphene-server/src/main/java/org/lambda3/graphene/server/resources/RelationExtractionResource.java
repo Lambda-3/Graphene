@@ -25,7 +25,6 @@ package org.lambda3.graphene.server.resources;
 
 
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
-import org.lambda3.graphene.core.relation_extraction.representation.RepStyle;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,39 +68,27 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
         ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
-		RepStyle style;
-
+        String rep = "";
 		switch (bean.getFormat()) {
-			case RDF:
-				style = RepStyle.N_TRIPLES;
-				break;
-			case RDF_TEXT:
-				style = RepStyle.N_TRIPLES_TEXT;
-				break;
 			case DEFAULT:
-				style = RepStyle.DEFAULT;
+				rep = content.defaultFormat(false);
 				break;
-			case DEFAULT_TEXT:
-				style = RepStyle.DEFAULT_TEXT;
+			case DEFAULT_RESOLVED:
+				rep = content.defaultFormat(true);
 				break;
 			case FLAT:
-				style = RepStyle.FLAT;
+				rep = content.flatFormat(false);
 				break;
-			case FLAT_TEXT:
-				style = RepStyle.FLAT_TEXT;
+			case FLAT_RESOLVED:
+				rep = content.flatFormat(true);
 				break;
-			case EXPANDED:
-				style = RepStyle.EXPANDED;
-				break;
-			case EXPANDED_TEXT:
-				style = RepStyle.EXPANDED_TEXT;
+			case RDF:
+				rep = content.rdfFormat();
 				break;
 			default:
-				style = RepStyle.N_TRIPLES;
+				rep = content.defaultFormat(false);
 				break;
 		}
-
-        String rep = graphene.getRepresentation(content, style);
 
         return Response
                 .status(Response.Status.OK)
