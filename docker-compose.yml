@@ -5,9 +5,7 @@ services:
   graphene:
     depends_on:
       - coreference
-    build:
-      context: .
-      dockerfile: graphene-server/target/classes/Dockerfile-graphene
+    image: "lambdacube/graphene-server:3.0.0-SNAPSHOT"
     ports:
       - "8080:8080"
     links:
