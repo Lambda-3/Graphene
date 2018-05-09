@@ -103,8 +103,8 @@ Both are provided with the docker images:
 
 ### Setup of Graphene
 
-You must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`.
-Start it with `docker-compose -f docker-compose-core.yml`.
+For using coreference resolution, you must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`.
+Start it with `docker-compose -f docker-compose-core.yml up`.
 Then create a config file `conf/graphene.conf` pointing to the PyCobalt service:
 ```
 graphene {
@@ -133,6 +133,8 @@ To build both interfaces, you can specify both profiles:
 You can build and start the composed images by running:
 	
 	docker-compose up
+
+A short video tutorial on the Graphene setup for CLI usage (without coreference resolution) is provided [here](https://asciinema.org/a/piFkPipNwjyPKcniHYs5gAsrQ?speed=3).
 
 ## Usage
 
@@ -164,4 +166,3 @@ The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
 
 ## Graphene-CLI
 Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI.md).
-Like the Graphene-Core setup, you must have a PyCobalt instance running before.
