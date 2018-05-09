@@ -101,8 +101,17 @@ Both are provided with the docker images:
 * [CoreNLP](https://hub.docker.com/r/lambdacube/corenlp/)
 * [PyCobalt](https://hub.docker.com/r/lambdacube/pycobalt/)
 
-
 ### Setup of Graphene
+
+You must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`.
+Start it with `docker-compose -f docker-compose-core.yml`.
+Then create a config file `conf/graphene.conf` pointing to the PyCobalt service:
+```
+graphene {
+	coreference.url = "http://localhost:5128/resolve"
+}
+```
+
 Graphene-Core is build with
 
 	mvn clean package -DskipTests
@@ -121,11 +130,7 @@ To build both interfaces, you can specify both profiles:
 
 ### Docker-Compose
 
-Create a new config file and adjust your settings:
-
-	touch conf/graphene.conf
-
-Then, you can build and start the composed images:
+You can build and start the composed images by running:
 	
 	docker-compose up
 
@@ -147,13 +152,6 @@ and add the following lines to your project's `pom.xml` file:
     <artifactId>graphene-core</artifactId>
     <version>3.0.0-SNAPSHOT</version>
 </dependency>
-```
-
-You must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`. Start it with `docker-compose -f docker-compose-core.yml`. You must then change the config file:
-```
-graphene {
-	coreference.url = "http://localhost:5128/resolve"
-}
 ```
 
 ### Graphene-Sever

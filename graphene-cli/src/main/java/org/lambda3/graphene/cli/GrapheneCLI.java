@@ -35,6 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.lambda3.graphene.core.Content;
 import org.lambda3.graphene.core.Graphene;
+import org.lambda3.graphene.core.relation_extraction.model.ExContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,28 +55,32 @@ public class GrapheneCLI {
 
 	private final CmdLineParser cli;
 
-	@Option(name = "--help", aliases = {"-h"},
-		usage = "Prints help")
+	@Option(name = "--help", aliases = {"-h"}, usage = "Prints help")
 	private boolean help = false;
 
-	@Option(name = "--version", aliases = {"-v"},
-		usage = "Prints the version of Graphene")
+	@Option(name = "--version", aliases = {"-v"}, usage = "Prints the version of Graphene")
 	private boolean version = false;
 
-	@Option(name = "--input", usage = "Choose the format TEXT/FILE/WIKI")
-	private InputFormat inputFormat;
+	@Option(name = "--input", usage = "Choose the input format [TEXT/FILE/WIKI]")
+	private InputSource inputSource;
 
-	@Option(name = "--output",
-		usage = "Choose whether to create files or print result on commandline.")
-	private OutputFormat outputFormat;
+	@Option(name = "--output", usage = "Choose whether to create files [FILE] or print result on commandline [CMDLINE].")
+	private OutputSource outputSource;
 
-	@Option(name = "--coref")
+	@Option(name = "--format",
+		usage = "Specifies which textual representation for relationExtraction should be returned [DEFAULT/DEFAULT_RESOLVED/FLAT/FLAT_RESOLVED/RDF/SERIALIZED].")
+	private OutputFormat outputFormat = OutputFormat.DEFAULT;
+
+	@Option(name = "--doCoreference",
+		usage = "Specifies whether coreference should be executed.")
 	private boolean doCoref = false;
 
-	@Option(name = "--isolate")
+	@Option(name = "--isolateSentences",
+		usage = "Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set true, if you run Graphene over a collection of independent sentences and false for a full coherent text.")
 	private boolean isolateSentences = false;
 
-	@Option(name = "--extract")
+	@Option(name = "--relationExtraction",
+		usage = "Specifies whether relation extraction should be executed.")
 	private boolean doRelationExtraction = false;
 
 	@Argument(usage = "Input texts/files/articles")
@@ -89,7 +94,7 @@ public class GrapheneCLI {
 		new GrapheneCLI().doMain(args);
 	}
 
-	private static List<String> getInput(List<String> input, InputFormat format) {
+	private static List<String> getInput(List<String> input, InputSource format) {
 
 		List<String> result = null;
 
@@ -164,7 +169,7 @@ public class GrapheneCLI {
 			inputError("Input must be at least one entry.", false);
 		}
 
-		List<String> inputTexts = getInput(input, inputFormat);
+		List<String> inputTexts = getInput(input, inputSource);
 
 		Optional<List<Content>> result = Optional.empty();
 
@@ -197,7 +202,7 @@ public class GrapheneCLI {
 
 		for (int i = 0; i < contents.size(); ++i) {
 
-			switch (inputFormat) {
+			switch (inputSource) {
 				case TEXT:
 					outputName.append(String.format("%0" + input.size() + "d", i + 1));
 					break;
@@ -221,7 +226,7 @@ public class GrapheneCLI {
 			LOG.error("The output length is not the same as the input size: {}:{}", contents.size(), input.size());
 		}
 
-		switch (outputFormat) {
+		switch (outputSource) {
 			case CMDLINE:
 				convertContents(contents).forEach(this::printResult);
 				break;
@@ -229,6 +234,26 @@ public class GrapheneCLI {
 				convertContents(contents).forEach(this::writeResult);
 				break;
 		}
+	}
+
+	private String format(Content content) throws JsonProcessingException {
+		if (content instanceof ExContent) {
+			ExContent c = (ExContent)content;
+			switch (outputFormat) {
+				case DEFAULT:
+					return c.defaultFormat(false);
+				case DEFAULT_RESOLVED:
+					return c.defaultFormat(true);
+				case FLAT:
+					return c.flatFormat(false);
+				case FLAT_RESOLVED:
+					return c.flatFormat(true);
+				case RDF:
+					return c.rdfFormat();
+			}
+		}
+
+		return content.prettyPrint();
 	}
 
 	private void printResult(Result result) {
@@ -239,7 +264,7 @@ public class GrapheneCLI {
 		sb.append("Name: ").append(result.getName()).append(" →\n");
 
 		try {
-			sb.append(JSON.writeValueAsString(result.getContent()));
+			sb.append(format(result.getContent()));
 		} catch (JsonProcessingException e) {
 			LOG.error("Could not convert the result of '{}' to JSON", result.getName());
 			LOG.info("Exception:", e);
@@ -254,7 +279,7 @@ public class GrapheneCLI {
 		File outfile = new File(String.format("%s.txt", result.getName()));
 		try (FileWriter fw = new FileWriter(outfile)) {
 
-			fw.write(result.getContent().toString());
+			fw.write(format(result.getContent()));
 		} catch (FileNotFoundException e) {
 			LOG.error("Could not write file, file not found!", e);
 		} catch (IOException e) {
@@ -270,14 +295,23 @@ public class GrapheneCLI {
 		}
 	}
 
-	private enum OutputFormat {
+	private enum OutputSource {
 		CMDLINE,
 		FILE
 	}
 
-	private enum InputFormat {
+	private enum InputSource {
 		TEXT,
 		FILE,
 		WIKI
+	}
+
+	private enum OutputFormat {
+		DEFAULT,
+		DEFAULT_RESOLVED,
+		FLAT,
+		FLAT_RESOLVED,
+		RDF,
+		SERIALIZED
 	}
 }
