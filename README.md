@@ -134,7 +134,7 @@ You can build and start the composed images by running:
 	
 	docker-compose up
 
-A short video tutorial on the Graphene setup for CLI usage (without coreference resolution) is provided [here](https://asciinema.org/a/piFkPipNwjyPKcniHYs5gAsrQ?speed=3).
+A short video tutorial on the Graphene setup for CLI usage (without coreference resolution) is provided [here](https://asciinema.org/a/bvhgIP8ZEgDwtmRPFctHyxALu?speed=3).
 
 ## Usage
 
