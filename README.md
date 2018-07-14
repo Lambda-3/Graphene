@@ -1,6 +1,6 @@
 ![Graphene](wiki/images/graphene_logo.png)
 
-# Graphene: Knowledge Graph / Open Relation Extraction
+# Graphene: Knowledge Graph / Open Information Extraction
 
 ## Motivation
 
