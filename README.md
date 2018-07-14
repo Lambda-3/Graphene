@@ -166,3 +166,13 @@ The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
 
 ## Graphene-CLI
 Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI.md).
+
+
+## Citation
+@InProceedings{cetto2018graphene,
+  author    = {Matthias Cetto and Christina Niklaus and Andr\'{e} Freitas and Siegfried Handschuh},
+  title     = {Graphene: Semantically-Linked Propositions in Open Information Extraction},
+  booktitle = {Prooceedings of COLING 2018. To appear.},
+  year      = {2018}
+} 
+
