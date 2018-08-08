@@ -29,9 +29,9 @@ Discourse Simplification will recursively simplify the given input text and iden
 The Discourse Simplification service accepts the following endpoints with parameters:
 
 #### Endpoint: /discourseSimplification/text
-Returns the JSON-serialized versions of the `SimplificationContent` class or a textual representation depending on the value of the `Accept` header in the POST request:
+Returns the JSON-serialized versions of the `DiscourseSimplificationContent` class or a textual representation depending on the value of the `Accept` header in the POST request:
 * `Accept: text/plain`: returns a textual representation specified by the `format` parameter
-* `Accept: application/json`: returns JSON-serialized versions of `SimplificationContent`
+* `Accept: application/json`: returns JSON-serialized versions of `DiscourseSimplificationContent`
 
 * **text**: The input text (mandatory). 
 * **doCoreference**: Specifies whether coreference should be executed before Discourse-Simplification (true/false).
@@ -57,9 +57,9 @@ Open Relation Extraction will recursively simplify the given input text and iden
 The Open Relation Extraction service accepts the following endpoints with parameters:
 
 #### Endpoint: /relationExtraction/text
-Returns the JSON-serialized versions of the `ExContent` class or a textual representation depending on the value of the `Accept` header in the POST request:
+Returns the JSON-serialized versions of the `RelationExtractionContent` class or a textual representation depending on the value of the `Accept` header in the POST request:
 * `Accept: text/plain`: returns a textual representation specified by the `format` parameter
-* `Accept: application/json`: returns JSON-serialized versions of `ExContent`
+* `Accept: application/json`: returns JSON-serialized versions of `RelationExtractionContent`
 
 * **text**: The input text (mandatory). 
 * **doCoreference**: Specifies whether coreference should be executed before Relation-Extraction (true/false).

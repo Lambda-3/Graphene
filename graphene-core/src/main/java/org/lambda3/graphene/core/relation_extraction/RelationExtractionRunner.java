@@ -30,12 +30,12 @@ import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
+import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.model.*;
 import org.lambda3.graphene.core.relation_extraction.model.LinkedContext;
 import org.lambda3.graphene.core.relation_extraction.model.SimpleContext;
 import org.lambda3.text.simplification.discourse.model.Element;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
-import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
 import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeExtractionUtils;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
@@ -241,15 +241,15 @@ public class RelationExtractionRunner {
 		simpleContexts.add(c);
 	}
 
-	private void processLinkedContext(Element element, org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext, List<LinkedContext> linkedContexts, SimplificationContent simplificationContent, ExContent exContent) {
-		List<Extraction> targets = processElement(linkedContext.getTargetElement(simplificationContent), simplificationContent, exContent);
+	private void processLinkedContext(Element element, org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext, List<LinkedContext> linkedContexts, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
+		List<Extraction> targets = processElement(linkedContext.getTargetElement(discourseSimplificationContent), discourseSimplificationContent, relationExtractionContent);
 		targets.forEach(t -> linkedContexts.add(new LinkedContext(
 			t.getId(),
 			linkedContext.getRelation()
 		)));
 	}
 
-	private List<Extraction> processElement(Element element, SimplificationContent simplificationContent, ExContent exContent) {
+	private List<Extraction> processElement(Element element, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
 		if (elementCoreExtractionMap.containsKey(element)) {
 			return elementCoreExtractionMap.get(element);
 		} else {
@@ -265,17 +265,17 @@ public class RelationExtractionRunner {
 			element.getSimpleContexts().forEach(c -> processSimpleContext(element, c, newExtractions, simpleContexts));
 
 			// add core extractions
-			coreExtractions.forEach(e -> exContent.addExtraction(e));
+			coreExtractions.forEach(e -> relationExtractionContent.addExtraction(e));
 
 			// add new extractions
-			newExtractions.forEach(e -> exContent.addExtraction(e.getExtraction()));
+			newExtractions.forEach(e -> relationExtractionContent.addExtraction(e.getExtraction()));
 
 			// add to map
 			elementCoreExtractionMap.put(element, coreExtractions);
 
 			// process linked contexts (recursion)
 			for (org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext : element.getLinkedContexts()) {
-				processLinkedContext(element, linkedContext, linkedContexts, simplificationContent, exContent);
+				processLinkedContext(element, linkedContext, linkedContexts, discourseSimplificationContent, relationExtractionContent);
 			}
 
 			// add contexts (simple and linked) to core extractions
@@ -298,21 +298,21 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	public ExContent doRelationExtraction(SimplificationContent simplificationContent) {
-		ExContent exContent = new ExContent();
+	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent) {
+		RelationExtractionContent relationExtractionContent = new RelationExtractionContent();
 		elementCoreExtractionMap.clear();
 
-		for (OutSentence outSentence : simplificationContent.getSentences()) {
-			exContent.addSentence(new ExSentence(outSentence.getOriginalSentence(), outSentence.getSentenceIdx()));
+		for (OutSentence outSentence : discourseSimplificationContent.getSentences()) {
+			relationExtractionContent.addSentence(new ExSentence(outSentence.getOriginalSentence(), outSentence.getSentenceIdx()));
 		}
 
-		for (Element element : simplificationContent.getElements()) {
+		for (Element element : discourseSimplificationContent.getElements()) {
 			logger.info("\n######################################################################\n");
 			logger.info(element.toString());
 
-			processElement(element, simplificationContent, exContent);
+			processElement(element, discourseSimplificationContent, relationExtractionContent);
 		}
 
-		return exContent;
+		return relationExtractionContent;
 	}
 }

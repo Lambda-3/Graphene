@@ -32,18 +32,18 @@ Parameters:
 * **isolateSentences**: Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighbored sentences). Set **true**, if you run Graphene over a collection of independent sentences and **false** for a full coherent text.
 
 ```java
-SimplificationContent sc = graphene.doDiscourseSimplification("The text.", true, false);
+DiscourseSimplificationContent dsc = graphene.doDiscourseSimplification("The text.", true, false);
 
 // ### OUTPUT #####
 // default
-String defaultRep = sc.defaultFormat(false); // set **true** for resolved format
+String defaultRep = dsc.defaultFormat(false); // set **true** for resolved format
 
 // flat 
-String flatRep = sc.flatFormat(false); // set **true** for resolved format
+String flatRep = dsc.flatFormat(false); // set **true** for resolved format
 
 // ### SERIALIZE & DESERIALIZE ###
-SimplificationContent.serializeToJSON(new File("file.json"));
-SimplificationContent loaded = SimplificationContent.deserializeFromJSON(new File("file.json"), SimplificationContent.class);
+DiscourseSimplificationContent.serializeToJSON(new File("file.json"));
+DiscourseSimplificationContent loaded = DiscourseSimplificationContent.deserializeFromJSON(new File("file.json"), DiscourseSimplificationContent.class);
 ```
 
 ### Open Relation Extraction
@@ -53,21 +53,21 @@ This will generate relational tuples (subject-predicate-object extractions) out 
 Parameters: same as for Discourse Simplification
 
 ```java
-ExContent ec = graphene.doRelationExtraction("The text.", true, false);
+RelationExtractionContent rec = graphene.doRelationExtraction("The text.", true, false);
 
 // ### OUTPUT AS RDFNL #####
 // default
-String defaultRep = ec.defaultFormat(false); // set **true** for resolved format
+String defaultRep = rec.defaultFormat(false); // set **true** for resolved format
 
 // flat 
-String flatRep = ec.flatFormat(false); // set **true** for resolved format
+String flatRep = rec.flatFormat(false); // set **true** for resolved format
 
 // ### OUTPUT AS PROPER RDF (N-Triples) ###
 String rdf = ec.rdfFormat();
 
 // ### SERIALIZE & DESERIALIZE ###
-ExContent.serializeToJSON(new File("file.json"));
-ExContent loaded = ExContent.deserializeFromJSON(new File("file.json"), ExContent.class);
+RelationExtractionContent.serializeToJSON(new File("file.json"));
+RelationExtractionContent loaded = RelationExtractionContent.deserializeFromJSON(new File("file.json"), RelationExtractionContent.class);
 ```
 
 [Back to the home page](../README.md)

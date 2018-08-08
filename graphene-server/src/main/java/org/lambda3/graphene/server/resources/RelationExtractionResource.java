@@ -25,7 +25,7 @@ package org.lambda3.graphene.server.resources;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +51,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		RelationExtractionContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
 		return Response
                 .status(Response.Status.OK)
@@ -67,7 +67,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-        ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+        RelationExtractionContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
         String rep = "";
 		switch (bean.getFormat()) {

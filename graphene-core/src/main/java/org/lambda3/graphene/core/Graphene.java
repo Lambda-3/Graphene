@@ -28,17 +28,15 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.Coreference;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.coreference.model.Link;
+import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.RelationExtractionRunner;
-import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.lambda3.graphene.core.utils.ConfigUtils;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.lambda3.text.simplification.discourse.processing.DiscourseSimplifier;
 import org.lambda3.text.simplification.discourse.processing.ProcessingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 public class Graphene {
 	private final Logger log = LoggerFactory.getLogger(getClass());
@@ -73,33 +71,35 @@ public class Graphene {
 		return content;
 	}
 
-	public SimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
+	public DiscourseSimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
 		if (doCoreference) {
 			final CoreferenceContent cc = doCoreference(text);
 			text = cc.getSubstitutedText();
 		}
 
 		log.debug("doDiscourseSimplification for text");
-		final SimplificationContent simplificationContent = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
+		final SimplificationContent sc = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
+		final DiscourseSimplificationContent dsc = new DiscourseSimplificationContent(sc);
+		dsc.setCoreferenced(doCoreference);
 		log.debug("Discourse Simplification for text finished");
-		return simplificationContent;
+		return dsc;
 	}
 
-	public ExContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences) {
-        final SimplificationContent simplificationContent = doDiscourseSimplification(text, doCoreference, isolateSentences);
+	public RelationExtractionContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences) {
+        final DiscourseSimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");
-        final ExContent ec = relationExtractionRunner.doRelationExtraction(simplificationContent);
-		ec.setCoreferenced(doCoreference);
+        final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(dsc);
+		ec.setCoreferenced(dsc.isCoreferenced());
 		log.debug("Relation Extraction for text finished");
 		return ec;
 	}
 
-	public ExContent doRelationExtraction(SimplificationContent simplificationContent, boolean coreferenced) {
-		log.debug("doRelationExtraction for simplificationContent");
-		final ExContent ec = relationExtractionRunner.doRelationExtraction(simplificationContent);
-		ec.setCoreferenced(coreferenced);
-		log.debug("Relation Extraction for simplificationContent finished");
+	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent, boolean coreferenced) {
+		log.debug("doRelationExtraction for discourseSimplificationContent");
+		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(discourseSimplificationContent);
+		ec.setCoreferenced(discourseSimplificationContent.isCoreferenced());
+		log.debug("Relation Extraction for discourseSimplificationContent finished");
 		return ec;
 	}
 

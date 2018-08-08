@@ -35,9 +35,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
+import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.lambda3.text.simplification.discourse.model.Content;
-import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -285,8 +285,8 @@ public class GrapheneCLI {
 			}
 		}
 
-		if (content instanceof SimplificationContent) {
-			SimplificationContent c = (SimplificationContent)content;
+		if (content instanceof DiscourseSimplificationContent) {
+			DiscourseSimplificationContent c = (DiscourseSimplificationContent)content;
 			switch (simOutputFormat) {
 				case DEFAULT:
 					return c.defaultFormat(false);
@@ -301,8 +301,8 @@ public class GrapheneCLI {
 			}
 		}
 
-		if (content instanceof ExContent) {
-			ExContent c = (ExContent)content;
+		if (content instanceof RelationExtractionContent) {
+			RelationExtractionContent c = (RelationExtractionContent)content;
 			switch (reOutputFormat) {
 				case DEFAULT:
 					return c.defaultFormat(false);

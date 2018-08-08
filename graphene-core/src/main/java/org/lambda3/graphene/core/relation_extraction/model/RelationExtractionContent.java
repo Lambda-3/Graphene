@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 /*-
  * ==========================License-Start=============================
- * ExContent.java - Graphene Core - Lambda^3 - 2017
+ * RelationExtractionContent.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -34,12 +34,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ExContent extends Content {
+public class RelationExtractionContent extends Content {
 	private boolean coreferenced;
 	private List<ExSentence> sentences;
 
 	// for deserialization
-	public ExContent() {
+	public RelationExtractionContent() {
 		this.coreferenced = false;
 		this.sentences = new ArrayList<>();
 	}
@@ -182,9 +182,9 @@ public class ExContent extends Content {
     public boolean equals(Object o) {
 		if (this == o) return true;
 
-		if (!(o instanceof ExContent)) return false;
+		if (!(o instanceof RelationExtractionContent)) return false;
 
-		ExContent that = (ExContent) o;
+		RelationExtractionContent that = (RelationExtractionContent) o;
 
 		return new EqualsBuilder()
                 .append(isCoreferenced(), that.isCoreferenced())
@@ -202,7 +202,7 @@ public class ExContent extends Content {
 
     @Override
     public String toString() {
-        return "ExContent{" +
+        return "RelationExtractionContent{" +
                 "coreferenced=" + coreferenced +
                 ", sentences=" + sentences +
                 '}';

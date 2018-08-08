@@ -26,7 +26,7 @@ package org.lambda3.graphene.core;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -52,7 +52,7 @@ public class GrapheneTest {
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		ExContent c = graphene.doRelationExtraction(text, false, false);
+		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false);
 
 		final String filename = "tmp-w8weg3q493ewqieh.json";
 
@@ -60,7 +60,7 @@ public class GrapheneTest {
 		c.serializeToJSON(new File(filename));
 
 		LOG.info("LOAD FROM FILE...");
-		ExContent loaded = ExContent.deserializeFromJSON(new File(filename), ExContent.class);
+		RelationExtractionContent loaded = RelationExtractionContent.deserializeFromJSON(new File(filename), RelationExtractionContent.class);
 
 		LOG.info(loaded.defaultFormat(false));
 
@@ -72,7 +72,7 @@ public class GrapheneTest {
 	@Test
 	public void testOutput() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		ExContent c = graphene.doRelationExtraction(text, false, false);
+		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false);
 
 		LOG.info(c.defaultFormat(false));
 		LOG.info(c.flatFormat(false));

@@ -43,7 +43,7 @@ public class LinkedContext {
 		return targetID;
 	}
 
-	public Extraction getTargetExtraction(ExContent content) {
+	public Extraction getTargetExtraction(RelationExtractionContent content) {
 		return content.getExtraction(targetID);
 	}
 
