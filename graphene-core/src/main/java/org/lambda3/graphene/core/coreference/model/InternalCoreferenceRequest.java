@@ -24,26 +24,11 @@ package org.lambda3.graphene.core.coreference.model;
  */
 
 
-import java.util.Collections;
-import java.util.List;
-
 public class InternalCoreferenceRequest {
 	private String text;
-	private String uri;
-	private List<Link> links;
 
 	public InternalCoreferenceRequest(String text) {
-		this(text, "");
-	}
-
-	public InternalCoreferenceRequest(String text, String uri) {
-		this(text, uri, Collections.emptyList());
-	}
-
-	public InternalCoreferenceRequest(String text, String uri, List<Link> links) {
 		this.text = text;
-		this.uri = uri;
-		this.links = links;
 	}
 
 	public String getText() {
@@ -52,21 +37,5 @@ public class InternalCoreferenceRequest {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public List<Link> getLinks() {
-		return links;
-	}
-
-	public void setLinks(List<Link> links) {
-		this.links = links;
 	}
 }

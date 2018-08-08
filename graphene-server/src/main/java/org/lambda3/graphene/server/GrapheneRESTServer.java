@@ -32,10 +32,7 @@ import org.glassfish.jersey.server.ServerProperties;
 import org.glassfish.jersey.server.validation.ValidationFeature;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.server.filter.CORSFilter;
-import org.lambda3.graphene.server.resources.AdminResource;
-import org.lambda3.graphene.server.resources.CoreferenceResource;
-import org.lambda3.graphene.server.resources.GrapheneResourceFactory;
-import org.lambda3.graphene.server.resources.RelationExtractionResource;
+import org.lambda3.graphene.server.resources.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,6 +86,7 @@ class GrapheneRESTServer {
 
 		rc.register(factory.createResource(AdminResource.class));
 		rc.register(factory.createResource(CoreferenceResource.class));
+		rc.register(factory.createResource(DiscourseSimplificationResource.class));
 		rc.register(factory.createResource(RelationExtractionResource.class));
 
 		return rc;

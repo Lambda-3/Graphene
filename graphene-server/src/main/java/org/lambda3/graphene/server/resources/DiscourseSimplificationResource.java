@@ -26,7 +26,9 @@ package org.lambda3.graphene.server.resources;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.graphene.server.beans.DiscourseSimplificationRequestBean;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +40,10 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/relationExtraction")
-public class RelationExtractionResource extends AbstractGrapheneResource {
+@Path("/discourseSimplification")
+public class DiscourseSimplificationResource extends AbstractGrapheneResource {
 
-	private final static Logger LOG = LoggerFactory.getLogger(RelationExtractionResource.class);
+	private final static Logger LOG = LoggerFactory.getLogger(DiscourseSimplificationResource.class);
 
 	@POST
 	@Path("text")
@@ -49,25 +51,25 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response relationExtractionFromText(@Valid RelationExtractionRequestBean bean) throws JsonProcessingException {
 
-		LOG.debug("New RelationExtractionRequest: {}", bean);
+		LOG.debug("New DiscourseSimplificationRequest: {}", bean);
 
-		ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		SimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
 		return Response
-                .status(Response.Status.OK)
-                .entity(content.serializeToJSON())
-                .build();
-    }
+			.status(Response.Status.OK)
+			.entity(content.serializeToJSON())
+			.build();
+	}
 
     @POST
     @Path("text")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.TEXT_PLAIN)
-    public Response relationExtractionFromTextAsText(@Valid RelationExtractionRequestBean bean) {
+    public Response discourseSimplificationFromTextAsText(@Valid DiscourseSimplificationRequestBean bean) {
 
-		LOG.debug("New RelationExtractionRequest: {}", bean);
+		LOG.debug("New DiscourseSimplificationRequest: {}", bean);
 
-        ExContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+        SimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
         String rep = "";
 		switch (bean.getFormat()) {
@@ -82,9 +84,6 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 				break;
 			case FLAT_RESOLVED:
 				rep = content.flatFormat(true);
-				break;
-			case RDF:
-				rep = content.rdfFormat();
 				break;
 			default:
 				rep = content.defaultFormat(false);

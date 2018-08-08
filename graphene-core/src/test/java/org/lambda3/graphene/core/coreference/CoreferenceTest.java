@@ -61,28 +61,4 @@ public class CoreferenceTest {
 
 	}
 
-	@Test
-	public void testSubstituteCoreferencesInTextWithURI() {
-
-		String sentence = "Barack Obama was born in 1961. He is now 55 years old.";
-		String uri = "http://dbpedia.org/Barack_Obama";
-
-		CoreferenceContent expected = new CoreferenceContent(sentence, "Barack Obama was born in 1961.\nBarack Obama is now 55 years old.");
-
-		// TODO: Will fail with current PyCobalt version (1.1.x-1.2.x) because sentences are split and returned as list.
-		CoreferenceContent actual = coreference.substituteCoreferences(sentence, uri);
-
-		Assert.assertEquals(actual, expected);
-	}
-
-	@Test
-	public void testSubstituteCoreferencesInTextWithURIAndLinks() {
-		Assert.fail("not implemented");
-	}
-
-	@Test
-	public void testSubstituteIntoPassages() {
-		Assert.fail("not implemented");
-	}
-
 }

@@ -44,8 +44,6 @@ public class Coreference {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final WebTarget textTarget;
-	private final WebTarget wikiTarget;
-	private final WebTarget wikiLinkTarget;
 
 	public Coreference(Config config) {
 
@@ -57,30 +55,12 @@ public class Coreference {
 		this.textTarget = webClient
                 .target(config.getString("url"))
                 .path(config.getString("text-path"));
-        this.wikiTarget = webClient
-                .target(config.getString("url"))
-                .path(config.getString("wiki-path"));
-        this.wikiLinkTarget = webClient
-                .target(config.getString("url"))
-                .path(config.getString("wiki-link-path"));
 
 		log.info("Coreference initialized");
 	}
 
 	public CoreferenceContent substituteCoreferences(String text) {
 		InternalCoreferenceResponse response = sendRequest(textTarget, new InternalCoreferenceRequest(text));
-
-		return new CoreferenceContent(text, response.getText());
-	}
-
-	public CoreferenceContent substituteCoreferences(String text, String uri) {
-		InternalCoreferenceResponse response = sendRequest(wikiTarget, new InternalCoreferenceRequest(text, uri));
-
-		return new CoreferenceContent(text, response.getText());
-	}
-
-	public CoreferenceContent substituteCoreferences(String text, String uri, List<Link> links) {
-		InternalCoreferenceResponse response = sendRequest(wikiLinkTarget, new InternalCoreferenceRequest(text, uri, links));
 
 		return new CoreferenceContent(text, response.getText());
 	}
@@ -111,10 +91,4 @@ public class Coreference {
 
 		throw new RuntimeException("The response contained no content.");
 	}
-
-	public PassageContent substituteIntoPassages(String text, String uri, List<Link> links) {
-		throw new NotImplementedException("Not implemented yet.");
-	}
-
-
 }

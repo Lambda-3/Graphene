@@ -25,7 +25,7 @@ package org.lambda3.graphene.core.coreference.model;
 
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.lambda3.graphene.core.Content;
+import org.lambda3.text.simplification.discourse.model.Content;
 
 public class CoreferenceContent extends Content {
 

@@ -26,9 +26,9 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.lambda3.graphene.core.Content;
 import org.lambda3.graphene.core.utils.IDGenerator;
 import org.lambda3.graphene.core.utils.RDFHelper;
+import org.lambda3.text.simplification.discourse.model.Content;
 
 import java.util.ArrayList;
 import java.util.List;

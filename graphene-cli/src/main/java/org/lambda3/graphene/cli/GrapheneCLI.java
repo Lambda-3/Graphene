@@ -33,9 +33,11 @@ import org.kohsuke.args4j.Argument;
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
-import org.lambda3.graphene.core.Content;
 import org.lambda3.graphene.core.Graphene;
+import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.relation_extraction.model.ExContent;
+import org.lambda3.text.simplification.discourse.model.Content;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,27 +63,34 @@ public class GrapheneCLI {
 	@Option(name = "--version", aliases = {"-v"}, usage = "Prints the version of Graphene")
 	private boolean version = false;
 
+	@Option(name = "--operation", usage = "Choose whether to run Coreference-Resolution [COREF], Discourse-Simplification [SIM], or Relation-Extraction [RE].")
+	private Operation operation;
+
 	@Option(name = "--input", usage = "Choose the input format [TEXT/FILE/WIKI]")
 	private InputSource inputSource;
 
-	@Option(name = "--output", usage = "Choose whether to create files [FILE] or print result on commandline [CMDLINE].")
+	@Option(name = "--output", usage = "Choose whether to create files [FILE] or print result to commandline [CMDLINE].")
 	private OutputSource outputSource;
 
-	@Option(name = "--format",
-		usage = "Specifies which textual representation for relationExtraction should be returned [DEFAULT/DEFAULT_RESOLVED/FLAT/FLAT_RESOLVED/RDF/SERIALIZED].")
-	private OutputFormat outputFormat = OutputFormat.DEFAULT;
+	@Option(name = "--corefformat",
+		usage = "Specifies which textual representation for Coreference-Resolution should be returned [DEFAULT/SERIALIZED].")
+	private CoreferenceResolutionOutputFormat corefOutputFormat = CoreferenceResolutionOutputFormat.DEFAULT;
+
+	@Option(name = "--simformat",
+		usage = "Specifies which textual representation for Discourse-Simplification should be returned [DEFAULT/DEFAULT_RESOLVED/FLAT/FLAT_RESOLVED/SERIALIZED].")
+	private DiscourseSimplificationOutputFormat simOutputFormat = DiscourseSimplificationOutputFormat.DEFAULT;
+
+	@Option(name = "--reformat",
+		usage = "Specifies which textual representation for Relation-Extraction should be returned [DEFAULT/DEFAULT_RESOLVED/FLAT/FLAT_RESOLVED/RDF/SERIALIZED].")
+	private RelationExtractionOutputFormat reOutputFormat = RelationExtractionOutputFormat.DEFAULT;
 
 	@Option(name = "--doCoreference",
-		usage = "Specifies whether coreference should be executed.")
+		usage = "Specifies whether coreference should be executed before Discourse-Simplification or Relation-Extraction.")
 	private boolean doCoref = false;
 
 	@Option(name = "--isolateSentences",
 		usage = "Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set true, if you run Graphene over a collection of independent sentences and false for a full coherent text.")
 	private boolean isolateSentences = false;
-
-	@Option(name = "--relationExtraction",
-		usage = "Specifies whether relation extraction should be executed.")
-	private boolean doRelationExtraction = false;
 
 	@Argument(usage = "Input texts/files/articles")
 	private List<String> input;
@@ -152,12 +161,10 @@ public class GrapheneCLI {
 			return;
 		}
 
-		// Init graphene
-
+		// Init Graphene
 		Config config = ConfigFactory.load()
 			.withFallback(ConfigFactory.load("reference-core"))
 			.withFallback(ConfigFactory.load("application-cli"));
-
 		Graphene graphene = new Graphene(config);
 
 		if (version) {
@@ -173,18 +180,30 @@ public class GrapheneCLI {
 
 		Optional<List<Content>> result = Optional.empty();
 
-		if (doCoref && !doRelationExtraction) {
-			result = Optional.of(
-				inputTexts
-					.stream()
-					.map(graphene::doCoreference)
-					.collect(Collectors.toList()));
-		} else if (doRelationExtraction) {
-			result = Optional.of(
-				inputTexts
-					.stream()
-					.map(text -> graphene.doRelationExtraction(text, doCoref, isolateSentences))
-					.collect(Collectors.toList()));
+		switch (operation) {
+			case COREF:
+				result = Optional.of(
+					inputTexts
+						.stream()
+						.map(graphene::doCoreference)
+						.collect(Collectors.toList()));
+				break;
+			case SIM:
+				result = Optional.of(
+					inputTexts
+						.stream()
+						.map(text -> graphene.doDiscourseSimplification(text, doCoref, isolateSentences))
+						.collect(Collectors.toList()));
+				break;
+			case RE:
+				result = Optional.of(
+					inputTexts
+						.stream()
+						.map(text -> graphene.doRelationExtraction(text, doCoref, isolateSentences))
+						.collect(Collectors.toList()));
+				break;
+			default:
+				throw new AssertionError("Unknown Operation");
 		}
 
 		result.orElseThrow(() -> new IllegalArgumentException("No valid configuration"));
@@ -197,8 +216,26 @@ public class GrapheneCLI {
 
 		StringBuilder outputName = new StringBuilder();
 		outputName.append("output_");
-		if (doCoref) outputName.append("coref_");
-		if (doRelationExtraction) outputName.append("extr_");
+
+		switch (operation) {
+			case COREF:
+				outputName.append("coref_");
+				break;
+			case SIM:
+				outputName.append("sim_");
+				if (doCoref) {
+					outputName.append("coref_");
+				}
+				break;
+			case RE:
+				outputName.append("re_");
+				if (doCoref) {
+					outputName.append("coref_");
+				}
+				break;
+			default:
+				throw new AssertionError("Unknown Operation");
+		}
 
 		for (int i = 0; i < contents.size(); ++i) {
 
@@ -237,9 +274,36 @@ public class GrapheneCLI {
 	}
 
 	private String format(Content content) throws JsonProcessingException {
+
+		if (content instanceof CoreferenceContent) {
+			CoreferenceContent c = (CoreferenceContent)content;
+			switch (corefOutputFormat) {
+				case DEFAULT:
+					return c.getSubstitutedText();
+				case SERIALIZED:
+					return content.prettyPrintJSON();
+			}
+		}
+
+		if (content instanceof SimplificationContent) {
+			SimplificationContent c = (SimplificationContent)content;
+			switch (simOutputFormat) {
+				case DEFAULT:
+					return c.defaultFormat(false);
+				case DEFAULT_RESOLVED:
+					return c.defaultFormat(true);
+				case FLAT:
+					return c.flatFormat(false);
+				case FLAT_RESOLVED:
+					return c.flatFormat(true);
+				case SERIALIZED:
+					return content.prettyPrintJSON();
+			}
+		}
+
 		if (content instanceof ExContent) {
 			ExContent c = (ExContent)content;
-			switch (outputFormat) {
+			switch (reOutputFormat) {
 				case DEFAULT:
 					return c.defaultFormat(false);
 				case DEFAULT_RESOLVED:
@@ -250,10 +314,12 @@ public class GrapheneCLI {
 					return c.flatFormat(true);
 				case RDF:
 					return c.rdfFormat();
+				case SERIALIZED:
+					return content.prettyPrintJSON();
 			}
 		}
 
-		return content.prettyPrint();
+		return content.prettyPrintJSON();
 	}
 
 	private void printResult(Result result) {
@@ -295,6 +361,12 @@ public class GrapheneCLI {
 		}
 	}
 
+	private enum Operation {
+		COREF,
+		SIM,
+		RE
+	}
+
 	private enum OutputSource {
 		CMDLINE,
 		FILE
@@ -306,7 +378,20 @@ public class GrapheneCLI {
 		WIKI
 	}
 
-	private enum OutputFormat {
+	private enum CoreferenceResolutionOutputFormat {
+		DEFAULT,
+		SERIALIZED
+	}
+
+	private enum DiscourseSimplificationOutputFormat {
+		DEFAULT,
+		DEFAULT_RESOLVED,
+		FLAT,
+		FLAT_RESOLVED,
+		SERIALIZED
+	}
+
+	private enum RelationExtractionOutputFormat {
 		DEFAULT,
 		DEFAULT_RESOLVED,
 		FLAT,

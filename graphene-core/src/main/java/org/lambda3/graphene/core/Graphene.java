@@ -73,20 +73,6 @@ public class Graphene {
 		return content;
 	}
 
-	public CoreferenceContent doCoreference(String text, String uri) {
-		log.debug("doCoreference for text with uri");
-		final CoreferenceContent content = coreference.substituteCoreferences(text, uri);
-		log.debug("Coreference for text with uri finished");
-		return content;
-	}
-
-	public CoreferenceContent doCoreference(String text, String uri, List<Link> links) {
-		log.debug("doCoreference for text with uri and links");
-		final CoreferenceContent content = coreference.substituteCoreferences(text, uri, links);
-		log.debug("Coreference for text with uri and links finished");
-		return content;
-	}
-
 	public SimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
 		if (doCoreference) {
 			final CoreferenceContent cc = doCoreference(text);

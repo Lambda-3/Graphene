@@ -24,7 +24,7 @@ package org.lambda3.graphene.cli;
  */
 
 
-import org.lambda3.graphene.core.Content;
+import org.lambda3.text.simplification.discourse.model.Content;
 
 class Result {
 

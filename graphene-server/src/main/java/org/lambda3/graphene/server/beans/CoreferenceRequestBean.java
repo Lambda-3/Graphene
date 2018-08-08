@@ -31,15 +31,11 @@ public class CoreferenceRequestBean extends AbstractRequestBean {
 
 	@NotNull
 	private String text;
-	private String uri;
-	private List<Link> links;
 
 	@Override
 	public String toString() {
 		return "CoreferenceRequestBean{" +
                 "text='" + truncateText(text) + '\'' +
-                ", uri='" + uri + '\'' +
-                ", links=" + links +
                 '}';
     }
 
@@ -49,43 +45,6 @@ public class CoreferenceRequestBean extends AbstractRequestBean {
 
 	public void setText(String text) {
 		this.text = text;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
-
-	public List<Link> getLinks() {
-		return links;
-	}
-
-	public void setLinks(List<Link> links) {
-		this.links = links;
-	}
-
-	public class Link {
-		private String anchorText;
-		private String uri;
-
-		public String getAnchorText() {
-			return anchorText;
-		}
-
-		public void setAnchorText(String anchorText) {
-			this.anchorText = anchorText;
-		}
-
-		public String getUri() {
-			return uri;
-		}
-
-		public void setUri(String uri) {
-			this.uri = uri;
-		}
 	}
 
 }

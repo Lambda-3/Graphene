@@ -27,7 +27,7 @@ package org.lambda3.graphene.server.beans;
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
 
-public class RelationExtractionRequestBean extends AbstractRequestBean {
+public class DiscourseSimplificationRequestBean extends AbstractRequestBean {
 
 	@NotNull
 	private String text;
@@ -79,7 +79,7 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 
 	@Override
 	public String toString() {
-		return "RelationExtractionRequestBean{" +
+		return "DiscourseSimplificationRequestBean{" +
                 "text='" + truncateText(text) + '\'' +
                 ", doCoreference=" + doCoreference +
 				", isolateSentences=" + isolateSentences +
@@ -92,7 +92,6 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		DEFAULT,
 		DEFAULT_RESOLVED,
 		FLAT,
-		FLAT_RESOLVED,
-		RDF
+		FLAT_RESOLVED
 	}
 }

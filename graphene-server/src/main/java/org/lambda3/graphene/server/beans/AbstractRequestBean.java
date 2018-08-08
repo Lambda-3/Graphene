@@ -24,18 +24,16 @@ package org.lambda3.graphene.server.beans;
  */
 
 
-@SuppressWarnings({"WeakerAccess"})
-abstract class AbstractRequestBean {
+public abstract class AbstractRequestBean {
 
 	private static final int MAX_LOG_TEXT = 50;
 
-	@SuppressWarnings("WeakerAccess")
-	protected String truncateText(String text) {
-		if (text.length() > MAX_LOG_TEXT) {
-			return text.substring(0, MAX_LOG_TEXT) + "[…]";
-		} else {
+	public static String truncateText(String text) {
+		if (text.length() <= MAX_LOG_TEXT) {
 			return text;
 		}
+		String dots = " [...]";
+		int length = MAX_LOG_TEXT - dots.length();
+		return text.substring(0, length) + dots;
 	}
-
 }
