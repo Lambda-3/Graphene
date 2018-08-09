@@ -1,8 +1,8 @@
-package org.lambda3.graphene.cli;
+package org.lambda3.graphene.core.coreference.impl.pycobalt;
 
 /*-
  * ==========================License-Start=============================
- * CoreferenceTest.java - Graphene CLI - Lambda^3 - 2017
+ * InternalCoreferenceRequest.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -24,32 +24,18 @@ package org.lambda3.graphene.cli;
  */
 
 
-import org.testng.Assert;
-import org.testng.annotations.Test;
+public class InternalCoreferenceRequest {
+	private String text;
 
-public class CoreferenceTest extends GrapheneCLITest {
-
-	@Test
-	public void testCoreferenceViaCli() {
-		String[] args = new String[]{
-			"--coref",
-			"--input", "TEXT",
-			"--output", "CMDLINE",
-			"Angela Merkel is the current chancellor of Germany. She will be reelected later this year."
-		};
-
-		GrapheneCLI.main(args);
-
-		String actual = outContent.toString();
-
-		Assert.assertFalse(actual.contains("ERROR"));
-
-		Assert.assertTrue(actual.contains("Content:"));
-		Assert.assertTrue(actual.contains("############"));
-		Assert.assertTrue(actual.contains("CoreferenceContent{originalText='"));
-
-		asserted = false;
+	public InternalCoreferenceRequest(String text) {
+		this.text = text;
 	}
 
+	public String getText() {
+		return text;
+	}
 
+	public void setText(String text) {
+		this.text = text;
+	}
 }

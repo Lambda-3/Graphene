@@ -1,4 +1,4 @@
-package org.lambda3.graphene.core.coreference.model;
+package org.lambda3.graphene.core.coreference.impl.pycobalt;
 
 /*-
  * ==========================License-Start=============================

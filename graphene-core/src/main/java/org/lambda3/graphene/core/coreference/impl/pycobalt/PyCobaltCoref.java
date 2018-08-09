@@ -1,8 +1,8 @@
-package org.lambda3.graphene.core.coreference;
+package org.lambda3.graphene.core.coreference.impl.pycobalt;
 
 /*-
  * ==========================License-Start=============================
- * Coreference.java - Graphene Core - Lambda^3 - 2017
+ * PyCobaltCoref.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -25,8 +25,8 @@ package org.lambda3.graphene.core.coreference;
 
 
 import com.typesafe.config.Config;
-import org.apache.commons.lang3.NotImplementedException;
 import org.glassfish.jersey.jackson.JacksonFeature;
+import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,32 +37,27 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
-public class Coreference {
+public class PyCobaltCoref extends CoreferenceResolver {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final WebTarget textTarget;
 
-	public Coreference(Config config) {
 
-		log.info("Will use remote coreference resource at: '{}'", config.getString("url"));
+	public PyCobaltCoref(Config config) {
+		super(config);
+
+		log.info("Will use remote coreference resource at: '{}'", config.getString("pycobalt.url"));
 
 		final Client webClient = ClientBuilder.newClient();
 		webClient.register(JacksonFeature.class);
 
 		this.textTarget = webClient
-                .target(config.getString("url"))
-                .path(config.getString("text-path"));
+                .target(config.getString("pycobalt.url"))
+                .path(config.getString("pycobalt.text-path"));
 
 		log.info("Coreference initialized");
-	}
-
-	public CoreferenceContent substituteCoreferences(String text) {
-		InternalCoreferenceResponse response = sendRequest(textTarget, new InternalCoreferenceRequest(text));
-
-		return new CoreferenceContent(text, response.getText());
 	}
 
 	private InternalCoreferenceResponse sendRequest(WebTarget target, InternalCoreferenceRequest request) {
@@ -90,5 +85,13 @@ public class Coreference {
 		}
 
 		throw new RuntimeException("The response contained no content.");
+	}
+
+
+	@Override
+	public CoreferenceContent doCoreferenceResolution(String text) {
+		InternalCoreferenceResponse response = sendRequest(textTarget, new InternalCoreferenceRequest(text));
+
+		return new CoreferenceContent(text, response.getText());
 	}
 }

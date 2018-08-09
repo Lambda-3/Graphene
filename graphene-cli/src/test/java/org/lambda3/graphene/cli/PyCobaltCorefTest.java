@@ -1,8 +1,8 @@
-package org.lambda3.graphene.core.coreference.model;
+package org.lambda3.graphene.cli;
 
 /*-
  * ==========================License-Start=============================
- * Link.java - Graphene Core - Lambda^3 - 2017
+ * PyCobaltCorefTest.java - Graphene CLI - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -24,36 +24,32 @@ package org.lambda3.graphene.core.coreference.model;
  */
 
 
-public class Link {
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-	private String anchorText;
-	private String uri;
+public class PyCobaltCorefTest extends GrapheneCLITest {
 
-	public Link() {
+	@Test
+	public void testCoreferenceViaCli() {
+		String[] args = new String[]{
+			"--coref",
+			"--input", "TEXT",
+			"--output", "CMDLINE",
+			"Angela Merkel is the current chancellor of Germany. She will be reelected later this year."
+		};
+
+		GrapheneCLI.main(args);
+
+		String actual = outContent.toString();
+
+		Assert.assertFalse(actual.contains("ERROR"));
+
+		Assert.assertTrue(actual.contains("Content:"));
+		Assert.assertTrue(actual.contains("############"));
+		Assert.assertTrue(actual.contains("CoreferenceContent{originalText='"));
+
+		asserted = false;
 	}
 
-	public Link(String anchorText) {
-		this.anchorText = anchorText;
-	}
 
-	public Link(String anchorText, String uri) {
-		this.anchorText = anchorText;
-		this.uri = uri;
-	}
-
-	public String getAnchorText() {
-		return anchorText;
-	}
-
-	public void setAnchorText(String anchorText) {
-		this.anchorText = anchorText;
-	}
-
-	public String getUri() {
-		return uri;
-	}
-
-	public void setUri(String uri) {
-		this.uri = uri;
-	}
 }

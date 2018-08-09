@@ -26,7 +26,7 @@ package org.lambda3.graphene.core;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.lambda3.graphene.core.coreference.Coreference;
+import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.RelationExtractionRunner;
@@ -38,12 +38,14 @@ import org.lambda3.text.simplification.discourse.processing.ProcessingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Constructor;
+
 public class Graphene {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 
 	private final Config config;
 
-	private final Coreference coreference;
+	private final CoreferenceResolver coreference;
 	private final DiscourseSimplifier discourseSimplificationRunner;
 	private final RelationExtractionRunner relationExtractionRunner;
 
@@ -56,7 +58,7 @@ public class Graphene {
 			.withFallback(ConfigFactory.load("build"))
 			.getConfig("graphene");
 
-		this.coreference = new Coreference(this.config.getConfig("coreference"));
+		this.coreference = getCoreferenceResolver(this.config);
 		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
 		this.relationExtractionRunner = new RelationExtractionRunner(this.config.getConfig("relation-extraction"));
 
@@ -64,9 +66,33 @@ public class Graphene {
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
 	}
 
+	private CoreferenceResolver getCoreferenceResolver(Config config) {
+		String className = config.getString("coreference.resolver");
+		CoreferenceResolver coreferenceResolver = null;
+
+		log.info("Load Coreference-Resolver: '" + className + "'");
+		try {
+			Class<?> clazz = Class.forName(className);
+			Constructor[] constructors = clazz.getConstructors();
+
+			if (CoreferenceResolver.class.isAssignableFrom(clazz)) {
+				// It's our internal factory hence we inject the core dependency.
+				coreferenceResolver = (CoreferenceResolver) constructors[0].newInstance(config.getConfig("coreference.settings"));
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Fail to initialize CoreferenceResolver: " + className, e);
+		}
+		if (coreferenceResolver == null) {
+			throw new RuntimeException("Fail to initialize CoreferenceResolver: " + className);
+		}
+
+		return coreferenceResolver;
+	}
+
+
 	public CoreferenceContent doCoreference(String text) {
 		log.debug("doCoreference for text");
-		final CoreferenceContent content = coreference.substituteCoreferences(text);
+		final CoreferenceContent content = coreference.doCoreferenceResolution(text);
 		log.debug("Coreference for text finished");
 		return content;
 	}

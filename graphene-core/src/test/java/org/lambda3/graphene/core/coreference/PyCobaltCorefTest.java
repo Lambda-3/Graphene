@@ -2,7 +2,7 @@ package org.lambda3.graphene.core.coreference;
 
 /*-
  * ==========================License-Start=============================
- * CoreferenceTest.java - Graphene Core - Lambda^3 - 2017
+ * PyCobaltCorefTest.java - Graphene Core - Lambda^3 - 2017
  * Graphene
  * %%
  * Copyright (C) 2017 Lambda^3
@@ -27,17 +27,17 @@ package org.lambda3.graphene.core.coreference;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.utils.ConfigUtils;
+import org.lambda3.graphene.core.coreference.impl.pycobalt.PyCobaltCoref;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class CoreferenceTest {
-	private static final Logger LOG = LoggerFactory.getLogger(CoreferenceTest.class);
+public class PyCobaltCorefTest {
+	private static final Logger LOG = LoggerFactory.getLogger(PyCobaltCorefTest.class);
 
-	private static Coreference coreference;
+	private static CoreferenceResolver coreference;
 
 	@BeforeClass
 	public static void beforeAll() {
@@ -45,7 +45,7 @@ public class CoreferenceTest {
                 .load("reference.local")
                 .withFallback(ConfigFactory.load("reference"));
 
-		coreference = new Coreference(config.getConfig("graphene.coreference"));
+		coreference = new PyCobaltCoref(config.getConfig("graphene.coreference.pycobalt"));
 	}
 
 
@@ -55,7 +55,7 @@ public class CoreferenceTest {
 
 		CoreferenceContent expected = new CoreferenceContent(sentence, "Bernhard is working in two projects.\nBernhard works for MARIO and PACE.");
 
-		CoreferenceContent result = coreference.substituteCoreferences(sentence);
+		CoreferenceContent result = coreference.doCoreferenceResolution(sentence);
 
 		Assert.assertEquals(expected, result);
 
