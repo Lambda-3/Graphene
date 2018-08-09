@@ -230,15 +230,16 @@ public class RelationExtractionRunner {
 					element.getText()
 				)));
 			}
-		}
+		} else {
 
-		// add as simple context
-		SimpleContext c = new SimpleContext(
-			WordsUtils.wordsToString(ParseTreeExtractionUtils.getContainingWords(simpleContext.getPhrase())),
-			simpleContext.getRelation()
-		);
-		simpleContext.getTimeInformation().ifPresent(t -> c.setTimeInformation(t));
-		simpleContexts.add(c);
+			// add as simple context
+			SimpleContext c = new SimpleContext(
+				WordsUtils.wordsToString(ParseTreeExtractionUtils.getContainingWords(simpleContext.getPhrase())),
+				simpleContext.getRelation()
+			);
+			simpleContext.getTimeInformation().ifPresent(t -> c.setTimeInformation(t));
+			simpleContexts.add(c);
+		}
 	}
 
 	private void processLinkedContext(Element element, org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext, List<LinkedContext> linkedContexts, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
