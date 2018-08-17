@@ -19,6 +19,8 @@ In order to capture all the contextual information, Graphene performs the follow
 * Extract binary relations (`subject`,  `predicate` and  `object`) from each sentence.
 * Merge all the extracted relations into a relation graph (knowledge graph).
 
+![Graphene-Extraction](wiki/images/workflow.png)
+
 Graphene’s extracted graphs are represented by our RDFNL format, an simple format that facilitates the representation of complex contextual relations in a way that balances machine representation with human legibility. A description of the RDFNL format can be found [here](wiki/RDFNL-Format.md).
 In order to increase further processability of the extracted relations, Graphene can materialize its relations into a proper RDF graph serialized under the N-Triples specification of the RDF standard. A description of the RDF format can be found [here](wiki/RDF-Format.md).
 Alternatively, developers can use the direct output class of the API, which is serializable and deserializable as a JSON object.
