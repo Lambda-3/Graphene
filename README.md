@@ -74,25 +74,19 @@ The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017_11_06.nt)
 * Docker version 17.03+
 * docker-compose version 1.12+
 
-## Setup
+## Mandatory dependencies
 Compiling and packaging requires two additional packages:
 
-### Sentence Simplification
-	cd /tmp
-	wget https://github.com/Lambda-3/SentenceSimplification/archive/v5.0.0.tar.gz -O SentenceSimplification.tar.gz
-	tar xfa SentenceSimplification.tar.gz
-	cd SentenceSimplification
-	mvn -DskipTests install
+To install [Sentence Simplification](https://github.com/Lambda-3/SentenceSimplification), execute the following script:
 
-### Discourse Simplification
-	cd /tmp
-	wget https://github.com/Lambda-3/DiscourseSimplification/archive/v8.0.0.tar.gz -O DiscourseSimplification.tar.gz
-	tar xfa DiscourseSimplification.tar.gz
-	cd DiscourseSimplification
-	mvn -DskipTests install
+	./install-SentenceSimplification.sh
 
-### More dependencies (requires [docker](https://www.docker.com/))
-Prior to running `Graphene`, two additional dependencies must be met:
+To install [Discourse Simplification](https://github.com/Lambda-3/DiscourseSimplification), execute the following script:
+
+    ./install-DiscourseSimplification.sh
+
+## Optional dependencies (requires [docker](https://www.docker.com/))
+In order to use [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) as the preferred coreference-resolution system, two additional dependencies must be met:
 
 * [CoreNLP](https://github.com/Lambda-3/CoreNLP.git)
 * [PyCobalt](https://github.com/Lambda-3/PyCobalt.git)
@@ -101,40 +95,55 @@ Both are provided with the docker images:
 * [CoreNLP](https://hub.docker.com/r/lambdacube/corenlp/)
 * [PyCobalt](https://hub.docker.com/r/lambdacube/pycobalt/)
 
-### Setup of Graphene
+## Setup of Graphene
 
-For using coreference resolution, you must have a PyCobalt instance running, it is provided in the `docker-compose-core.yml`.
+Graphene can be customized via configuration file. Therefore, you need to create a new config file under `conf/graphene.conf` where you can overwrite the default settings given by `graphene-core/src/main/resources/reference.conf`. If you want to use the default settings, just create a new blank file:
+
+    touch conf/graphene.conf
+
+For using [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) as the preferred coreference resolution system, you must have a PyCobalt instance running. It is provided in the `docker-compose-core.yml`.
 Start it with `docker-compose -f docker-compose-core.yml up`.
-Then create a config file `conf/graphene.conf` pointing to the PyCobalt service:
+Then point to the PyCobalt service in your `conf/graphene.conf`:
 ```
 graphene {
 	coreference.url = "http://localhost:5128/resolve"
 }
 ```
 
-Graphene-Core is build with
+The Graphene-Core API is installed with
 
-	mvn clean package -DskipTests
+	mvn clean install -DskipTests
+
+Graphene can be used as a **Java API**, as a **web service**, or as a **command line interface**.
+
+### REST-like Web Service (Graphene-Server)
 
 If you want the server part, you have to specify that profile:
 
     mvn -P server clean package -DskipTests
 
+### Command Line Interface (Graphene-CLI)
+
 If you want the command line part, you have to specify that profile:
 
-    mvn -P cli clean package -DskipTests
-   
+    mvn -P cli clean package -DskipTests   
+
+### Both
+
 To build both interfaces, you can specify both profiles:
 
     mvn -P cli -P server clean package -DskipTests
 
+### Video Tutorial
+A short video tutorial on the Graphene setup for CLI usage is provided [here](https://asciinema.org/a/bvhgIP8ZEgDwtmRPFctHyxALu?speed=3). Note that the command line arguments for Relation Extraction used in this video are outdated. Please refer to the newest set of commands [here](wiki/Graphene-CLI.md).
+
 ### Docker-Compose
 
+Alternatively, we have wrapped Graphene's web service into a Docker image.
 You can build and start the composed images by running:
 	
 	docker-compose up
 
-A short video tutorial on the Graphene setup for CLI usage (without coreference resolution) is provided [here](https://asciinema.org/a/bvhgIP8ZEgDwtmRPFctHyxALu?speed=3).
 
 ## Usage
 
@@ -142,11 +151,7 @@ A short video tutorial on the Graphene setup for CLI usage (without coreference 
 Graphene comes with a Java API which is described [here](wiki/Graphene-Core.md).
 
 In order to use the Graphene API within your own Java application, you can import it as a Maven dependency.
-For this task, install Graphene-Core into your local repository:
-
-    mvn clean install -DskipTests
-
-and add the following lines to your project's `pom.xml` file:
+Just add the following lines to your project's `pom.xml` file:
 
 ```
 <dependency>
@@ -157,15 +162,11 @@ and add the following lines to your project's `pom.xml` file:
 ```
 
 ### Graphene-Sever
-For simplified access, we wrapped the Graphene-Core library inside a REST-like web-service.
-```bash
-docker-compose up
-```
 The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
 
 
-## Graphene-CLI
-Another way of accessing our service is provided by a command-line interface, which is described [here](wiki/Graphene-CLI.md).
+### Graphene-CLI
+The usage of Graphene's command-line interface is described [here](wiki/Graphene-CLI.md).
 
 
 ## Citation

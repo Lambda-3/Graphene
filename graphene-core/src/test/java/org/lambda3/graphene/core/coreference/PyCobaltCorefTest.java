@@ -45,7 +45,7 @@ public class PyCobaltCorefTest {
                 .load("reference.local")
                 .withFallback(ConfigFactory.load("reference"));
 
-		coreference = new PyCobaltCoref(config.getConfig("graphene.coreference.pycobalt"));
+		coreference = new PyCobaltCoref(config.getConfig("graphene.coreference.settings"));
 	}
 
 
