@@ -30,7 +30,7 @@
 	<includeBaseDirectory>false</includeBaseDirectory>
 
 	<formats>
-		<format>dir</format>
+		<format>tar.gz</format>
 	</formats>
 
 	<dependencySets>

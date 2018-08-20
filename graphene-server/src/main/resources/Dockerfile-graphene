@@ -9,6 +9,6 @@ EXPOSE 8080
 
 # add folder
 
-ADD graphene-server/target/graphene-server-${project.version}-dist/ .
+ADD graphene-server/target/graphene-server-${project.version}-dist.tar.gz .
 
 CMD ["bin/start.sh"]

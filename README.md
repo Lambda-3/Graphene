@@ -76,7 +76,7 @@ The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017_11_06.nt)
 * Docker version 17.03+
 * docker-compose version 1.12+
 
-## Mandatory dependencies
+## Dependencies
 Compiling and packaging requires two additional packages:
 
 To install [Sentence Simplification](https://github.com/Lambda-3/SentenceSimplification), execute the following script:
@@ -87,38 +87,28 @@ To install [Discourse Simplification](https://github.com/Lambda-3/DiscourseSimpl
 
     ./install-DiscourseSimplification.sh
 
-## Optional dependencies (requires [docker](https://www.docker.com/))
-In order to use [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) as the preferred coreference-resolution system, two additional dependencies must be met:
-
-* [CoreNLP](https://github.com/Lambda-3/CoreNLP.git)
-* [PyCobalt](https://github.com/Lambda-3/PyCobalt.git)
-
-Both are provided with the docker images:
-* [CoreNLP](https://hub.docker.com/r/lambdacube/corenlp/)
-* [PyCobalt](https://hub.docker.com/r/lambdacube/pycobalt/)
-
 ## Setup of Graphene
 
-Graphene can be customized via configuration file. Therefore, you need to create a new config file under `conf/graphene.conf` where you can overwrite the default settings given by `graphene-core/src/main/resources/reference.conf`. If you want to use the default settings, just create a new blank file:
+Graphene can be customized via configuration file. The default settings are specified in `graphene-core/src/main/resources/reference.conf`.
+You can overwrite these settings in the corresponding `src/main/java/resources/application.conf` file for each module (**graphene-core** / **graphene-server** / **graphene-cli**).
 
-    touch conf/graphene.conf
-
-For using [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) as the preferred coreference resolution system, you must have a PyCobalt instance running. It is provided in the `docker-compose-core.yml`.
+(Optional:) If you want to use [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) as the preferred coreference resolution system, you must have a [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) instance running. It is provided in the `docker-compose-core.yml`.
 Start it with `docker-compose -f docker-compose-core.yml up`.
-Then point to the PyCobalt service in your `conf/graphene.conf`:
+Ensure that the `PyCobaltCoref` class is selected and the coreference url of [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) is set correctly in your `application.conf`:
 ```
 graphene {
-	coreference.url = "http://localhost:5128/resolve"
+    coreference.resolver = org.lambda3.graphene.core.coreference.impl.pycobalt.PyCobaltCoref
+    coreference.settings.pycobalt.url = "http://localhost:5128/resolve"
 }
 ```
 
-The Graphene-Core API is installed with
+You need to install the Graphene-Core API with:
 
 	mvn clean install -DskipTests
 
-Graphene can be used as a **Java API**, as a **web service**, or as a **command line interface**.
+Graphene can be used as a **Java API**, as a **Web Service**, or as a **Command Line Interface**.
 
-### REST-like Web Service (Graphene-Server)
+### REST-Like Web Service (Graphene-Server)
 
 If you want the server part, you have to specify that profile:
 
@@ -139,9 +129,17 @@ To build both interfaces, you can specify both profiles:
 ### Video Tutorial
 A short video tutorial on the Graphene setup for CLI usage is provided [here](https://asciinema.org/a/bvhgIP8ZEgDwtmRPFctHyxALu?speed=3). Note that the command line arguments for Relation Extraction used in this video are outdated. Please refer to the newest set of commands [here](wiki/Graphene-CLI.md).
 
-### Docker-Compose
+## Setup of Graphene-Server using Docker-Compose
 
-Alternatively, we have wrapped Graphene's web service into a Docker image.
+For simplified deployment, we have wrapped Graphene's web service including all needed dependencies (e.g. [PyCobalt](https://github.com/Lambda-3/PyCobalt.git)) into a Docker image.
+The configuration settings for the Docker image are customized in `conf/graphene.conf` which will overwrite the default settings from `graphene-core/src/main/resources/reference.conf`.
+Ensure that the coreference url for [PyCobalt](https://github.com/Lambda-3/PyCobalt.git) in your `conf/graphene.conf` is set to:
+```
+graphene {
+    coreference.settings.pycobalt.url = "http://coreference:5128/resolve"
+}
+```
+
 You can build and start the composed images by running:
 	
 	docker-compose up
