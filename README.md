@@ -140,7 +140,12 @@ graphene {
 }
 ```
 
-You can build and start the composed images by running:
+Ensure that you have installed the Graphene-Core API and packaged the server part:
+
+    mvn clean install -DskipTests
+    mvn -P server clean package -DskipTests
+
+Then, you can build and start the composed images by running:
 	
 	docker-compose up
 
