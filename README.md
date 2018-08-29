@@ -182,7 +182,7 @@ The usage of Graphene's command-line interface is described [here](wiki/Graphene
 	  year      = {2018},
 	  publisher = {Association for Computational Linguistics},
   	  pages     = {2300--2311},
-          location  = {Santa Fe, New Mexico, USA},
+	  location  = {Santa Fe, New Mexico, USA},
  	  url 	    = {http://aclweb.org/anthology/C18-1195}
 	} 
 
