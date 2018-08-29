@@ -178,7 +178,11 @@ The usage of Graphene's command-line interface is described [here](wiki/Graphene
 	@InProceedings{cetto2018graphene,
 	  author    = {Matthias Cetto and Christina Niklaus and Andr\'{e} Freitas and Siegfried Handschuh},
 	  title     = {Graphene: Semantically-Linked Propositions in Open Information Extraction},
-	  booktitle = {Prooceedings of COLING 2018. To appear.},
-	  year      = {2018}
+	  booktitle = {Proceedings of the 27th International Conference on Computational Linguistics},
+	  year      = {2018},
+	  publisher = {Association for Computational Linguistics},
+  	  pages     = {2300--2311},
+          location  = {Santa Fe, New Mexico, USA},
+ 	  url 	    = {http://aclweb.org/anthology/C18-1195}
 	} 
 
