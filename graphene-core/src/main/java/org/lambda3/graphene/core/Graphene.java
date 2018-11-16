@@ -26,6 +26,7 @@ package org.lambda3.graphene.core;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
+import org.lambda3.graphene.core.complex_categories.ComplexCategoryExtractor;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
@@ -48,6 +49,7 @@ public class Graphene {
 	private final CoreferenceResolver coreference;
 	private final DiscourseSimplifier discourseSimplificationRunner;
 	private final RelationExtractionRunner relationExtractionRunner;
+	private final ComplexCategoryExtractor ccExtractor;
 
 	public Graphene() {
 		this(ConfigFactory.load());
@@ -61,6 +63,7 @@ public class Graphene {
 		this.coreference = getCoreferenceResolver(this.config);
 		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
 		this.relationExtractionRunner = new RelationExtractionRunner(this.config.getConfig("relation-extraction"));
+		this.ccExtractor = new ComplexCategoryExtractor(this.config.getConfig("complex-category-extractor"));
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
@@ -111,7 +114,7 @@ public class Graphene {
 		return dsc;
 	}
 
-	public RelationExtractionContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences) {
+	public RelationExtractionContent doRelationExtraction(String text, boolean doCoreference, boolean doComplexCategoryExtraction, boolean isolateSentences) {
         final DiscourseSimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");

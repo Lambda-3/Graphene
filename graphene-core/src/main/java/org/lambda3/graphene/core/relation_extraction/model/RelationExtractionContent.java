@@ -94,14 +94,14 @@ public class RelationExtractionContent extends Content {
 		for (OutSentence<Extraction> sentence : getSentences()) {
 			strb.append("\n# " + sentence.getOriginalSentence() + "\n");
 			for (Extraction extraction : sentence.getElements()) {
-				strb.append("\n" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
+				strb.append("\n" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getTriple() + "\n");
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getRelation() + "\t" + simpleContext.getPhraseText() + "\n");
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
 						Extraction target = getExtraction(linkedContext.getTargetID());
-						strb.append("\t" + "L:" + linkedContext.getRelation() + "\t" + target.getArg1() + "\t" + target.getRelation() + "\t" + target.getArg2() + "\n");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "\t" + target.getTriple() + "\n");
 					} else {
 						strb.append("\t" + "L:" + linkedContext.getRelation() + "\t" + linkedContext.getTargetID() + "\n");
 					}
@@ -118,14 +118,14 @@ public class RelationExtractionContent extends Content {
 		StringBuilder strb = new StringBuilder();
 		for (OutSentence<Extraction> sentence : getSentences()) {
 			for (Extraction extraction : sentence.getElements()) {
-				strb.append(sentence.getOriginalSentence() + "\t" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
+				strb.append(sentence.getOriginalSentence() + "\t" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getTriple() );
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getRelation() + "(" + simpleContext.getPhraseText() + ")");
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
 						Extraction target = getExtraction(linkedContext.getTargetID());
-						strb.append("\t" + "L:" + linkedContext.getRelation() + "(" + target.getArg1() + separator + target.getRelation() + separator + target.getArg2() + ")");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "(" + target.getTriple().getSubject() + separator + target.getTriple().getProperty() + separator + target.getTriple().getObject() + ")");
 					} else {
 						strb.append("\t" + "L:" + linkedContext.getRelation() + "(" + linkedContext.getTargetID() + ")");
 					}
@@ -149,9 +149,9 @@ public class RelationExtractionContent extends Content {
 				strb.append("\n" + RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("has-extraction"), extractionBN));
 				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("extraction-type"), RDFHelper.rdfLiteral(extraction.getType().name(), null)));
 				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("context-layer"), RDFHelper.rdfLiteral(extraction.getContextLayer())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("subject"), RDFHelper.grapheneTextResource(extraction.getArg1())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("predicate"), RDFHelper.grapheneTextResource(extraction.getRelation())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("object"), RDFHelper.grapheneTextResource(extraction.getArg2())));
+				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("subject"), RDFHelper.grapheneTextResource(extraction.getTriple().getSubject())));
+				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("predicate"), RDFHelper.grapheneTextResource(extraction.getTriple().getProperty())));
+				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("object"), RDFHelper.grapheneTextResource(extraction.getTriple().getObject())));
 				strb.append("\n");
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
@@ -167,9 +167,9 @@ public class RelationExtractionContent extends Content {
 				strb.append("\n");
 
 				// Values
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getArg1()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getArg1(), null)));
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getRelation()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getRelation(), null)));
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getArg2()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getArg2(), null)));
+				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getSubject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getSubject(), null)));
+				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getProperty()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getProperty(), null)));
+				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getObject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getObject(), null)));
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(simpleContext.getPhraseText()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(simpleContext.getPhraseText(), null)));

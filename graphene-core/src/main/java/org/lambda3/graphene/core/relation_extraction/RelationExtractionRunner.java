@@ -31,7 +31,10 @@ import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
-import org.lambda3.graphene.core.relation_extraction.model.*;
+import org.lambda3.graphene.core.relation_extraction.model.DefaultTriple;
+import org.lambda3.graphene.core.relation_extraction.model.Extraction;
+import org.lambda3.graphene.core.relation_extraction.model.ExtractionType;
+import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.lambda3.text.simplification.discourse.model.Element;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
@@ -115,29 +118,27 @@ public class RelationExtractionRunner {
 	}
 
 	private NewExtraction createYieldedExtraction(int sentenceIdx, BinaryExtraction ex) {
+		DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 		return new NewExtraction(false, Relation.UNKNOWN, new Extraction(
 			ExtractionType.VERB_BASED,
 			ex.getConfidence().orElse(null),
 			sentenceIdx,
 			-1,
-			ex.getRelation(),
-			ex.getArg1(),
-			ex.getArg2()
+			triple
 		));
 	}
 
 	private void processElement(Element element, List<Extraction> coreExtractions, List<NewExtraction> newExtractions) {
 		for (BinaryExtraction ex : extractor.extract(element.getParseTree())) {
 			if (ex.isCoreExtraction()) {
+				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 				coreExtractions.add(
 					new Extraction(
 						ExtractionType.VERB_BASED,
 						ex.getConfidence().orElse(null),
 						element.getSentenceIdx(),
 						element.getContextLayer(),
-						ex.getRelation(),
-						ex.getArg1(),
-						ex.getArg2()
+						triple
 					)
 				);
 			} else if (exploitCore) {
@@ -164,16 +165,17 @@ public class RelationExtractionRunner {
 			// NOUN BASED
 			List<BinaryExtraction> extractions = extractor.extract(simpleContext.getParseTree());
 			extractions.stream().filter(BinaryExtraction::isCoreExtraction).forEach(ex ->
+			{
+				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
+
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
 					ExtractionType.NOUN_BASED,
 					ex.getConfidence().orElse(null),
 					element.getSentenceIdx(),
 					element.getContextLayer(),
-					ex.getRelation(),
-					ex.getArg1(),
-					ex.getArg2()
-				)))
-			);
+					triple
+				)));
+			});
 
 		} else if (simpleContext.getRelation().equals(Relation.PURPOSE) && separatePurposes) {
 
@@ -185,14 +187,13 @@ public class RelationExtractionRunner {
 				Tree arg2 = matcher.getNode("arg2");
 				List<Word> relationWords = ParseTreeExtractionUtils.getWordsInBetween(simpleContext.getPhrase(), vp, arg2, true, false);
 				List<Word> arg2Words = ParseTreeExtractionUtils.getFollowingWords(vp, arg2, true);
+				DefaultTriple triple = new DefaultTriple(element.getText(), WordsUtils.wordsToString(relationWords), WordsUtils.wordsToString(arg2Words));
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
 					ExtractionType.VERB_BASED,
 					null,
 					element.getSentenceIdx(),
 					element.getContextLayer() + 1,
-					WordsUtils.wordsToString(relationWords),
-					element.getText(),
-					WordsUtils.wordsToString(arg2Words)
+					triple
 				)));
 			}
 
@@ -221,14 +222,13 @@ public class RelationExtractionRunner {
 					arg1Words = ParseTreeExtractionUtils.getContainingWords(arg1);
 					relationWords = ParseTreeExtractionUtils.getContainingWords(vp);
 				}
+				DefaultTriple triple = new DefaultTriple(WordsUtils.wordsToString(arg1Words), WordsUtils.wordsToString(relationWords), element.getText());
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
 					ExtractionType.VERB_BASED,
 					null,
 					element.getSentenceIdx(),
 					element.getContextLayer() + 1,
-					WordsUtils.wordsToString(relationWords),
-					WordsUtils.wordsToString(arg1Words),
-					element.getText()
+					triple
 				)));
 			}
 		} else {

@@ -52,7 +52,7 @@ public class GrapheneTest {
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false);
+		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false, false);
 
 		final String filename = "tmp-w8weg3q493ewqieh.json";
 
@@ -72,7 +72,7 @@ public class GrapheneTest {
 	@Test
 	public void testOutput() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false);
+		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false, false);
 
 		LOG.info(c.defaultFormat(false));
 		LOG.info(c.flatFormat(false));

@@ -30,21 +30,17 @@ import java.util.Optional;
 public class Extraction extends AbstractElement {
 	private ExtractionType type;
 	private Double confidence; //optional
-	private String relation;
-	private String arg1;
-	private String arg2;
+	private AbstractTriple triple;
 	// for deserialization
 
 	public Extraction() {
 	}
 
-	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, String relation, String arg1, String arg2) {
+	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, AbstractTriple triple) {
 		super(sentenceIdx, contextLayer);
 		this.type = type;
 		this.confidence = confidence;
-		this.relation = relation;
-		this.arg1 = arg1;
-		this.arg2 = arg2;
+		this.triple = triple;
 	}
 
 	public ExtractionType getType() {
@@ -55,16 +51,8 @@ public class Extraction extends AbstractElement {
 		return Optional.ofNullable(confidence);
 	}
 
-	public String getRelation() {
-		return relation;
-	}
-
-	public String getArg1() {
-		return arg1;
-	}
-
-	public String getArg2() {
-		return arg2;
+	public AbstractTriple getTriple() {
+		return triple;
 	}
 
 	@Override
@@ -73,17 +61,18 @@ public class Extraction extends AbstractElement {
 		if (o == null || getClass() != o.getClass()) return false;
 
 		Extraction that = (Extraction) o;
-
 		if (sentenceIdx != that.sentenceIdx) return false;
-		if (relation != null ? !relation.equals(that.relation) : that.relation != null) return false;
-		if (arg1 != null ? !arg1.equals(that.arg1) : that.arg1 != null) return false;
-		return arg2 != null ? arg2.equals(that.arg2) : that.arg2 == null;
+		return triple != null ? triple.equals(that.triple) : that.triple == null;
 	}
 
 	@Override
 	public String toString() {
 		StringBuilder strb = new StringBuilder();
-		strb.append(id).append("\t").append(type).append("\t").append(contextLayer).append("\t").append(arg1).append("\t").append(relation).append("\t").append(arg2);
+		strb.append(id).append("\t").
+			append(type).append("\t").
+			append(contextLayer).append("\t").
+			append(triple.toString());
+
 		simpleContexts.forEach(c -> {
 			strb.append("\tS:").append(c.getRelation()).append("(").append(c.getPhraseText()).append(")");
 		});
