@@ -26,7 +26,7 @@ package org.lambda3.graphene.core;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.lambda3.graphene.core.complex_categories.ComplexCategoryExtractor;
+import org.lambda3.graphene.core.relation_extraction.complex_categories.ComplexCategoryExtractor;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
@@ -49,7 +49,6 @@ public class Graphene {
 	private final CoreferenceResolver coreference;
 	private final DiscourseSimplifier discourseSimplificationRunner;
 	private final RelationExtractionRunner relationExtractionRunner;
-	private final ComplexCategoryExtractor ccExtractor;
 
 	public Graphene() {
 		this(ConfigFactory.load());
@@ -63,7 +62,6 @@ public class Graphene {
 		this.coreference = getCoreferenceResolver(this.config);
 		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
 		this.relationExtractionRunner = new RelationExtractionRunner(this.config.getConfig("relation-extraction"));
-		this.ccExtractor = new ComplexCategoryExtractor(this.config.getConfig("complex-category-extractor"));
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
@@ -118,7 +116,7 @@ public class Graphene {
         final DiscourseSimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");
-        final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(dsc);
+        final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(dsc, doComplexCategoryExtraction);
 		ec.setCoreferenced(dsc.isCoreferenced());
 		log.debug("Relation Extraction for text finished");
 		return ec;
@@ -126,7 +124,7 @@ public class Graphene {
 
 	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent, boolean coreferenced) {
 		log.debug("doRelationExtraction for discourseSimplificationContent");
-		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(discourseSimplificationContent);
+		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(discourseSimplificationContent, false);
 		ec.setCoreferenced(discourseSimplificationContent.isCoreferenced());
 		log.debug("Relation Extraction for discourseSimplificationContent finished");
 		return ec;

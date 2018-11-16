@@ -1,4 +1,4 @@
-package org.lambda3.graphene.core.complex_categories;
+package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import java.util.HashSet;
 import java.util.Set;

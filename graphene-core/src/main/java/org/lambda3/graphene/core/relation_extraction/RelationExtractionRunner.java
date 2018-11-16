@@ -236,15 +236,24 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	private void processLinkedContext(Element element, org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext, List<LinkedContext> linkedContexts, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
-		List<Extraction> targets = processElement(linkedContext.getTargetElement(discourseSimplificationContent), discourseSimplificationContent, relationExtractionContent);
-		targets.forEach(t -> linkedContexts.add(new LinkedContext(
-			t.id,
-			linkedContext.getRelation()
-		)));
+	private void processLinkedContext(Element element,
+									  LinkedContext linkedContext,
+									  List<LinkedContext> linkedContexts,
+									  DiscourseSimplificationContent discourseSimplificationContent,
+									  RelationExtractionContent relationExtractionContent) {
+
+		List<Extraction> targets = processElement(linkedContext.getTargetElement(discourseSimplificationContent),
+			discourseSimplificationContent,
+			relationExtractionContent);
+
+		targets.forEach(t ->
+			linkedContexts.add(new LinkedContext(t.id, linkedContext.getRelation()))
+		);
 	}
 
-	private List<Extraction> processElement(Element element, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
+	private List<Extraction> processElement(Element element,
+											DiscourseSimplificationContent discourseSimplificationContent,
+											RelationExtractionContent relationExtractionContent) {
 		if (elementCoreExtractionMap.containsKey(element)) {
 			return elementCoreExtractionMap.get(element);
 		} else {
@@ -295,7 +304,7 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent) {
+	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent, boolean doComplexCategoryExtraction) {
 		RelationExtractionContent relationExtractionContent = new RelationExtractionContent();
 		elementCoreExtractionMap.clear();
 
