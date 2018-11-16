@@ -11,70 +11,40 @@ package org.lambda3.graphene.core.relation_extraction.model;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ==========================License-End===============================
  */
 
+import org.lambda3.text.simplification.discourse.AbstractElement;
 
-import org.lambda3.graphene.core.utils.IDGenerator;
-import org.lambda3.text.simplification.discourse.model.LinkedContext;
-import org.lambda3.text.simplification.discourse.model.SimpleContext;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
-public class Extraction {
-	private String id;
+public class Extraction extends AbstractElement {
 	private ExtractionType type;
 	private Double confidence; //optional
-	private int sentenceIdx;
-	private int contextLayer;
 	private String relation;
 	private String arg1;
 	private String arg2;
-	private List<LinkedContext> linkedContexts;
-	private List<SimpleContext> simpleContexts;
-
 	// for deserialization
+
 	public Extraction() {
 	}
 
 	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, String relation, String arg1, String arg2) {
-		this.id = IDGenerator.generateUUID();
+		super(sentenceIdx, contextLayer);
 		this.type = type;
 		this.confidence = confidence;
-		this.sentenceIdx = sentenceIdx;
-		this.contextLayer = contextLayer;
 		this.relation = relation;
 		this.arg1 = arg1;
 		this.arg2 = arg2;
-		this.linkedContexts = new ArrayList<>();
-		this.simpleContexts = new ArrayList<>();
-	}
-
-	public void addLinkedContext(LinkedContext context) {
-		if (!linkedContexts.contains(context)) {
-			linkedContexts.add(context);
-		}
-	}
-
-	public void addSimpleContext(SimpleContext context) {
-		if (!simpleContexts.contains(context)) {
-			simpleContexts.add(context);
-		}
-	}
-
-	public String getId() {
-		return id;
 	}
 
 	public ExtractionType getType() {
@@ -83,14 +53,6 @@ public class Extraction {
 
 	public Optional<Double> getConfidence() {
 		return Optional.ofNullable(confidence);
-	}
-
-	public int getSentenceIdx() {
-		return sentenceIdx;
-	}
-
-	public int getContextLayer() {
-		return contextLayer;
 	}
 
 	public String getRelation() {
@@ -103,14 +65,6 @@ public class Extraction {
 
 	public String getArg2() {
 		return arg2;
-	}
-
-	public List<LinkedContext> getLinkedContexts() {
-		return linkedContexts;
-	}
-
-	public List<SimpleContext> getSimpleContexts() {
-		return simpleContexts;
 	}
 
 	@Override
@@ -129,12 +83,12 @@ public class Extraction {
 	@Override
 	public String toString() {
 		StringBuilder strb = new StringBuilder();
-		strb.append(id + "\t" + type + "\t" + contextLayer + "\t" + arg1 + "\t" + relation + "\t" + arg2);
+		strb.append(id).append("\t").append(type).append("\t").append(contextLayer).append("\t").append(arg1).append("\t").append(relation).append("\t").append(arg2);
 		simpleContexts.forEach(c -> {
-			strb.append("\tS:" + c.getRelation() + "(" + c.getPhraseText() + ")");
+			strb.append("\tS:").append(c.getRelation()).append("(").append(c.getPhraseText()).append(")");
 		});
 		linkedContexts.forEach(c -> {
-			strb.append("\tL:" + c.getRelation() + "(" + c.getTargetID() + ")");
+			strb.append("\tL:").append(c.getRelation()).append("(").append(c.getTargetID()).append(")");
 		});
 
 		return strb.toString();

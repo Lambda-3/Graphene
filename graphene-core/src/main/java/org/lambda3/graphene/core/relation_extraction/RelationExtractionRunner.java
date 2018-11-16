@@ -163,7 +163,7 @@ public class RelationExtractionRunner {
 
 			// NOUN BASED
 			List<BinaryExtraction> extractions = extractor.extract(simpleContext.getParseTree());
-			extractions.stream().filter(ex -> ex.isCoreExtraction()).forEach(ex ->
+			extractions.stream().filter(BinaryExtraction::isCoreExtraction).forEach(ex ->
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
 					ExtractionType.NOUN_BASED,
 					ex.getConfidence().orElse(null),
@@ -239,7 +239,7 @@ public class RelationExtractionRunner {
 	private void processLinkedContext(Element element, org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext, List<LinkedContext> linkedContexts, DiscourseSimplificationContent discourseSimplificationContent, RelationExtractionContent relationExtractionContent) {
 		List<Extraction> targets = processElement(linkedContext.getTargetElement(discourseSimplificationContent), discourseSimplificationContent, relationExtractionContent);
 		targets.forEach(t -> linkedContexts.add(new LinkedContext(
-			t.getId(),
+			t.id,
 			linkedContext.getRelation()
 		)));
 	}
@@ -260,7 +260,7 @@ public class RelationExtractionRunner {
 			element.getSimpleContexts().forEach(c -> processSimpleContext(element, c, newExtractions, simpleContexts));
 
 			// add core extractions
-			coreExtractions.forEach(e -> relationExtractionContent.addExtraction(e));
+			coreExtractions.forEach(relationExtractionContent::addExtraction);
 
 			// add new extractions
 			newExtractions.forEach(e -> relationExtractionContent.addExtraction(e.getExtraction()));
@@ -277,11 +277,13 @@ public class RelationExtractionRunner {
 			for (Extraction coreExtraction : coreExtractions) {
 
 				// simple
-				simpleContexts.forEach(c -> coreExtraction.addSimpleContext(c));
+				simpleContexts.forEach(coreExtraction::addSimpleContext);
 
 				// linked
-				linkedContexts.forEach(c -> coreExtraction.addLinkedContext(c));
-				newExtractions.stream().filter(e -> e.isAsLinkedContext()).forEach(e -> coreExtraction.addLinkedContext(new LinkedContext(e.getExtraction().getId(), e.getClassification())));
+				linkedContexts.forEach(coreExtraction::addLinkedContext);
+				newExtractions.stream().filter(NewExtraction::isAsLinkedContext).forEach(
+					e -> coreExtraction.addLinkedContext(new LinkedContext(e.getExtraction().id, e.getClassification()))
+				);
 			}
 
 //			logger.info("CORE-EXTRACTIONS:");
@@ -297,8 +299,8 @@ public class RelationExtractionRunner {
 		RelationExtractionContent relationExtractionContent = new RelationExtractionContent();
 		elementCoreExtractionMap.clear();
 
-		for (OutSentence outSentence : discourseSimplificationContent.getSentences()) {
-			relationExtractionContent.addSentence(new ExSentence(outSentence.getOriginalSentence(), outSentence.getSentenceIdx()));
+		for (OutSentence<?> outSentence : discourseSimplificationContent.getSentences()) {
+			relationExtractionContent.addSentence(new OutSentence<>(outSentence.getSentenceIdx(), outSentence.getOriginalSentence()));
 		}
 
 		for (Element element : discourseSimplificationContent.getElements()) {

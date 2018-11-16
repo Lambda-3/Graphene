@@ -195,6 +195,7 @@
 							<include>**/*Tests.java</include>
 							<include>**/*TestCase.java</include>
 						</includes>
+						<forkCount>0</forkCount>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -220,13 +221,6 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-assembly-plugin</artifactId>
 					<version>3.0.0</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-surefire-plugin</artifactId>
-					<configuration>
-						<forkCount>0</forkCount>
-					</configuration>
 				</plugin>
 			</plugins>
 		</pluginManagement>

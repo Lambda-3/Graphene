@@ -30,6 +30,7 @@ import org.lambda3.graphene.core.utils.IDGenerator;
 import org.lambda3.graphene.core.utils.RDFHelper;
 import org.lambda3.text.simplification.discourse.model.Content;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
+import org.lambda3.text.simplification.discourse.model.OutSentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ import java.util.Optional;
 
 public class RelationExtractionContent extends Content {
 	private boolean coreferenced;
-	private List<ExSentence> sentences;
+	private List<OutSentence<Extraction>> sentences;
 
 	// for deserialization
 	public RelationExtractionContent() {
@@ -50,29 +51,29 @@ public class RelationExtractionContent extends Content {
 		this.coreferenced = coreferenced;
 	}
 
-	public void addSentence(ExSentence sentence) {
+	public void addSentence(OutSentence<Extraction> sentence) {
 		this.sentences.add(sentence);
 	}
 
 	public Optional<String> containsExtraction(Extraction extraction) {
-		return sentences.get(extraction.getSentenceIdx()).containsExtraction(extraction);
+		return sentences.get(extraction.getSentenceIdx()).containsElement(extraction);
 	}
 
 	public void addExtraction(Extraction extraction) {
-		sentences.get(extraction.getSentenceIdx()).addExtraction(extraction);
+		sentences.get(extraction.getSentenceIdx()).addElement(extraction);
 	}
 
 	public boolean isCoreferenced() {
 		return coreferenced;
 	}
 
-	public List<ExSentence> getSentences() {
+	public List<OutSentence<Extraction>> getSentences() {
 		return sentences;
 	}
 
 	public Extraction getExtraction(String id) {
-		for (ExSentence sentence : sentences) {
-			Extraction e = sentence.getExtraction(id);
+		for (OutSentence<Extraction> sentence : sentences) {
+			Extraction e = sentence.getElement(id);
 			if (e != null) {
 				return e;
 			}
@@ -83,17 +84,17 @@ public class RelationExtractionContent extends Content {
 
 	public List<Extraction> getExtractions() {
 		List<Extraction> res = new ArrayList<>();
-		sentences.forEach(s -> res.addAll(s.getExtractions()));
+		sentences.forEach(s -> res.addAll(s.getElements()));
 
 		return res;
 	}
 
 	public String defaultFormat(boolean resolve) {
 		StringBuilder strb = new StringBuilder();
-		for (ExSentence sentence : getSentences()) {
+		for (OutSentence<Extraction> sentence : getSentences()) {
 			strb.append("\n# " + sentence.getOriginalSentence() + "\n");
-			for (Extraction extraction : sentence.getExtractions()) {
-				strb.append("\n" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
+			for (Extraction extraction : sentence.getElements()) {
+				strb.append("\n" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getRelation() + "\t" + simpleContext.getPhraseText() + "\n");
 				}
@@ -115,9 +116,9 @@ public class RelationExtractionContent extends Content {
 		final String separator = "||";
 
 		StringBuilder strb = new StringBuilder();
-		for (ExSentence sentence : getSentences()) {
-			for (Extraction extraction : sentence.getExtractions()) {
-				strb.append(sentence.getOriginalSentence() + "\t" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
+		for (OutSentence<Extraction> sentence : getSentences()) {
+			for (Extraction extraction : sentence.getElements()) {
+				strb.append(sentence.getOriginalSentence() + "\t" + extraction.id + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					strb.append("\t" + "S:" + simpleContext.getRelation() + "(" + simpleContext.getPhraseText() + ")");
 				}
@@ -138,13 +139,13 @@ public class RelationExtractionContent extends Content {
 
 	public String rdfFormat() {
 		StringBuilder strb = new StringBuilder();
-		for (ExSentence sentence : getSentences()) {
+		for (OutSentence<Extraction> sentence : getSentences()) {
 			strb.append("\n# " + sentence.getOriginalSentence() + "\n");
 			String sentenceId = IDGenerator.generateUUID();
 			String sentenceBN = RDFHelper.rdfBlankNode(sentenceId);
 			strb.append("\n" + RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("original-text"), RDFHelper.rdfLiteral(sentence.getOriginalSentence(), null)) + "\n");
-			for (Extraction extraction : sentence.getExtractions()) {
-				String extractionBN = RDFHelper.rdfBlankNode(extraction.getId());
+			for (Extraction extraction : sentence.getElements()) {
+				String extractionBN = RDFHelper.rdfBlankNode(extraction.id);
 				strb.append("\n" + RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("has-extraction"), extractionBN));
 				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("extraction-type"), RDFHelper.rdfLiteral(extraction.getType().name(), null)));
 				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("context-layer"), RDFHelper.rdfLiteral(extraction.getContextLayer())));
@@ -159,7 +160,7 @@ public class RelationExtractionContent extends Content {
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					Extraction target = getExtraction(linkedContext.getTargetID());
-					String targetBN =  RDFHelper.rdfBlankNode(target.getId());
+					String targetBN =  RDFHelper.rdfBlankNode(target.id);
 					String elementAbbrev = "L-" + linkedContext.getRelation();
 					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(elementAbbrev), targetBN));
 				}
