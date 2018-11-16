@@ -29,6 +29,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.lambda3.graphene.core.utils.IDGenerator;
 import org.lambda3.graphene.core.utils.RDFHelper;
 import org.lambda3.text.simplification.discourse.model.Content;
+import org.lambda3.text.simplification.discourse.model.LinkedContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,9 +99,9 @@ public class RelationExtractionContent extends Content {
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
 						Extraction target = getExtraction(linkedContext.getTargetID());
-						strb.append("\t" + "L:" + linkedContext.getClassification() + "\t" + target.getArg1() + "\t" + target.getRelation() + "\t" + target.getArg2() + "\n");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "\t" + target.getArg1() + "\t" + target.getRelation() + "\t" + target.getArg2() + "\n");
 					} else {
-						strb.append("\t" + "L:" + linkedContext.getClassification() + "\t" + linkedContext.getTargetID() + "\n");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "\t" + linkedContext.getTargetID() + "\n");
 					}
 				}
 			}
@@ -122,9 +123,9 @@ public class RelationExtractionContent extends Content {
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
 						Extraction target = getExtraction(linkedContext.getTargetID());
-						strb.append("\t" + "L:" + linkedContext.getClassification() + "(" + target.getArg1() + separator + target.getRelation() + separator + target.getArg2() + ")");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "(" + target.getArg1() + separator + target.getRelation() + separator + target.getArg2() + ")");
 					} else {
-						strb.append("\t" + "L:" + linkedContext.getClassification() + "(" + linkedContext.getTargetID() + ")");
+						strb.append("\t" + "L:" + linkedContext.getRelation() + "(" + linkedContext.getTargetID() + ")");
 					}
 				}
 				strb.append("\n");
@@ -158,7 +159,7 @@ public class RelationExtractionContent extends Content {
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					Extraction target = getExtraction(linkedContext.getTargetID());
 					String targetBN =  RDFHelper.rdfBlankNode(target.getId());
-					String elementAbbrev = "L-" + linkedContext.getClassification();
+					String elementAbbrev = "L-" + linkedContext.getRelation();
 					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(elementAbbrev), targetBN));
 				}
 				strb.append("\n");

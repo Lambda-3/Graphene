@@ -25,6 +25,7 @@ package org.lambda3.graphene.core.relation_extraction.model;
 
 
 import org.lambda3.graphene.core.utils.IDGenerator;
+import org.lambda3.text.simplification.discourse.model.LinkedContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -132,7 +133,7 @@ public class Extraction {
 			strb.append("\tS:" + c.getClassification() + "(" + c.getText() + ")");
 		});
 		linkedContexts.forEach(c -> {
-			strb.append("\tL:" + c.getClassification() + "(" + c.getTargetID() + ")");
+			strb.append("\tL:" + c.getRelation() + "(" + c.getTargetID() + ")");
 		});
 
 		return strb.toString();

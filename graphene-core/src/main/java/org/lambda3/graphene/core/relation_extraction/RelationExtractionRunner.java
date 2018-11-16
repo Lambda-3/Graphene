@@ -32,9 +32,9 @@ import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.model.*;
-import org.lambda3.graphene.core.relation_extraction.model.LinkedContext;
 import org.lambda3.graphene.core.relation_extraction.model.SimpleContext;
 import org.lambda3.text.simplification.discourse.model.Element;
+import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
 import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
 import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeExtractionUtils;
@@ -59,6 +59,7 @@ public class RelationExtractionRunner {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private final RelationExtractor extractor;
 
+	//TODO remove it from the class to guarantee the Runner is tread-safe.
 	private final HashMap<Element, List<Extraction>> elementCoreExtractionMap;
 
 	private class NewExtraction {
