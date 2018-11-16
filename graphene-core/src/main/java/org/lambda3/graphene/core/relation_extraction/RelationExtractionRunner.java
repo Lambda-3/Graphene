@@ -32,10 +32,10 @@ import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
 import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.model.*;
-import org.lambda3.graphene.core.relation_extraction.model.SimpleContext;
 import org.lambda3.text.simplification.discourse.model.Element;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
+import org.lambda3.text.simplification.discourse.model.SimpleContext;
 import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
 import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeExtractionUtils;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
@@ -147,7 +147,7 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	private void processSimpleContext(Element element, org.lambda3.text.simplification.discourse.model.SimpleContext simpleContext, List<NewExtraction> newExtractions, List<SimpleContext> simpleContexts) {
+	private void processSimpleContext(Element element, SimpleContext simpleContext, List<NewExtraction> newExtractions, List<SimpleContext> simpleContexts) {
 
 		// yield additional extractions
 		if (exploitContexts) {
@@ -232,14 +232,7 @@ public class RelationExtractionRunner {
 				)));
 			}
 		} else {
-
-			// add as simple context
-			SimpleContext c = new SimpleContext(
-				WordsUtils.wordsToString(ParseTreeExtractionUtils.getContainingWords(simpleContext.getPhrase())),
-				simpleContext.getRelation()
-			);
-			simpleContext.getTimeInformation().ifPresent(t -> c.setTimeInformation(t));
-			simpleContexts.add(c);
+			simpleContexts.add(simpleContext);
 		}
 	}
 

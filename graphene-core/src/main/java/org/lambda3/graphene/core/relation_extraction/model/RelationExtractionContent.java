@@ -30,6 +30,7 @@ import org.lambda3.graphene.core.utils.IDGenerator;
 import org.lambda3.graphene.core.utils.RDFHelper;
 import org.lambda3.text.simplification.discourse.model.Content;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
+import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -94,7 +95,7 @@ public class RelationExtractionContent extends Content {
 			for (Extraction extraction : sentence.getExtractions()) {
 				strb.append("\n" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2() + "\n");
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
-					strb.append("\t" + "S:" + simpleContext.getClassification() + "\t" + simpleContext.getText() + "\n");
+					strb.append("\t" + "S:" + simpleContext.getRelation() + "\t" + simpleContext.getPhraseText() + "\n");
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
@@ -118,7 +119,7 @@ public class RelationExtractionContent extends Content {
 			for (Extraction extraction : sentence.getExtractions()) {
 				strb.append(sentence.getOriginalSentence() + "\t" + extraction.getId() + "\t" + extraction.getContextLayer() + "\t" + extraction.getArg1() + "\t" + extraction.getRelation() + "\t" + extraction.getArg2());
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
-					strb.append("\t" + "S:" + simpleContext.getClassification() + "(" + simpleContext.getText() + ")");
+					strb.append("\t" + "S:" + simpleContext.getRelation() + "(" + simpleContext.getPhraseText() + ")");
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					if (resolve) {
@@ -153,8 +154,8 @@ public class RelationExtractionContent extends Content {
 				strb.append("\n");
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
-					String vContextAbbrev = "S-" + simpleContext.getClassification();
-					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(vContextAbbrev), RDFHelper.grapheneTextResource(simpleContext.getText())));
+					String vContextAbbrev = "S-" + simpleContext.getRelation();
+					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(vContextAbbrev), RDFHelper.grapheneTextResource(simpleContext.getPhraseText())));
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					Extraction target = getExtraction(linkedContext.getTargetID());
@@ -170,7 +171,7 @@ public class RelationExtractionContent extends Content {
 				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getArg2()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getArg2(), null)));
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
-					strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(simpleContext.getText()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(simpleContext.getText(), null)));
+					strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(simpleContext.getPhraseText()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(simpleContext.getPhraseText(), null)));
 				}
 				strb.append("\n");
 			}
