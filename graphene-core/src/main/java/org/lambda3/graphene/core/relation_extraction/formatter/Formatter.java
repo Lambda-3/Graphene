@@ -44,7 +44,6 @@ public abstract class Formatter<E extends AbstractElement> {
 						writeLinkedContext(sb, lc);
 					}
 				}
-
 				writeExtra(sb, element);
 			}
 		}

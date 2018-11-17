@@ -142,37 +142,37 @@ public class RelationExtractionContent extends Content {
 		for (OutSentence<Extraction> sentence : getSentences()) {
 			strb.append("\n# " + sentence.getOriginalSentence() + "\n");
 			String sentenceId = IDGenerator.generateUUID();
-			String sentenceBN = RDFHelper.rdfBlankNode(sentenceId);
-			strb.append("\n" + RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("original-text"), RDFHelper.rdfLiteral(sentence.getOriginalSentence(), null)) + "\n");
+			String sentenceBN = RDFHelper.blankNode(sentenceId);
+			strb.append("\n" + RDFHelper.triple(sentenceBN, RDFHelper.sentenceNameSpace("original-text"), RDFHelper.rdfLiteral(sentence.getOriginalSentence(), null)) + "\n");
 			for (Extraction extraction : sentence.getElements()) {
-				String extractionBN = RDFHelper.rdfBlankNode(extraction.id);
-				strb.append("\n" + RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("has-extraction"), extractionBN));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("extraction-type"), RDFHelper.rdfLiteral(extraction.getType().name(), null)));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("context-layer"), RDFHelper.rdfLiteral(extraction.getContextLayer())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("subject"), RDFHelper.grapheneTextResource(extraction.getTriple().getSubject())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("predicate"), RDFHelper.grapheneTextResource(extraction.getTriple().getProperty())));
-				strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("object"), RDFHelper.grapheneTextResource(extraction.getTriple().getObject())));
+				String extractionBN = RDFHelper.blankNode(extraction.id);
+				strb.append("\n" + RDFHelper.triple(sentenceBN, RDFHelper.sentenceNameSpace("has-extraction"), extractionBN));
+				strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace("extraction-type"), RDFHelper.rdfLiteral(extraction.getType().name(), null)));
+				strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace("context-layer"), RDFHelper.rdfLiteral(extraction.getContextLayer())));
+				strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace("subject"), RDFHelper.textResource(extraction.getTriple().getSubject())));
+				strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace("predicate"), RDFHelper.textResource(extraction.getTriple().getProperty())));
+				strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace("object"), RDFHelper.textResource(extraction.getTriple().getObject())));
 				strb.append("\n");
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
 					String vContextAbbrev = "S-" + simpleContext.getRelation();
-					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(vContextAbbrev), RDFHelper.grapheneTextResource(simpleContext.getPhraseText())));
+					strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace(vContextAbbrev), RDFHelper.textResource(simpleContext.getPhraseText())));
 				}
 				for (LinkedContext linkedContext : extraction.getLinkedContexts()) {
 					Extraction target = getExtraction(linkedContext.getTargetID());
-					String targetBN =  RDFHelper.rdfBlankNode(target.id);
+					String targetBN =  RDFHelper.blankNode(target.id);
 					String elementAbbrev = "L-" + linkedContext.getRelation();
-					strb.append("\n" + RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(elementAbbrev), targetBN));
+					strb.append("\n" + RDFHelper.triple(extractionBN, RDFHelper.extractionNameSpace(elementAbbrev), targetBN));
 				}
 				strb.append("\n");
 
 				// Values
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getSubject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getSubject(), null)));
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getProperty()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getProperty(), null)));
-				strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(extraction.getTriple().getObject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getObject(), null)));
+				strb.append("\n" + RDFHelper.triple(RDFHelper.textResource(extraction.getTriple().getSubject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getSubject(), null)));
+				strb.append("\n" + RDFHelper.triple(RDFHelper.textResource(extraction.getTriple().getProperty()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getProperty(), null)));
+				strb.append("\n" + RDFHelper.triple(RDFHelper.textResource(extraction.getTriple().getObject()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(extraction.getTriple().getObject(), null)));
 
 				for (SimpleContext simpleContext : extraction.getSimpleContexts()) {
-					strb.append("\n" + RDFHelper.rdfTriple(RDFHelper.grapheneTextResource(simpleContext.getPhraseText()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(simpleContext.getPhraseText(), null)));
+					strb.append("\n" + RDFHelper.triple(RDFHelper.textResource(simpleContext.getPhraseText()), RDFHelper.rdfResource("value"), RDFHelper.rdfLiteral(simpleContext.getPhraseText(), null)));
 				}
 				strb.append("\n");
 			}

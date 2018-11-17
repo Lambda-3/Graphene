@@ -2,12 +2,13 @@ package org.lambda3.graphene.core.relation_extraction.formatter;
 
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.utils.IDGenerator;
-import org.lambda3.graphene.core.utils.RDFHelper;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.List;
+
+import static org.lambda3.graphene.core.utils.RDFHelper.*;
 
 public class RDFFormatter extends DefaultFormatter {
 
@@ -19,8 +20,8 @@ public class RDFFormatter extends DefaultFormatter {
 
 	public String[] writeHeadline(StringBuilder sb, OutSentence<Extraction> s) {
 		String sentenceId = IDGenerator.generateUUID();
-		String sentenceBN = RDFHelper.rdfBlankNode(sentenceId);
-		String triple = RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("original-text"), RDFHelper.rdfLiteral(s.getOriginalSentence(), null));
+		String sentenceBN = blankNode(sentenceId);
+		String triple = triple(sentenceBN, sentenceNameSpace("original-text"), rdfLiteral(s.getOriginalSentence(), null));
 		sb.append(String.format(this.headline, s.getOriginalSentence(), triple));
 
 		return new String[] {sentenceBN};
@@ -28,14 +29,14 @@ public class RDFFormatter extends DefaultFormatter {
 
 	public String[] writeElement(StringBuilder sb, Extraction element, String... params) {
 		String sentenceBN = params[0];
-		String extractionBN = RDFHelper.rdfBlankNode(element.id);
+		String extractionBN = blankNode(element.id);
 
-		String hasExtraction = RDFHelper.rdfTriple(sentenceBN, RDFHelper.grapheneSentenceResource("has-extraction"), extractionBN);
-		String extractionType = RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("extraction-type"), RDFHelper.rdfLiteral(element.getType().name(), null));
-		String contextLayer = RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("context-layer"), RDFHelper.rdfLiteral(element.getContextLayer()));
-		String subject = RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("subject"), RDFHelper.grapheneTextResource(element.getTriple().getSubject()));
-		String predicate = RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("predicate"), RDFHelper.grapheneTextResource(element.getTriple().getProperty()));
-		String object = RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource("object"), RDFHelper.grapheneTextResource(element.getTriple().getObject()));
+		String hasExtraction = triple(sentenceBN, sentenceNameSpace("has-extraction"), extractionBN);
+		String extractionType = triple(extractionBN, extractionNameSpace("extraction-type"), rdfLiteral(element.getType().name(), null));
+		String contextLayer = triple(extractionBN, extractionNameSpace("context-layer"), rdfLiteral(element.getContextLayer()));
+		String subject = triple(extractionBN, extractionNameSpace("subject"), textResource(element.getTriple().getSubject()));
+		String predicate = triple(extractionBN, extractionNameSpace("predicate"), textResource(element.getTriple().getProperty()));
+		String object = triple(extractionBN, extractionNameSpace("object"), textResource(element.getTriple().getObject()));
 
 		sb.append(String.format(this.relation, hasExtraction, extractionType, contextLayer, subject, predicate, object));
 
@@ -47,17 +48,17 @@ public class RDFFormatter extends DefaultFormatter {
 		String vContextAbbrev = String.format("S-%s", sc.getRelation());
 
 		sb.append("\n");
-		sb.append(RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(vContextAbbrev), RDFHelper.grapheneTextResource(sc.getPhraseText())));
+		sb.append(triple(extractionBN, extractionNameSpace(vContextAbbrev), textResource(sc.getPhraseText())));
 	}
 
 	public void writeResolvedLinkedContext(StringBuilder sb, List<OutSentence<Extraction>> sentences, LinkedContext lc, String... params) {
 		String extractionBN = params[0];
 		Extraction target = getElement(lc.getTargetID(), sentences);
-		String targetBN = RDFHelper.rdfBlankNode(target.id);
+		String targetBN = blankNode(target.id);
 		String elementAbbrev = String.format("L-%s", lc.getRelation());
 
 		sb.append("\n");
-		sb.append(RDFHelper.rdfTriple(extractionBN, RDFHelper.grapheneExtractionResource(elementAbbrev), targetBN));
+		sb.append(triple(extractionBN, extractionNameSpace(elementAbbrev), targetBN));
 	}
 
 	public void writeLinkedContext(StringBuilder sb, LinkedContext lc) {
@@ -79,10 +80,10 @@ public class RDFFormatter extends DefaultFormatter {
 	}
 
 	private String getValueTriple(String content) {
-		return RDFHelper.rdfTriple(
-			RDFHelper.grapheneTextResource(content),
-			RDFHelper.rdfResource("value"),
-			RDFHelper.rdfLiteral(content, null)
+		return triple(
+			textResource(content),
+			rdfResource("value"),
+			rdfLiteral(content, null)
 		);
 	}
 }
