@@ -10,6 +10,9 @@ public class GraphTriple extends AbstractTriple {
 	private String property;
 	private ComplexCategory object;
 
+	private GraphTriple() {
+		//for deserialization
+	}
 	public GraphTriple(ComplexCategory subject, String property, ComplexCategory object) {
 		this.subject = subject;
 		this.property = property;

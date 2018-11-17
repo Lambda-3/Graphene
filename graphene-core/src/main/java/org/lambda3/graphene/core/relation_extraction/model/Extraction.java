@@ -27,16 +27,16 @@ import org.lambda3.text.simplification.discourse.AbstractElement;
 
 import java.util.Optional;
 
-public class Extraction extends AbstractElement {
+public class Extraction<T extends AbstractTriple> extends AbstractElement {
 	private ExtractionType type;
 	private Double confidence; //optional
-	private AbstractTriple triple;
+	private T triple;
 	// for deserialization
 
 	public Extraction() {
 	}
 
-	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, AbstractTriple triple) {
+	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, T triple) {
 		super(sentenceIdx, contextLayer);
 		this.type = type;
 		this.confidence = confidence;
@@ -51,7 +51,7 @@ public class Extraction extends AbstractElement {
 		return Optional.ofNullable(confidence);
 	}
 
-	public AbstractTriple getTriple() {
+	public T getTriple() {
 		return triple;
 	}
 

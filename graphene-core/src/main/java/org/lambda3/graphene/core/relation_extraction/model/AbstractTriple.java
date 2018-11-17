@@ -1,5 +1,14 @@
 package org.lambda3.graphene.core.relation_extraction.model;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.lambda3.graphene.core.relation_extraction.complex_categories.GraphTriple;
+
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
+@JsonSubTypes({
+	@JsonSubTypes.Type(value = DefaultTriple.class, name = "DefaultTriple"),
+	@JsonSubTypes.Type(value = GraphTriple.class, name = "GraphTriple") }
+)
 public abstract class AbstractTriple {
 
 	public abstract String getSubject();

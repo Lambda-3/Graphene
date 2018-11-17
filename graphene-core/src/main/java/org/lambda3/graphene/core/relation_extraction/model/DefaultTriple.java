@@ -7,6 +7,10 @@ public class DefaultTriple extends AbstractTriple {
 	private String property;
 	private String object;
 
+	private DefaultTriple() {
+		//for deserialization
+	}
+
 	public DefaultTriple(String subject, String property, String object) {
 		this.subject = subject;
 		this.property = property;

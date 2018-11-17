@@ -86,4 +86,9 @@ public class RDFFormatter extends DefaultFormatter {
 			rdfLiteral(content, null)
 		);
 	}
+
+	@Override
+	public String format(List<OutSentence<Extraction>> outSentences, boolean resolve) {
+		return super.format(outSentences, true);
+	}
 }

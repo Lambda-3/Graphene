@@ -119,7 +119,7 @@ public class RelationExtractionRunner {
 
 	private NewExtraction createYieldedExtraction(int sentenceIdx, BinaryExtraction ex) {
 		DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
-		return new NewExtraction(false, Relation.UNKNOWN, new Extraction(
+		return new NewExtraction(false, Relation.UNKNOWN, new Extraction<>(
 			ExtractionType.VERB_BASED,
 			ex.getConfidence().orElse(null),
 			sentenceIdx,
@@ -133,7 +133,7 @@ public class RelationExtractionRunner {
 			if (ex.isCoreExtraction()) {
 				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 				coreExtractions.add(
-					new Extraction(
+					new Extraction<>(
 						ExtractionType.VERB_BASED,
 						ex.getConfidence().orElse(null),
 						element.getSentenceIdx(),
@@ -168,7 +168,7 @@ public class RelationExtractionRunner {
 			{
 				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 
-				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
+				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.NOUN_BASED,
 					ex.getConfidence().orElse(null),
 					element.getSentenceIdx(),
@@ -188,7 +188,7 @@ public class RelationExtractionRunner {
 				List<Word> relationWords = ParseTreeExtractionUtils.getWordsInBetween(simpleContext.getPhrase(), vp, arg2, true, false);
 				List<Word> arg2Words = ParseTreeExtractionUtils.getFollowingWords(vp, arg2, true);
 				DefaultTriple triple = new DefaultTriple(element.getText(), WordsUtils.wordsToString(relationWords), WordsUtils.wordsToString(arg2Words));
-				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
+				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.VERB_BASED,
 					null,
 					element.getSentenceIdx(),
@@ -223,7 +223,7 @@ public class RelationExtractionRunner {
 					relationWords = ParseTreeExtractionUtils.getContainingWords(vp);
 				}
 				DefaultTriple triple = new DefaultTriple(WordsUtils.wordsToString(arg1Words), WordsUtils.wordsToString(relationWords), element.getText());
-				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction(
+				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.VERB_BASED,
 					null,
 					element.getSentenceIdx(),
