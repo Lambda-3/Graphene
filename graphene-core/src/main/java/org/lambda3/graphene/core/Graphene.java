@@ -26,10 +26,8 @@ package org.lambda3.graphene.core;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import org.lambda3.graphene.core.relation_extraction.complex_categories.ComplexCategoryExtractor;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.RelationExtractionRunner;
 import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.lambda3.graphene.core.utils.ConfigUtils;
@@ -98,7 +96,7 @@ public class Graphene {
 		return content;
 	}
 
-	public DiscourseSimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
+	public SimplificationContent doDiscourseSimplification(String text, boolean doCoreference, boolean isolateSentences) {
 		if (doCoreference) {
 			final CoreferenceContent cc = doCoreference(text);
 			text = cc.getSubstitutedText();
@@ -106,14 +104,13 @@ public class Graphene {
 
 		log.debug("doDiscourseSimplification for text");
 		final SimplificationContent sc = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
-		final DiscourseSimplificationContent dsc = new DiscourseSimplificationContent(sc);
-		dsc.setCoreferenced(doCoreference);
+		sc.setCoreferenced(doCoreference);
 		log.debug("Discourse Simplification for text finished");
-		return dsc;
+		return sc;
 	}
 
 	public RelationExtractionContent doRelationExtraction(String text, boolean doCoreference, boolean doComplexCategoryExtraction, boolean isolateSentences) {
-        final DiscourseSimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
+        final SimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
 
         log.debug("doRelationExtraction for text");
         final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(dsc, doComplexCategoryExtraction);
@@ -122,10 +119,10 @@ public class Graphene {
 		return ec;
 	}
 
-	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent, boolean coreferenced) {
+	public RelationExtractionContent doRelationExtraction(SimplificationContent content, boolean coreferenced) {
 		log.debug("doRelationExtraction for discourseSimplificationContent");
-		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(discourseSimplificationContent, false);
-		ec.setCoreferenced(discourseSimplificationContent.isCoreferenced());
+		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(content, false);
+		ec.setCoreferenced(content.isCoreferenced());
 		log.debug("Relation Extraction for discourseSimplificationContent finished");
 		return ec;
 	}

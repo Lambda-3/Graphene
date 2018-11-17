@@ -23,21 +23,23 @@ package org.lambda3.graphene.core.relation_extraction.model;
  * ==========================License-End===============================
  */
 
-import org.lambda3.text.simplification.discourse.AbstractElement;
+import edu.stanford.nlp.trees.Tree;
+import org.lambda3.text.simplification.discourse.model.Element;
 
+import java.util.Objects;
 import java.util.Optional;
 
-public class Extraction<T extends AbstractTriple> extends AbstractElement {
+public class Extraction<T extends AbstractTriple> extends Element {
 	private ExtractionType type;
 	private Double confidence; //optional
 	private T triple;
-	// for deserialization
 
-	public Extraction() {
+	protected Extraction() {
+		// for deserialization
 	}
 
-	public Extraction(ExtractionType type, Double confidence, int sentenceIdx, int contextLayer, T triple) {
-		super(sentenceIdx, contextLayer);
+	public Extraction(Tree parseTree, int sentenceIdx, int contextLayer, ExtractionType type, Double confidence, T triple) {
+		super(parseTree, sentenceIdx, contextLayer);
 		this.type = type;
 		this.confidence = confidence;
 		this.triple = triple;
@@ -59,27 +61,14 @@ public class Extraction<T extends AbstractTriple> extends AbstractElement {
 	public boolean equals(Object o) {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
-
-		Extraction that = (Extraction) o;
-		if (sentenceIdx != that.sentenceIdx) return false;
-		return triple != null ? triple.equals(that.triple) : that.triple == null;
+		Extraction<?> that = (Extraction<?>) o;
+		return type == that.type &&
+			Objects.equals(confidence, that.confidence) &&
+			Objects.equals(triple, that.triple);
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder strb = new StringBuilder();
-		strb.append(id).append("\t").
-			append(type).append("\t").
-			append(contextLayer).append("\t").
-			append(triple.toString());
-
-		simpleContexts.forEach(c -> {
-			strb.append("\tS:").append(c.getRelation()).append("(").append(c.getPhraseText()).append(")");
-		});
-		linkedContexts.forEach(c -> {
-			strb.append("\tL:").append(c.getRelation()).append("(").append(c.getTargetID()).append(")");
-		});
-
-		return strb.toString();
+	public int hashCode() {
+		return Objects.hash(type, confidence, triple);
 	}
 }

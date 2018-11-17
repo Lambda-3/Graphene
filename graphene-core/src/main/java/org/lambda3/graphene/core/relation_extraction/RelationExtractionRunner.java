@@ -30,15 +30,11 @@ import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
-import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.model.DefaultTriple;
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.relation_extraction.model.ExtractionType;
 import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
-import org.lambda3.text.simplification.discourse.model.Element;
-import org.lambda3.text.simplification.discourse.model.LinkedContext;
-import org.lambda3.text.simplification.discourse.model.OutSentence;
-import org.lambda3.text.simplification.discourse.model.SimpleContext;
+import org.lambda3.text.simplification.discourse.model.*;
 import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
 import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeExtractionUtils;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
@@ -239,11 +235,11 @@ public class RelationExtractionRunner {
 	private void processLinkedContext(Element element,
 									  LinkedContext linkedContext,
 									  List<LinkedContext> linkedContexts,
-									  DiscourseSimplificationContent discourseSimplificationContent,
+									  SimplificationContent content,
 									  RelationExtractionContent relationExtractionContent) {
 
-		List<Extraction> targets = processElement(linkedContext.getTargetElement(discourseSimplificationContent),
-			discourseSimplificationContent,
+		List<Extraction> targets = processElement(content.getElement(linkedContext.getTargetID()),
+			content,
 			relationExtractionContent);
 
 		targets.forEach(t ->
@@ -252,7 +248,7 @@ public class RelationExtractionRunner {
 	}
 
 	private List<Extraction> processElement(Element element,
-											DiscourseSimplificationContent discourseSimplificationContent,
+											SimplificationContent discourseSimplificationContent,
 											RelationExtractionContent relationExtractionContent) {
 		if (elementCoreExtractionMap.containsKey(element)) {
 			return elementCoreExtractionMap.get(element);
@@ -304,7 +300,7 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	public RelationExtractionContent doRelationExtraction(DiscourseSimplificationContent discourseSimplificationContent, boolean doComplexCategoryExtraction) {
+	public RelationExtractionContent doRelationExtraction(SimplificationContent<? extends Element> discourseSimplificationContent, boolean doComplexCategoryExtraction) {
 		RelationExtractionContent relationExtractionContent = new RelationExtractionContent();
 		elementCoreExtractionMap.clear();
 

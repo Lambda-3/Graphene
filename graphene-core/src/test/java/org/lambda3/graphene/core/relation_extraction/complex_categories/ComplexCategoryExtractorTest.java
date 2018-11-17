@@ -1,7 +1,6 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import org.lambda3.graphene.core.Graphene;
-import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.testng.annotations.Test;
 
