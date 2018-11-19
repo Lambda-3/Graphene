@@ -4,6 +4,7 @@ package org.lambda3.graphene.core.relation_extraction.complex_categories;
 import com.typesafe.config.Config;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.lambda3.graphene.core.relation_extraction.model.Triple;
 
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -68,6 +69,11 @@ public class ComplexCategoryExtractor {
 		} else {
 			throw new RuntimeException("response code: " + responseCode);
 		}
+	}
+
+	public void addComplexCategories(Triple triple) {
+		triple.addExtension("subject", getComplexCategory(triple.subject));
+		triple.addExtension("object", getComplexCategory(triple.object));
 	}
 
 	public ComplexCategory getComplexCategory(String query) {

@@ -1,7 +1,7 @@
 package org.lambda3.graphene.core.relation_extraction.formatter;
 
-import org.lambda3.graphene.core.relation_extraction.model.AbstractTriple;
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
+import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
@@ -26,9 +26,9 @@ public class DefaultFormatter extends Formatter<Extraction> {
 
 	@Override
 	protected String[] writeElement(StringBuilder sb, Extraction element, String... params) {
-		AbstractTriple t = element.getTriple();
+		Triple t = element.getExtension(Triple.class);
 		sb.append(String.format(relation, element.id, element.getContextLayer(),
-			t.getSubject(), t.getProperty(), t.getObject()));
+			t.subject, t.property, t.object));
 		return EMPTY_ARRAY;
 	}
 
@@ -40,8 +40,8 @@ public class DefaultFormatter extends Formatter<Extraction> {
 	@Override
 	protected void writeResolvedLinkedContext(StringBuilder sb, List<OutSentence<Extraction>> sentences, LinkedContext lc, String... params) {
 		Extraction target = getElement(lc.getTargetID(), sentences);
-		AbstractTriple tt = target.getTriple();
-		sb.append(String.format(resolvedLinked, lc.getRelation(), tt.getSubject(), tt.getProperty(), tt.getObject()));
+		Triple tt = target.getExtension(Triple.class);
+		sb.append(String.format(resolvedLinked, lc.getRelation(), tt.subject, tt.property, tt.object));
 	}
 
 	@Override

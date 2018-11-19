@@ -25,11 +25,10 @@ package org.lambda3.graphene.core.relation_extraction;
 
 
 import edu.stanford.nlp.trees.Tree;
-import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeVisualizer;
+import org.lambda3.text.simplification.discourse.model.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.ws.rs.HEAD;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,12 +37,14 @@ public abstract class RelationExtractor {
 	private static final HeadVerbFinder HEAD_VERB_FINDER = new HeadVerbFinder();
 
 	protected abstract List<BinaryExtraction> doExtraction(Tree parseTree);
+	protected abstract void doExtraction(Element element);
 
-	public List<BinaryExtraction> extract(Tree parseTree) {
-		Optional<String> headVerb = HEAD_VERB_FINDER.findHeadVerb(parseTree);
+	public List<BinaryExtraction> extract(Element element) {
+		Optional<String> headVerb = HEAD_VERB_FINDER.findHeadVerb(element.getParseTree());
 
-		List<BinaryExtraction> extractions = doExtraction(parseTree);
-		extractions.stream().forEach(e -> {
+		doExtraction(element);
+		List<BinaryExtraction> extractions = element.getListExtension(BinaryExtraction.class);
+			extractions.stream().forEach(e -> {
 			if (headVerb.isPresent()) {
 				e.setCoreExtraction(e.getRelation().contains(headVerb.get()) || e.getArg2().equals(headVerb.get()));
 			} else {

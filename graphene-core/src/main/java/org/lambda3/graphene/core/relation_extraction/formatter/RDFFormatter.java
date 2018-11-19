@@ -1,6 +1,7 @@
 package org.lambda3.graphene.core.relation_extraction.formatter;
 
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
+import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.utils.IDGenerator;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
@@ -34,9 +35,11 @@ public class RDFFormatter extends DefaultFormatter {
 		String hasExtraction = triple(sentenceBN, sentenceNameSpace("has-extraction"), extractionBN);
 		String extractionType = triple(extractionBN, extractionNameSpace("extraction-type"), rdfLiteral(element.getType().name(), null));
 		String contextLayer = triple(extractionBN, extractionNameSpace("context-layer"), rdfLiteral(element.getContextLayer()));
-		String subject = triple(extractionBN, extractionNameSpace("subject"), textResource(element.getTriple().getSubject()));
-		String predicate = triple(extractionBN, extractionNameSpace("predicate"), textResource(element.getTriple().getProperty()));
-		String object = triple(extractionBN, extractionNameSpace("object"), textResource(element.getTriple().getObject()));
+
+		Triple t = element.getExtension(Triple.class);
+		String subject = triple(extractionBN, extractionNameSpace("subject"), textResource(t.subject));
+		String predicate = triple(extractionBN, extractionNameSpace("predicate"), textResource(t.property));
+		String object = triple(extractionBN, extractionNameSpace("object"), textResource(t.object));
 
 		sb.append(String.format(this.relation, hasExtraction, extractionType, contextLayer, subject, predicate, object));
 
@@ -66,9 +69,10 @@ public class RDFFormatter extends DefaultFormatter {
 	}
 
 	public void writeExtra(StringBuilder sb, Extraction element) {
-		String ts = getValueTriple(element.getTriple().getSubject());
-		String tp = getValueTriple(element.getTriple().getProperty());
-		String to = getValueTriple(element.getTriple().getObject());
+		Triple t = element.getExtension(Triple.class);
+		String ts = getValueTriple(t.subject);
+		String tp = getValueTriple(t.property);
+		String to = getValueTriple(t.object);
 
 		sb.append(String.format(this.extra, ts, tp, to));
 

@@ -30,7 +30,7 @@ import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
-import org.lambda3.graphene.core.relation_extraction.model.DefaultTriple;
+import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.relation_extraction.model.ExtractionType;
 import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
@@ -114,7 +114,7 @@ public class RelationExtractionRunner {
 	}
 
 	private NewExtraction createYieldedExtraction(int sentenceIdx, BinaryExtraction ex) {
-		DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
+		Triple triple = new Triple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 		return new NewExtraction(false, Relation.UNKNOWN, new Extraction<>(
 			ExtractionType.VERB_BASED,
 			ex.getConfidence().orElse(null),
@@ -127,7 +127,7 @@ public class RelationExtractionRunner {
 	private void processElement(Element element, List<Extraction> coreExtractions, List<NewExtraction> newExtractions) {
 		for (BinaryExtraction ex : extractor.extract(element.getParseTree())) {
 			if (ex.isCoreExtraction()) {
-				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
+				Triple triple = new Triple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 				coreExtractions.add(
 					new Extraction<>(
 						ExtractionType.VERB_BASED,
@@ -162,7 +162,7 @@ public class RelationExtractionRunner {
 			List<BinaryExtraction> extractions = extractor.extract(simpleContext.getParseTree());
 			extractions.stream().filter(BinaryExtraction::isCoreExtraction).forEach(ex ->
 			{
-				DefaultTriple triple = new DefaultTriple(ex.getArg1(), ex.getRelation(), ex.getArg2());
+				Triple triple = new Triple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.NOUN_BASED,
@@ -183,7 +183,7 @@ public class RelationExtractionRunner {
 				Tree arg2 = matcher.getNode("arg2");
 				List<Word> relationWords = ParseTreeExtractionUtils.getWordsInBetween(simpleContext.getPhrase(), vp, arg2, true, false);
 				List<Word> arg2Words = ParseTreeExtractionUtils.getFollowingWords(vp, arg2, true);
-				DefaultTriple triple = new DefaultTriple(element.getText(), WordsUtils.wordsToString(relationWords), WordsUtils.wordsToString(arg2Words));
+				Triple triple = new Triple(element.getText(), WordsUtils.wordsToString(relationWords), WordsUtils.wordsToString(arg2Words));
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.VERB_BASED,
 					null,
@@ -218,7 +218,7 @@ public class RelationExtractionRunner {
 					arg1Words = ParseTreeExtractionUtils.getContainingWords(arg1);
 					relationWords = ParseTreeExtractionUtils.getContainingWords(vp);
 				}
-				DefaultTriple triple = new DefaultTriple(WordsUtils.wordsToString(arg1Words), WordsUtils.wordsToString(relationWords), element.getText());
+				Triple triple = new Triple(WordsUtils.wordsToString(arg1Words), WordsUtils.wordsToString(relationWords), element.getText());
 				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
 					ExtractionType.VERB_BASED,
 					null,

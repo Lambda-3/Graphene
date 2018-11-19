@@ -23,52 +23,27 @@ package org.lambda3.graphene.core.relation_extraction.model;
  * ==========================License-End===============================
  */
 
-import edu.stanford.nlp.trees.Tree;
-import org.lambda3.text.simplification.discourse.model.Element;
+import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
 
-import java.util.Objects;
-import java.util.Optional;
+public class Extraction {
+	public final ExtractionType type;
+	public final double confidence; //optional
+	public final Triple triple;
 
-public class Extraction<T extends AbstractTriple> extends Element {
-	private ExtractionType type;
-	private Double confidence; //optional
-	private T triple;
+	private boolean asLinkedContext;
+	private Relation classification;
+
 
 	protected Extraction() {
 		// for deserialization
+		this.type = null;
+		this.confidence = -1;
+		this.triple = null;
 	}
 
-	public Extraction(Tree parseTree, int sentenceIdx, int contextLayer, ExtractionType type, Double confidence, T triple) {
-		super(parseTree, sentenceIdx, contextLayer);
+	public Extraction(ExtractionType type, double confidence, Triple triple) {
 		this.type = type;
 		this.confidence = confidence;
 		this.triple = triple;
-	}
-
-	public ExtractionType getType() {
-		return type;
-	}
-
-	public Optional<Double> getConfidence() {
-		return Optional.ofNullable(confidence);
-	}
-
-	public T getTriple() {
-		return triple;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		Extraction<?> that = (Extraction<?>) o;
-		return type == that.type &&
-			Objects.equals(confidence, that.confidence) &&
-			Objects.equals(triple, that.triple);
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(type, confidence, triple);
 	}
 }

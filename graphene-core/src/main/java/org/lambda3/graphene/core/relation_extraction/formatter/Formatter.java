@@ -1,13 +1,13 @@
 package org.lambda3.graphene.core.relation_extraction.formatter;
 
-import org.lambda3.text.simplification.discourse.AbstractElement;
+import org.lambda3.text.simplification.discourse.model.Element;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
 import org.lambda3.text.simplification.discourse.model.OutSentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.List;
 
-public abstract class Formatter<E extends AbstractElement> {
+public abstract class Formatter<E extends Element> {
 
 	protected String headline;
 	protected String relation;
