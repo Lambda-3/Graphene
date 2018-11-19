@@ -30,17 +30,18 @@ import edu.stanford.nlp.ling.Word;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.tregex.TregexMatcher;
 import edu.stanford.nlp.trees.tregex.TregexPattern;
-import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.relation_extraction.model.ExtractionType;
 import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
+import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.text.simplification.discourse.model.*;
-import org.lambda3.text.simplification.discourse.runner.discourse_tree.Relation;
+import org.lambda3.text.simplification.discourse.runner.discourse_tree.RelationType;
 import org.lambda3.text.simplification.discourse.utils.parseTree.ParseTreeExtractionUtils;
 import org.lambda3.text.simplification.discourse.utils.words.WordsUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.relation.Relation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -61,12 +62,12 @@ public class RelationExtractionRunner {
 	//TODO remove it from the class to guarantee the Runner is tread-safe.
 	private final HashMap<Element, List<Extraction>> elementCoreExtractionMap;
 
-	private class NewExtraction {
+	private class DelMeNewExtraction {
 		private boolean asLinkedContext;
 		private Relation classification;
 		private Extraction extraction;
 
-		public NewExtraction(boolean asLinkedContext, Relation classification, Extraction extraction) {
+		public DelMeNewExtraction(boolean asLinkedContext, Relation classification, Extraction extraction) {
 			this.asLinkedContext = asLinkedContext;
 			this.classification = classification;
 			this.extraction = extraction;
@@ -144,7 +145,7 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	private void processSimpleContext(Element element, SimpleContext simpleContext, List<NewExtraction> newExtractions, List<SimpleContext> simpleContexts) {
+	private void processSimpleContext(Element element, SimpleContext simpleContext, List<Extraction> newExtractions, List<SimpleContext> simpleContexts) {
 
 		// yield additional extractions
 		if (exploitContexts) {
@@ -156,7 +157,7 @@ public class RelationExtractionRunner {
 		}
 
 		// rephrase as separate extractions
-		if (simpleContext.getRelation().equals(Relation.NOUN_BASED) && separateNounBased) {
+		if (simpleContext.getRelation().equals(RelationType.NOUN_BASED) && separateNounBased) {
 
 			// NOUN BASED
 			List<BinaryExtraction> extractions = extractor.extract(simpleContext.getParseTree());
@@ -164,16 +165,16 @@ public class RelationExtractionRunner {
 			{
 				Triple triple = new Triple(ex.getArg1(), ex.getRelation(), ex.getArg2());
 
-				newExtractions.add(new NewExtraction(true, simpleContext.getRelation(), new Extraction<>(
+				newExtractions.add(new Extraction(
 					ExtractionType.NOUN_BASED,
 					ex.getConfidence().orElse(null),
-					element.getSentenceIdx(),
-					element.getContextLayer(),
-					triple
-				)));
+					triple,
+					true,
+					simpleContext.getRelation()
+				));
 			});
 
-		} else if (simpleContext.getRelation().equals(Relation.PURPOSE) && separatePurposes) {
+		} else if (simpleContext.getRelation().equals(RelationType.PURPOSE) && separatePurposes) {
 
 			// PURPOSES
 			TregexPattern pattern = TregexPattern.compile("VP=vp !>> VP [ <+(VP) (VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) | ==(VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) ]");
@@ -232,21 +233,6 @@ public class RelationExtractionRunner {
 		}
 	}
 
-	private void processLinkedContext(Element element,
-									  LinkedContext linkedContext,
-									  List<LinkedContext> linkedContexts,
-									  SimplificationContent content,
-									  RelationExtractionContent relationExtractionContent) {
-
-		List<Extraction> targets = processElement(content.getElement(linkedContext.getTargetID()),
-			content,
-			relationExtractionContent);
-
-		targets.forEach(t ->
-			linkedContexts.add(new LinkedContext(t.id, linkedContext.getRelation()))
-		);
-	}
-
 	private List<Extraction> processElement(Element element,
 											SimplificationContent discourseSimplificationContent,
 											RelationExtractionContent relationExtractionContent) {
@@ -274,7 +260,7 @@ public class RelationExtractionRunner {
 			elementCoreExtractionMap.put(element, coreExtractions);
 
 			// process linked contexts (recursion)
-			for (org.lambda3.text.simplification.discourse.model.LinkedContext linkedContext : element.getLinkedContexts()) {
+			for (LinkedContext linkedContext : element.getLinkedContexts()) {
 				processLinkedContext(element, linkedContext, linkedContexts, discourseSimplificationContent, relationExtractionContent);
 			}
 
@@ -286,6 +272,7 @@ public class RelationExtractionRunner {
 
 				// linked
 				linkedContexts.forEach(coreExtraction::addLinkedContext);
+
 				newExtractions.stream().filter(NewExtraction::isAsLinkedContext).forEach(
 					e -> coreExtraction.addLinkedContext(new LinkedContext(e.getExtraction().id, e.getClassification()))
 				);

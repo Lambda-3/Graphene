@@ -22,6 +22,10 @@ public class Triple extends Extensible {
 		this.object = object;
 	}
 
+	public static Triple get(String subject, String property, String object) {
+		return new Triple(subject, property, object);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
