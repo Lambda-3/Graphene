@@ -27,7 +27,6 @@ package org.lambda3.graphene.core;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
-import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;

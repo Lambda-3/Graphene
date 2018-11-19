@@ -8,7 +8,7 @@ import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.List;
 
-public class DefaultFormatter extends Formatter<Extraction> {
+public class DefaultFormatter extends Formatter<Element> {
 
 	public DefaultFormatter() {
 		this.headline = "\n#%s\n";

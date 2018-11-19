@@ -69,20 +69,22 @@ public class RelationExtractor {
 	private boolean separateAttributions;
 	private TregexPattern mainPattern;
 
-	protected RelationExtractor(Config config, TregexPattern mainPattern) {
+	public RelationExtractor(Config config) {
 		this.exploitCore = config.getBoolean("exploit-core");
 		this.exploitContexts = config.getBoolean("exploit-contexts");
 		this.separateNounBased = config.getBoolean("separate-noun-based");
 		this.separatePurposes = config.getBoolean("separate-purposes");
 		this.separateAttributions = config.getBoolean("separate-attributions");
-	}
 
-	public static RelationExtractor getHeadRelationExtractor(Config config) {
-		return new RelationExtractor(config, HEAD_RELATION_EXTRACTION_PATTERN);
-	}
-
-	public static RelationExtractor getNestedRelationExtractor(Config config) {
-		return new RelationExtractor(config, NESTED_RELATION_EXTRACTION_PATTERN);
+		String re = config.getString("relation-extractor");
+		String[] parts = re.split(".");
+		if (parts[parts.length - 1].toLowerCase().contains("head")) {
+			this.mainPattern = HEAD_RELATION_EXTRACTION_PATTERN;
+		} else if (parts[parts.length - 1].toLowerCase().contains("head")) {
+			this.mainPattern = NESTED_RELATION_EXTRACTION_PATTERN;
+		} else {
+			throw new RuntimeException("Unsupported relation extraction pattern = " + re);
+		}
 	}
 
 	public void extract(SimplificationContent<Element> content) {
@@ -92,7 +94,6 @@ public class RelationExtractor {
 			}
 		}
 	}
-
 
 	//element.getParseTree()
 	public List<Triple> mainExtraction(Tree tree) {

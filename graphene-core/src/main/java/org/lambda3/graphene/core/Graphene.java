@@ -28,8 +28,7 @@ import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.relation_extraction.RelationExtractionRunner;
-import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
+import org.lambda3.graphene.core.relation_extraction.RelationExtractor;
 import org.lambda3.graphene.core.utils.ConfigUtils;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.lambda3.text.simplification.discourse.processing.DiscourseSimplifier;
@@ -46,7 +45,7 @@ public class Graphene {
 
 	private final CoreferenceResolver coreference;
 	private final DiscourseSimplifier discourseSimplificationRunner;
-	private final RelationExtractionRunner relationExtractionRunner;
+	private final RelationExtractor relationExtractor;
 
 	public Graphene() {
 		this(ConfigFactory.load());
@@ -59,7 +58,7 @@ public class Graphene {
 
 		this.coreference = getCoreferenceResolver(this.config);
 		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
-		this.relationExtractionRunner = new RelationExtractionRunner(this.config.getConfig("relation-extraction"));
+		this.relationExtractor = new RelationExtractor(this.config.getConfig("relation-extraction"));
 
 		log.info("Graphene initialized");
 		log.info("\n{}", ConfigUtils.prettyPrint(this.config));
@@ -88,11 +87,10 @@ public class Graphene {
 		return coreferenceResolver;
 	}
 
-
 	public CoreferenceContent doCoreference(String text) {
-		log.debug("doCoreference for text");
+		log.debug("[co-reference] running...");
 		final CoreferenceContent content = coreference.doCoreferenceResolution(text);
-		log.debug("Coreference for text finished");
+		log.debug("[co-reference] done!");
 		return content;
 	}
 
@@ -102,29 +100,22 @@ public class Graphene {
 			text = cc.getSubstitutedText();
 		}
 
-		log.debug("doDiscourseSimplification for text");
+		log.debug("[discourse simplification] running...");
 		final SimplificationContent sc = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
 		sc.setCoreferenced(doCoreference);
-		log.debug("Discourse Simplification for text finished");
+		log.debug("[discourse simplification] done!");
 		return sc;
 	}
 
-	public RelationExtractionContent doRelationExtraction(String text, boolean doCoreference, boolean doComplexCategoryExtraction, boolean isolateSentences) {
-        final SimplificationContent dsc = doDiscourseSimplification(text, doCoreference, isolateSentences);
-
-        log.debug("doRelationExtraction for text");
-        final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(dsc, doComplexCategoryExtraction);
-		ec.setCoreferenced(dsc.isCoreferenced());
-		log.debug("Relation Extraction for text finished");
-		return ec;
+	public void extractRelations(String text, boolean doCoreference, boolean isolateSentences, boolean doComplexCategoryExtraction) {
+		final SimplificationContent content = doDiscourseSimplification(text, doCoreference, isolateSentences);
+        extractRelations(content);
 	}
 
-	public RelationExtractionContent doRelationExtraction(SimplificationContent content, boolean coreferenced) {
-		log.debug("doRelationExtraction for discourseSimplificationContent");
-		final RelationExtractionContent ec = relationExtractionRunner.doRelationExtraction(content, false);
-		ec.setCoreferenced(content.isCoreferenced());
-		log.debug("Relation Extraction for discourseSimplificationContent finished");
-		return ec;
+	public void extractRelations(SimplificationContent content) {
+		log.debug("[relation extraction] running...");
+		relationExtractor.extract(content);
+		log.debug("[relation extraction] done!");
 	}
 
 	public VersionInfo getVersionInfo() {
@@ -137,5 +128,4 @@ public class Graphene {
                 config.getString("version.build-number")
         );
 	}
-
 }
