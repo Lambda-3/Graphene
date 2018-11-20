@@ -8,8 +8,8 @@ public class ComplexCategory {
 	public static final int CONTENT = 0;
 	public static final int RELATION = 1;
 
-	public String name;
-	public Chunk core;
+	public final String name;
+	public final Chunk core;
 
 	public ComplexCategory(String name, Chunk core) {
 		this.name = name;

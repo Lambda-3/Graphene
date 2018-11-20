@@ -16,6 +16,9 @@ import java.util.List;
 
 public class ComplexCategoryExtractor {
 
+	public static final String SUBJECT = "subject";
+	public static final String OBJECT = "object";
+
 	private static final String URL_PROPERTY_NAME = "complex.category.extractor.url";
 
 	private static final String USER_AGENT = "Linse Query Parser 0.2.0";
@@ -29,7 +32,7 @@ public class ComplexCategoryExtractor {
 	}
 
 	public ComplexCategoryExtractor(Config config) {
-		if (config != null) {
+		if (config != null && !config.isEmpty()) {
 			this.url = config.getString(URL_PROPERTY_NAME);
 		} else {
 			this.url = System.getProperty(URL_PROPERTY_NAME, DEFAULT_URL);
@@ -72,8 +75,8 @@ public class ComplexCategoryExtractor {
 	}
 
 	public void addComplexCategories(Triple triple) {
-		triple.addExtension("subject", getComplexCategory(triple.subject));
-		triple.addExtension("object", getComplexCategory(triple.object));
+		triple.addExtension(SUBJECT, getComplexCategory(triple.subject));
+		triple.addExtension(OBJECT, getComplexCategory(triple.object));
 	}
 
 	public ComplexCategory getComplexCategory(String query) {

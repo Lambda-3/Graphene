@@ -91,6 +91,7 @@ public class RelationExtractor {
 		for (Sentence sentence : content.getSentences()) {
 			for (Element element : sentence.getElements()) {
 				verbBasedExtractions(element);
+				element.getSimpleContexts().forEach(sc -> processSimpleContext(element, sc));
 			}
 		}
 	}
