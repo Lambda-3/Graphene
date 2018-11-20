@@ -27,6 +27,7 @@ package org.lambda3.graphene.core;
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -52,7 +53,7 @@ public class GrapheneTest {
 	@Test
 	public void testSerializationAndDeserialization() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false, false);
+		SimplificationContent c = graphene.doRelationExtraction(text, false, false, false);
 
 		final String filename = "tmp-w8weg3q493ewqieh.json";
 
@@ -60,7 +61,7 @@ public class GrapheneTest {
 		c.serializeToJSON(new File(filename));
 
 		LOG.info("LOAD FROM FILE...");
-		RelationExtractionContent loaded = RelationExtractionContent.deserializeFromJSON(new File(filename), RelationExtractionContent.class);
+		SimplificationContent loaded = SimplificationContent.deserializeFromJSON(new File(filename), SimplificationContent.class);
 
 		LOG.info(FormatterFactory.get("default").format(loaded.getSentences(), false));
 
@@ -72,7 +73,7 @@ public class GrapheneTest {
 	@Test
 	public void testOutput() throws IOException {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
-		RelationExtractionContent c = graphene.doRelationExtraction(text, false, false, false);
+		SimplificationContent c = graphene.doRelationExtraction(text, false, false, false);
 
 		LOG.info(FormatterFactory.get("default").format(c.getSentences(), false));
 		LOG.info(FormatterFactory.get("flat").format(c.getSentences(), false));

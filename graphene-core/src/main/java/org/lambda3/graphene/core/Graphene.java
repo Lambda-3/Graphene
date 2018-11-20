@@ -107,9 +107,10 @@ public class Graphene {
 		return sc;
 	}
 
-	public void extractRelations(String text, boolean doCoreference, boolean isolateSentences, boolean doComplexCategoryExtraction) {
+	public SimplificationContent doRelationExtraction(String text, boolean doCoreference, boolean isolateSentences, boolean doComplexCategoryExtraction) {
 		final SimplificationContent content = doDiscourseSimplification(text, doCoreference, isolateSentences);
         extractRelations(content);
+        return content;
 	}
 
 	public void extractRelations(SimplificationContent content) {

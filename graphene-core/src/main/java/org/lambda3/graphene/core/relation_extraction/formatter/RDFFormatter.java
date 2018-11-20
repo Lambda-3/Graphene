@@ -3,8 +3,9 @@ package org.lambda3.graphene.core.relation_extraction.formatter;
 import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.utils.IDGenerator;
+import org.lambda3.text.simplification.discourse.model.Element;
 import org.lambda3.text.simplification.discourse.model.LinkedContext;
-import org.lambda3.text.simplification.discourse.model.OutSentence;
+import org.lambda3.text.simplification.discourse.model.Sentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
 
 import java.util.List;
@@ -19,27 +20,28 @@ public class RDFFormatter extends DefaultFormatter {
 		this.extra = "\n\n%s\n%s\n%s";
 	}
 
-	public String[] writeHeadline(StringBuilder sb, OutSentence<Extraction> s) {
+	public String[] writeHeadline(StringBuilder sb, Sentence s) {
 		String sentenceId = IDGenerator.generateUUID();
 		String sentenceBN = blankNode(sentenceId);
-		String triple = triple(sentenceBN, sentenceNameSpace("original-text"), rdfLiteral(s.getOriginalSentence(), null));
-		sb.append(String.format(this.headline, s.getOriginalSentence(), triple));
+		String triple = triple(sentenceBN, sentenceNameSpace("original-text"), rdfLiteral(s.original, null));
+		sb.append(String.format(this.headline, s.original, triple));
 
 		return new String[] {sentenceBN};
 	}
 
-	public String[] writeElement(StringBuilder sb, Extraction element, String... params) {
+	public String[] writeExtraction(StringBuilder sb, Extraction element, int intContextLayer, String... params) {
 		String sentenceBN = params[0];
 		String extractionBN = blankNode(element.id);
 
 		String hasExtraction = triple(sentenceBN, sentenceNameSpace("has-extraction"), extractionBN);
-		String extractionType = triple(extractionBN, extractionNameSpace("extraction-type"), rdfLiteral(element.getType().name(), null));
-		String contextLayer = triple(extractionBN, extractionNameSpace("context-layer"), rdfLiteral(element.getContextLayer()));
 
-		Triple t = element.getExtension(Triple.class);
-		String subject = triple(extractionBN, extractionNameSpace("subject"), textResource(t.subject));
-		String predicate = triple(extractionBN, extractionNameSpace("predicate"), textResource(t.property));
-		String object = triple(extractionBN, extractionNameSpace("object"), textResource(t.object));
+		String extractionType = triple(extractionBN, extractionNameSpace("extraction-type"), rdfLiteral(element.type.name(), null));
+
+		String contextLayer = triple(extractionBN, extractionNameSpace("context-layer"), rdfLiteral(intContextLayer));
+
+		String subject = triple(extractionBN, extractionNameSpace("subject"), textResource(element.triple.subject));
+		String predicate = triple(extractionBN, extractionNameSpace("predicate"), textResource(element.triple.property));
+		String object = triple(extractionBN, extractionNameSpace("object"), textResource(element.triple.object));
 
 		sb.append(String.format(this.relation, hasExtraction, extractionType, contextLayer, subject, predicate, object));
 
@@ -54,9 +56,10 @@ public class RDFFormatter extends DefaultFormatter {
 		sb.append(triple(extractionBN, extractionNameSpace(vContextAbbrev), textResource(sc.getPhraseText())));
 	}
 
-	public void writeResolvedLinkedContext(StringBuilder sb, List<OutSentence<Extraction>> sentences, LinkedContext lc, String... params) {
+	public void writeResolvedLinkedContext(StringBuilder sb, List<Sentence> sentences, LinkedContext lc, String... params) {
 		String extractionBN = params[0];
-		Extraction target = getElement(lc.getTargetID(), sentences);
+		Element target = getElement(lc.getTargetID(), sentences);
+
 		String targetBN = blankNode(target.id);
 		String elementAbbrev = String.format("L-%s", lc.getRelation());
 
@@ -68,19 +71,22 @@ public class RDFFormatter extends DefaultFormatter {
 		//do nothing
 	}
 
-	public void writeExtra(StringBuilder sb, Extraction element) {
-		Triple t = element.getExtension(Triple.class);
-		String ts = getValueTriple(t.subject);
-		String tp = getValueTriple(t.property);
-		String to = getValueTriple(t.object);
+	public void writeExtra(StringBuilder sb, Element element) {
 
-		sb.append(String.format(this.extra, ts, tp, to));
+		for (Extraction extraction : element.getListExtension(Extraction.class)) {
+			Triple t = extraction.triple;
+			String ts = getValueTriple(t.subject);
+			String tp = getValueTriple(t.property);
+			String to = getValueTriple(t.object);
 
-		for (SimpleContext simpleContext : element.getSimpleContexts()) {
-			String tsc = getValueTriple(simpleContext.getPhraseText());
-			sb.append(String.format("\n%s", tsc));
+			sb.append(String.format(this.extra, ts, tp, to));
+
+			for (SimpleContext simpleContext : element.getSimpleContexts()) {
+				String tsc = getValueTriple(simpleContext.getPhraseText());
+				sb.append(String.format("\n%s", tsc));
+			}
+			sb.append("\n");
 		}
-		sb.append("\n");
 	}
 
 	private String getValueTriple(String content) {
@@ -92,7 +98,7 @@ public class RDFFormatter extends DefaultFormatter {
 	}
 
 	@Override
-	public String format(List<OutSentence<Extraction>> outSentences, boolean resolve) {
-		return super.format(outSentences, true);
+	public String format(List<Sentence> Sentences, boolean resolve) {
+		return super.format(Sentences, true);
 	}
 }

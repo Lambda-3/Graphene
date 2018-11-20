@@ -33,7 +33,7 @@ import org.lambda3.graphene.core.relation_extraction.model.Extraction;
 import org.lambda3.graphene.core.relation_extraction.model.ExtractionType;
 import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.text.simplification.discourse.model.Element;
-import org.lambda3.text.simplification.discourse.model.OutSentence;
+import org.lambda3.text.simplification.discourse.model.Sentence;
 import org.lambda3.text.simplification.discourse.model.SimpleContext;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.lambda3.text.simplification.discourse.runner.discourse_tree.RelationType;
@@ -87,8 +87,8 @@ public class RelationExtractor {
 		}
 	}
 
-	public void extract(SimplificationContent<Element> content) {
-		for (OutSentence<Element> sentence : content.getSentences()) {
+	public void extract(SimplificationContent content) {
+		for (Sentence sentence : content.getSentences()) {
 			for (Element element : sentence.getElements()) {
 				verbBasedExtractions(element);
 			}

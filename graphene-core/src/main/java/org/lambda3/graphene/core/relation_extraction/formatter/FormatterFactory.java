@@ -7,7 +7,7 @@ import java.util.Map;
 
 public class FormatterFactory {
 
-	private static Map<String, Formatter<Extraction>> instances = new HashMap<>();
+	private static Map<String, Formatter> instances = new HashMap<>();
 
 	static {
 		instances.put("default", new DefaultFormatter());
@@ -16,7 +16,7 @@ public class FormatterFactory {
 		instances.put("json", new JSONFormatter());
 	}
 
-	public static Formatter<Extraction> get(String name) {
+	public static Formatter get(String name) {
 		return instances.get(name);
 	}
 }

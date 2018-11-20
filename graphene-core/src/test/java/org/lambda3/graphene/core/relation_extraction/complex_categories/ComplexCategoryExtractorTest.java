@@ -1,6 +1,7 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import org.lambda3.graphene.core.Graphene;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -13,17 +14,17 @@ public class ComplexCategoryExtractorTest {
 		String text = "Win32/Simile (also known as Etap and MetaPHOR) is a metamorphic " +
 			"computer virus written in assembly language for Microsoft Windows.";
 
-		DiscourseSimplificationContent discourse = graphene.doDiscourseSimplification(text, false, true);
-		RelationExtractionContent relations = graphene.doRelationExtraction(text, false, false, false);
+		SimplificationContent discourse = graphene.doDiscourseSimplification(text, false, true);
 		System.out.println(discourse);
-		System.out.println(relations);
+		graphene.extractRelations(discourse);
+		System.out.println(discourse);
 
 		text = "The current President of The United States withdrew his sponsorship after the second Tour de Trump in 1990 because his business " +
 			"ventures were experiencing financial woes.";
 		discourse = graphene.doDiscourseSimplification(text, false, true);
-		relations = graphene.doRelationExtraction(text, false, false, false);
 		System.out.println(discourse);
-		System.out.println(relations);
+		graphene.extractRelations(discourse);
+		System.out.println(discourse);
 	}
 
 	@Test
