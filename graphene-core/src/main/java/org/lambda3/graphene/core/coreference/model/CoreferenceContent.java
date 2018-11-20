@@ -27,6 +27,7 @@ package org.lambda3.graphene.core.coreference.model;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.lambda3.text.simplification.discourse.model.Content;
 
+//TODO move the this class to the DiscourseSimplification project.
 public class CoreferenceContent extends Content {
 
 	private String originalText;

@@ -43,9 +43,9 @@ public class RDFHelper {
 		return "\"" + String.valueOf(number) + "\"" + "^^" + "<" + XML_NAMESPACE + "integer" + ">";
 	}
 
-	public static String rdfLiteral(String text, String languageTag) {
+	public static String rdfLiteral(String text, String... languageTag) {
 		String escapedText = text.replace("\"", "\\\"").replace("\n", "\\\n").replace("\r", "\\\r").replace("\\", "");
-		String langStr = (languageTag != null) ? "@" + languageTag : "";
+		String langStr = (languageTag.length > 0) ? "@" + languageTag[0] : "";
 
 		return "\"" + escapedText + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
 	}
@@ -82,7 +82,7 @@ public class RDFHelper {
 	}
 
 	public static String triple(String subject, String predicate, String object) {
-		return subject + " " + predicate + " " + object + " .";
+		return String.format("%s %s %s .", subject, predicate, object);
 	}
 
 }

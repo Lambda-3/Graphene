@@ -29,10 +29,10 @@ import com.typesafe.config.ConfigFactory;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.lambda3.graphene.core.relation_extraction.RelationExtractor;
-import org.lambda3.graphene.core.utils.ConfigUtils;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.lambda3.text.simplification.discourse.processing.DiscourseSimplifier;
 import org.lambda3.text.simplification.discourse.processing.ProcessingType;
+import org.lambda3.text.simplification.discourse.utils.ConfigUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +44,7 @@ public class Graphene {
 	private final Config config;
 
 	private final CoreferenceResolver coreference;
-	private final DiscourseSimplifier discourseSimplificationRunner;
+	private final DiscourseSimplifier simplifier;
 	private final RelationExtractor relationExtractor;
 
 	public Graphene() {
@@ -57,7 +57,7 @@ public class Graphene {
 			.getConfig("graphene");
 
 		this.coreference = getCoreferenceResolver(this.config);
-		this.discourseSimplificationRunner = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
+		this.simplifier = new DiscourseSimplifier(this.config.getConfig("discourse-simplification"));
 		this.relationExtractor = new RelationExtractor(this.config.getConfig("relation-extraction"));
 
 		log.info("Graphene initialized");
@@ -101,7 +101,7 @@ public class Graphene {
 		}
 
 		log.debug("[discourse simplification] running...");
-		final SimplificationContent sc = discourseSimplificationRunner.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
+		final SimplificationContent sc = simplifier.doDiscourseSimplification(text, (isolateSentences)? ProcessingType.SEPARATE : ProcessingType.WHOLE);
 		sc.setCoreferenced(doCoreference);
 		log.debug("[discourse simplification] done!");
 		return sc;

@@ -46,10 +46,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class RelationExtractor {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
-	private static final HeadVerbFinder HEAD_VERB_FINDER = new HeadVerbFinder();
 
 	private static final TregexPattern PURPOSE_PATTERN = TregexPattern.compile("VP=vp !>> VP [ <+(VP) (VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) | ==(VP !< VP < (PP|NP|S|SBAR=arg2 !$,, (PP|NP|S|SBAR))) ]");
 	private static final TregexPattern ATTRIBUTION_PATTERN = TregexPattern.compile("S !>> S < (NP=arg1 $.. (VP=vp [ <+(VP) (VP=lowestvp !< VP) | ==(VP=lowestvp !< VP) ]))");
@@ -77,7 +77,7 @@ public class RelationExtractor {
 		this.separateAttributions = config.getBoolean("separate-attributions");
 
 		String re = config.getString("relation-extractor");
-		String[] parts = re.split(".");
+		String[] parts = re.split(Pattern.quote("."));
 		if (parts[parts.length - 1].toLowerCase().contains("head")) {
 			this.mainPattern = HEAD_RELATION_EXTRACTION_PATTERN;
 		} else if (parts[parts.length - 1].toLowerCase().contains("head")) {
@@ -137,7 +137,7 @@ public class RelationExtractor {
 	}
 
 	public void verbBasedExtractions(Element element) {
-		Optional<String> headVerb = HEAD_VERB_FINDER.findHeadVerb(element.getParseTree());
+		Optional<String> headVerb = HeadVerbFinder.findHeadVerb(element.getParseTree());
 
 		List<Triple> triples = mainExtraction(element.getParseTree());
 		for (Triple t : triples) {
@@ -205,8 +205,8 @@ public class RelationExtractor {
 
 		RelationType relationType = simpleContext.getRelation();
 
-		Tree parseTree = simpleContext.getParseTree();
-		Optional<String> headVerbParseTree = HEAD_VERB_FINDER.findHeadVerb(simpleContext.getParseTree());
+		Tree parseTree = simpleContext.getOriginalExcerpt();
+		Optional<String> headVerbParseTree = HeadVerbFinder.findHeadVerb(simpleContext.getFullSentenceTree());
 
 		List<Triple> triples = mainExtraction(parseTree);
 
@@ -235,8 +235,8 @@ public class RelationExtractor {
 		}
 
 
-		Tree phrase = simpleContext.getPhrase();
-		Optional<String> headVerbPhrase = HEAD_VERB_FINDER.findHeadVerb(phrase);
+		Tree phrase = simpleContext.getOriginalExcerpt();
+		Optional<String> headVerbPhrase = HeadVerbFinder.findHeadVerb(phrase);
 
 		if (relationType.equals(RelationType.PURPOSE) && separatePurposes) {
 
@@ -251,7 +251,7 @@ public class RelationExtractor {
 			}
 
 		} else if (simpleContext.getRelation().equals(RelationType.ATTRIBUTION) && separateAttributions) {
-			List<Triple> attributionBasedExtractions = attributionBasedExtraction(simpleContext.getPhrase(), element.getText());
+			List<Triple> attributionBasedExtractions = attributionBasedExtraction(phrase, element.getText());
 
 			for (Triple at : attributionBasedExtractions) {
 				simpleContext.addListExtension(new Extraction(

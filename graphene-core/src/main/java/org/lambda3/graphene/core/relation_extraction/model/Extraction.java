@@ -38,14 +38,14 @@ public class Extraction {
 	public final RelationType relationType;
 	public final boolean isCoreExtraction;
 
-	protected Extraction() {
+	private Extraction() {
 		// for deserialization
 		this(null, null, false, null, false);
 	}
 
 	public Extraction(ExtractionType type, Triple triple, boolean asLinkedContext,
-					  RelationType classification, boolean isCoreExtraction) {
-		this(null, UNKNOWN_CONFIDENCE, null, false, null, false);
+					  RelationType relationType, boolean isCoreExtraction) {
+		this(type, UNKNOWN_CONFIDENCE, triple, asLinkedContext, relationType, isCoreExtraction);
 	}
 
 	public Extraction(ExtractionType type, double confidence, Triple triple, boolean asLinkedContext,
