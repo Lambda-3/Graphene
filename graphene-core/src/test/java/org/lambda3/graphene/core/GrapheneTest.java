@@ -55,19 +55,16 @@ public class GrapheneTest {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
 		SimplificationContent c = graphene.doRelationExtraction(text, false, false, false);
 
-		final String filename = "tmp-w8weg3q493ewqieh.json";
+		File temp = File.createTempFile("graphene-test", ".json");
+		temp.deleteOnExit();
 
 		LOG.info("SAVE TO FILE...");
-		c.serializeToJSON(new File(filename));
+		c.serializeToJSON(temp);
 
 		LOG.info("LOAD FROM FILE...");
-		SimplificationContent loaded = SimplificationContent.deserializeFromJSON(new File(filename), SimplificationContent.class);
+		SimplificationContent loaded = SimplificationContent.deserializeFromJSON(temp, SimplificationContent.class);
 
 		LOG.info(FormatterFactory.get("default").format(loaded.getSentences(), false));
-
-		LOG.info("DELETE FILE...");
-		File file = new File(filename);
-		file.delete();
 	}
 
 	@Test
