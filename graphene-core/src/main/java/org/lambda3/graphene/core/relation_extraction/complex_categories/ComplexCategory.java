@@ -1,6 +1,7 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class ComplexCategory {
@@ -10,6 +11,10 @@ public class ComplexCategory {
 
 	public final String name;
 	public final Chunk core;
+
+	private ComplexCategory() {
+		this(null, null);
+	}
 
 	public ComplexCategory(String name, Chunk core) {
 		this.name = name;
@@ -68,5 +73,20 @@ public class ComplexCategory {
 		}
 
 		return verb;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		ComplexCategory that = (ComplexCategory) o;
+		return Objects.equals(name, that.name) &&
+			Objects.equals(core, that.core);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(name, core);
 	}
 }

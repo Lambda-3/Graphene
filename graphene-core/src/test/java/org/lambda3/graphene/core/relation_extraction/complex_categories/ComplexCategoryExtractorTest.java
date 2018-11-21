@@ -1,5 +1,6 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.utils.GrapheneStream;
@@ -7,6 +8,8 @@ import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -175,7 +178,7 @@ public class ComplexCategoryExtractorTest {
 	}
 
 	@Test
-	public void extractWin32() {
+	public void extractWin32() throws IOException {
 		Graphene graphene = new Graphene();
 		String text = "Win32/Simile (also known as Etap and MetaPHOR) is a metamorphic " +
 			"computer virus written in assembly language for Microsoft Windows.";
@@ -193,6 +196,16 @@ public class ComplexCategoryExtractorTest {
 		Assert.assertEquals(the.object, "a metamorphic computer virus written in assembly language for Microsoft Windows");
 
 		windowsTest(the.getExtension(ComplexCategory.class, ComplexCategoryExtractor.OBJECT));
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		File temp = File.createTempFile("ext-discourse-simplification", ".json");
+		temp.deleteOnExit();
+
+		mapper.writeValue(temp, the);
+		Triple nthe = mapper.readValue(temp, Triple.class);
+
+		Assert.assertEquals(the, nthe);
 	}
 
 	@Test
@@ -212,7 +225,7 @@ public class ComplexCategoryExtractorTest {
 
 		for (Triple triple : tl) {
 			assert triple.property != null;
-			if(triple.property.equals("withdrew")) {
+			if (triple.property.equals("withdrew")) {
 				//TODO subject again lowercased unecessarily "The"
 				Assert.assertEquals(triple.subject, "the current President of The United States");
 				Assert.assertEquals(triple.object, "his sponsorship");
@@ -233,11 +246,11 @@ public class ComplexCategoryExtractorTest {
 				ComplexCategory cc = triple.getExtension(ComplexCategory.class, ComplexCategoryExtractor.SUBJECT);
 				Assert.assertEquals(cc.core.effectiveTerm, "ventures");
 				Assert.assertEquals(cc.core.specTypes.length, 2);
-				for(int i = 0; i < cc.core.specContents.length; i++) {
+				for (int i = 0; i < cc.core.specContents.length; i++) {
 					if (cc.core.specContents[i].effectiveTerm.equals("business")) {
 						Assert.assertEquals(cc.core.specTypes[i], Chunk.DIRECT_SPEC);
 						ok.add(true);
-					} else{
+					} else {
 						Assert.assertEquals(cc.core.specContents[i].effectiveTerm, "his");
 						Assert.assertEquals(cc.core.specTypes[i], Chunk.DIRECT_SPEC);
 						ok.add(true);
@@ -254,5 +267,20 @@ public class ComplexCategoryExtractorTest {
 
 		Assert.assertEquals(ok.size(), 3);
 		ok.forEach(Assert::assertTrue);
+	}
+
+	@Test
+	public void serializationTest() throws IOException {
+		ComplexCategory cc = extractor.getComplexCategory("metamorphic computer virus written in assembly language for Microsoft Windows");
+
+		File temp = File.createTempFile("ext-discourse-simplification", ".json");
+		temp.deleteOnExit();
+
+		ObjectMapper mapper = new ObjectMapper();
+
+		mapper.writeValue(temp, cc);
+		ComplexCategory ncc = mapper.readValue(temp, ComplexCategory.class);
+
+		Assert.assertEquals(cc, ncc);
 	}
 }

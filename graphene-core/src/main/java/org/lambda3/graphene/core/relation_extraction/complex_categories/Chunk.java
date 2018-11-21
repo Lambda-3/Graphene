@@ -1,7 +1,9 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class Chunk {
 
@@ -14,6 +16,10 @@ public class Chunk {
 	public String tag;
 	public String[] specTypes;
 	public Chunk[] specContents;
+
+	private Chunk() {
+		this(null, null, null, null, null);
+	}
 
 	public Chunk(String pureTerm, String effectiveTerm, String tag, String[] specTypes, Chunk[] specContents) {
 		this.pureTerm = pureTerm;
@@ -47,7 +53,7 @@ public class Chunk {
 
 	public void getOrderedSpecs(List<String[]> specs, int base, Chunk chunk, String relation) {
 
-		specs.add(base, new String[] { chunk.pureTerm, relation });
+		specs.add(base, new String[]{chunk.pureTerm, relation});
 
 		if (chunk.specTypes != null) {
 			int end = base + 1;
@@ -110,5 +116,26 @@ public class Chunk {
 		sbuilder.insert(0, "first     ");
 
 		System.out.println(sbuilder.toString().trim().replaceAll("\\s+", " "));
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Chunk chunk = (Chunk) o;
+		return Objects.equals(pureTerm, chunk.pureTerm) &&
+			Objects.equals(effectiveTerm, chunk.effectiveTerm) &&
+			Objects.equals(tag, chunk.tag) &&
+			Arrays.equals(specTypes, chunk.specTypes) &&
+			Arrays.equals(specContents, chunk.specContents);
+	}
+
+	@Override
+	public int hashCode() {
+
+		int result = Objects.hash(pureTerm, effectiveTerm, tag);
+		result = 31 * result + Arrays.hashCode(specTypes);
+		result = 31 * result + Arrays.hashCode(specContents);
+		return result;
 	}
 }

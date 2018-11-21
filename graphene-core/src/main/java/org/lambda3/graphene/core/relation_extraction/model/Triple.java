@@ -1,9 +1,11 @@
 package org.lambda3.graphene.core.relation_extraction.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.lambda3.text.simplification.discourse.model.Extensible;
 
 import java.util.Objects;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Triple extends Extensible {
 	public final String subject;
 	public final String property;
