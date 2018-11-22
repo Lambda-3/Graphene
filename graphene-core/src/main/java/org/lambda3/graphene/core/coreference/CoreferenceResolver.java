@@ -39,4 +39,6 @@ public abstract class CoreferenceResolver {
 
 		return coreferenceResolver;
 	}
+
+	public abstract boolean isActivated();
 }
