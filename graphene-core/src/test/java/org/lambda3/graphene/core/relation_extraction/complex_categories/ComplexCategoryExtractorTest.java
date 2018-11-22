@@ -2,6 +2,7 @@ package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.lambda3.graphene.core.Graphene;
+import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 import org.lambda3.graphene.core.relation_extraction.model.Triple;
 import org.lambda3.graphene.core.utils.GrapheneStream;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
@@ -216,6 +217,8 @@ public class ComplexCategoryExtractorTest {
 
 		SimplificationContent content = graphene.doRelationExtraction(text,
 			false, true, true);
+		String output = FormatterFactory.get("default").format(content.getSentences(), false);
+		System.out.println(output);
 
 		List<Triple> tl = GrapheneStream.triples(content).collect(Collectors.toList());
 		//TODO should it be more? What about the sc relation extraction.
