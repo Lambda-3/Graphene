@@ -7,7 +7,10 @@ cache:
 before_install:
   - "./install-DiscourseSimplification.sh"
   - "git clone https://gitlab.com/julsal/dparser.git"
+  - "cd dparser"
+  - "pip install -r requirements.txt"
   - "python3 dparser/service.py &"
+  - "cd .."
 notifications:
   slack:
     on_success: always
