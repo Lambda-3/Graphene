@@ -35,9 +35,9 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
-import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
-import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
+import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 import org.lambda3.text.simplification.discourse.model.Content;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,6 +87,10 @@ public class GrapheneCLI {
 	@Option(name = "--doCoreference",
 		usage = "Specifies whether coreference should be executed before Discourse-Simplification or Relation-Extraction.")
 	private boolean doCoref = false;
+
+	@Option(name = "--doComplexCategories",
+		usage = "Specifies whether complex categories should be extracted.")
+	private boolean doComplexCategoryExtraction = false;
 
 	@Option(name = "--isolateSentences",
 		usage = "Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set true, if you run Graphene over a collection of independent sentences and false for a full coherent text.")
@@ -199,7 +203,7 @@ public class GrapheneCLI {
 				result = Optional.of(
 					inputTexts
 						.stream()
-						.map(text -> graphene.doRelationExtraction(text, doCoref, isolateSentences))
+						.map(text -> graphene.doRelationExtraction(text, doCoref, isolateSentences, doComplexCategoryExtraction))
 						.collect(Collectors.toList()));
 				break;
 			default:
@@ -285,37 +289,36 @@ public class GrapheneCLI {
 			}
 		}
 
-		if (content instanceof DiscourseSimplificationContent) {
-			DiscourseSimplificationContent c = (DiscourseSimplificationContent)content;
-			switch (simOutputFormat) {
-				case DEFAULT:
-					return c.defaultFormat(false);
-				case DEFAULT_RESOLVED:
-					return c.defaultFormat(true);
-				case FLAT:
-					return c.flatFormat(false);
-				case FLAT_RESOLVED:
-					return c.flatFormat(true);
-				case SERIALIZED:
-					return content.prettyPrintJSON();
-			}
-		}
-
-		if (content instanceof RelationExtractionContent) {
-			RelationExtractionContent c = (RelationExtractionContent)content;
-			switch (reOutputFormat) {
-				case DEFAULT:
-					return c.defaultFormat(false);
-				case DEFAULT_RESOLVED:
-					return c.defaultFormat(true);
-				case FLAT:
-					return c.flatFormat(false);
-				case FLAT_RESOLVED:
-					return c.flatFormat(true);
-				case RDF:
-					return c.rdfFormat();
-				case SERIALIZED:
-					return content.prettyPrintJSON();
+		if (content instanceof SimplificationContent) {
+			SimplificationContent c = (SimplificationContent)content;
+			if (operation.equals(Operation.RE)) {
+				switch (reOutputFormat) {
+					case DEFAULT:
+						return FormatterFactory.get("default").format(c.getSentences(), false);
+					case DEFAULT_RESOLVED:
+						return FormatterFactory.get("default").format(c.getSentences(), true);
+					case FLAT:
+						return FormatterFactory.get("flat").format(c.getSentences(), false);
+					case FLAT_RESOLVED:
+						return FormatterFactory.get("flat").format(c.getSentences(), true);
+					case RDF:
+						return FormatterFactory.get("rdf").format(c.getSentences(), true);
+					case SERIALIZED:
+						return content.prettyPrintJSON();
+				}
+			} else if (operation.equals(Operation.SIM)) {
+				switch (simOutputFormat) {
+					case DEFAULT:
+						return c.defaultFormat(false);
+					case DEFAULT_RESOLVED:
+						return c.defaultFormat(true);
+					case FLAT:
+						return c.flatFormat(false);
+					case FLAT_RESOLVED:
+						return c.flatFormat(true);
+					case SERIALIZED:
+						return content.prettyPrintJSON();
+				}
 			}
 		}
 

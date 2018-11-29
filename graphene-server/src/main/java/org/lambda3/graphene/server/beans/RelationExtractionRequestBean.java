@@ -36,6 +36,9 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	private boolean doCoreference;
 
 	@DefaultValue("false")
+	private boolean doComplexCategories;
+
+	@DefaultValue("false")
 	private boolean isolateSentences;
 
 	@DefaultValue("DEFAULT")
@@ -57,6 +60,15 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
     @SuppressWarnings({"unused"})
 	public void setDoCoreference(boolean doCoreference) {
 		this.doCoreference = doCoreference;
+	}
+
+	public boolean isDoComplexCategories() {
+		return doComplexCategories;
+	}
+
+	@SuppressWarnings({"unused"})
+	public void setDoComplexCategories(boolean doComplexCategories) {
+		this.doComplexCategories = doComplexCategories;
 	}
 
 	public boolean isIsolateSentences() {

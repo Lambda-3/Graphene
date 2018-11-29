@@ -14,9 +14,12 @@ import java.util.Optional;
  *
  */
 public class HeadVerbFinder {
-	private final Logger logger = LoggerFactory.getLogger(getClass());
 
-	public Optional<String> findHeadVerb(Tree parseTree) {
+	private HeadVerbFinder() {
+		//don't allow creating object.
+	}
+
+	public static Optional<String> findHeadVerb(Tree parseTree) {
 		TregexPattern pattern = TregexPattern.compile("ROOT <<: (__ < (VP=vp [ <+(VP) (VP=lowestvp !< VP) | ==(VP=lowestvp !< VP) ]))");
 		TregexMatcher matcher = pattern.matcher(parseTree);
 		while (matcher.findAt(parseTree)) {

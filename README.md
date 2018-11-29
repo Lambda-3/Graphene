@@ -79,13 +79,11 @@ The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017_11_06.nt)
 ## Dependencies
 Compiling and packaging requires two additional packages:
 
-To install [Sentence Simplification](https://github.com/Lambda-3/SentenceSimplification), execute the following script:
-
-	./install-SentenceSimplification.sh
-
 To install [Discourse Simplification](https://github.com/Lambda-3/DiscourseSimplification), execute the following script:
 
     ./install-DiscourseSimplification.sh
+    
+If you want to extract Complex-Categories, you will need to deploy this [parser](https://gitlab.com/julsal/dparser).
 
 ## Setup of Graphene
 

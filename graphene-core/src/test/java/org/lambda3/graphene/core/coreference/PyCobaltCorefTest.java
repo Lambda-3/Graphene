@@ -37,10 +37,10 @@ import org.testng.annotations.Test;
 public class PyCobaltCorefTest {
 	private static final Logger LOG = LoggerFactory.getLogger(PyCobaltCorefTest.class);
 
-	private static CoreferenceResolver coreference;
+	private CoreferenceResolver coreference;
 
 	@BeforeClass
-	public static void beforeAll() {
+	public void beforeAll() {
 		Config config = ConfigFactory
                 .load("reference.local")
                 .withFallback(ConfigFactory.load("reference"));
@@ -51,13 +51,18 @@ public class PyCobaltCorefTest {
 
 	@Test
 	public void testSubstituteCoreferencesInText() {
-		String sentence = "Bernhard is working in two projects. He works for MARIO and PACE.";
+		
+		if(coreference.isActivated()) {
+			String sentence = "Bernhard is working in two projects. He works for MARIO and PACE.";
 
-		CoreferenceContent expected = new CoreferenceContent(sentence, "Bernhard is working in two projects.\nBernhard works for MARIO and PACE.");
+			CoreferenceContent expected = new CoreferenceContent(sentence, "Bernhard is working in two projects.\nBernhard works for MARIO and PACE.");
 
-		CoreferenceContent result = coreference.doCoreferenceResolution(sentence);
+			CoreferenceContent result = coreference.doCoreferenceResolution(sentence);
 
-		Assert.assertEquals(expected, result);
+			Assert.assertEquals(expected, result);
+		} else {
+			LOG.info("PyCobaltCoref is not activated! PyCobaltCorefTest skipped.");
+		}
 
 	}
 

@@ -11,12 +11,12 @@ package org.lambda3.graphene.core.coreference.impl.pycobalt;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -27,7 +27,7 @@ package org.lambda3.graphene.core.coreference.impl.pycobalt;
 import com.typesafe.config.Config;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.lambda3.graphene.core.coreference.CoreferenceResolver;
-import org.lambda3.graphene.core.coreference.model.*;
+import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,25 +37,29 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.URL;
 
 public class PyCobaltCoref extends CoreferenceResolver {
 
 	private final Logger log = LoggerFactory.getLogger(getClass());
-
 	private final WebTarget textTarget;
+	private final String uri;
 
 
 	public PyCobaltCoref(Config config) {
 		super(config);
-
-		log.info("Will use remote coreference resource at: '{}'", config.getString("pycobalt.url"));
+		this.uri = config.getString("pycobalt.url");
+		log.info("Will use remote coreference resource at: '{}'", uri);
 
 		final Client webClient = ClientBuilder.newClient();
 		webClient.register(JacksonFeature.class);
 
 		this.textTarget = webClient
-                .target(config.getString("pycobalt.url"))
-                .path(config.getString("pycobalt.text-path"));
+			.target(config.getString("pycobalt.url"))
+			.path(config.getString("pycobalt.text-path"));
 
 		log.info("Coreference initialized");
 	}
@@ -65,9 +69,9 @@ public class PyCobaltCoref extends CoreferenceResolver {
 		log.debug("Sending coreference request to {}", target.getUri().toString());
 
 		final Response response = target
-                .request(MediaType.APPLICATION_JSON_TYPE)
-                .accept(MediaType.APPLICATION_JSON_TYPE)
-                .post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
+			.request(MediaType.APPLICATION_JSON_TYPE)
+			.accept(MediaType.APPLICATION_JSON_TYPE)
+			.post(Entity.entity(request, MediaType.APPLICATION_JSON_TYPE));
 
 		if (response.hasEntity()) {
 			if (response.getStatusInfo().getStatusCode() == Response.Status.OK.getStatusCode()) {
@@ -76,10 +80,10 @@ public class PyCobaltCoref extends CoreferenceResolver {
 
 			} else {
 				log.error(
-                        "A request was sent, but the response code was '{}: {}'",
-                        response.getStatusInfo().getStatusCode(),
-                        response.getStatusInfo().getReasonPhrase());
-            }
+					"A request was sent, but the response code was '{}: {}'",
+					response.getStatusInfo().getStatusCode(),
+					response.getStatusInfo().getReasonPhrase());
+			}
 		} else {
 			log.error("The response has no entity.");
 		}
@@ -93,5 +97,16 @@ public class PyCobaltCoref extends CoreferenceResolver {
 		InternalCoreferenceResponse response = sendRequest(textTarget, new InternalCoreferenceRequest(text));
 
 		return new CoreferenceContent(text, response.getText());
+	}
+
+	@Override
+	public boolean isActivated() {
+		try (Socket socket = new Socket()) {
+			URL url = new URL(uri);
+			socket.connect(new InetSocketAddress(url.getHost(), url.getPort()), 10_000);
+			return true;
+		} catch (IOException e) {
+			return false; // Either timeout or unreachable or failed DNS lookup.
+		}
 	}
 }

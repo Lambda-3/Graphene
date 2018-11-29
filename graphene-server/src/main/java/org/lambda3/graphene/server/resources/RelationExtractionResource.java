@@ -25,8 +25,9 @@ package org.lambda3.graphene.server.resources;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.lambda3.graphene.core.relation_extraction.model.RelationExtractionContent;
+import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +52,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-		RelationExtractionContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		SimplificationContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences(), bean.isDoComplexCategories());
 
 		return Response
                 .status(Response.Status.OK)
@@ -67,27 +68,27 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
-        RelationExtractionContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		SimplificationContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences(), bean.isDoComplexCategories());
 
         String rep = "";
 		switch (bean.getFormat()) {
 			case DEFAULT:
-				rep = content.defaultFormat(false);
+				rep = FormatterFactory.get("default").format(content.getSentences(), false);
 				break;
 			case DEFAULT_RESOLVED:
-				rep = content.defaultFormat(true);
+				rep = FormatterFactory.get("default").format(content.getSentences(), true);
 				break;
 			case FLAT:
-				rep = content.flatFormat(false);
+				rep = FormatterFactory.get("flat").format(content.getSentences(), false);
 				break;
 			case FLAT_RESOLVED:
-				rep = content.flatFormat(true);
+				rep = FormatterFactory.get("flat").format(content.getSentences(), true);
 				break;
 			case RDF:
-				rep = content.rdfFormat();
+				rep = FormatterFactory.get("rdf").format(content.getSentences(), true);
 				break;
 			default:
-				rep = content.defaultFormat(false);
+				rep = FormatterFactory.get("default").format(content.getSentences(), false);
 				break;
 		}
 
