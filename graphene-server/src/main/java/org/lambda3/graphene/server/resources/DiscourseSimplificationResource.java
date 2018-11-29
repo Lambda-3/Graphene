@@ -25,9 +25,9 @@ package org.lambda3.graphene.server.resources;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.lambda3.graphene.core.discourse_simplification.model.DiscourseSimplificationContent;
 import org.lambda3.graphene.server.beans.DiscourseSimplificationRequestBean;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
+import org.lambda3.text.simplification.discourse.model.SimplificationContent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +52,7 @@ public class DiscourseSimplificationResource extends AbstractGrapheneResource {
 
 		LOG.debug("New DiscourseSimplificationRequest: {}", bean);
 
-		DiscourseSimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		SimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
 		return Response
 			.status(Response.Status.OK)
@@ -68,7 +68,7 @@ public class DiscourseSimplificationResource extends AbstractGrapheneResource {
 
 		LOG.debug("New DiscourseSimplificationRequest: {}", bean);
 
-		DiscourseSimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
+		SimplificationContent content = graphene.doDiscourseSimplification(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences());
 
         String rep = "";
 		switch (bean.getFormat()) {

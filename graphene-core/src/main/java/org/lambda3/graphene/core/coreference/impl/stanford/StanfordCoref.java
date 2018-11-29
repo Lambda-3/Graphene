@@ -104,4 +104,9 @@ public class StanfordCoref extends CoreferenceResolver {
 
 		return new CoreferenceContent(text, sentences.stream().map(s -> s.toString()).collect(Collectors.joining(" ")));
 	}
+
+	@Override
+	public boolean isActivated() {
+		return true;
+	}
 }

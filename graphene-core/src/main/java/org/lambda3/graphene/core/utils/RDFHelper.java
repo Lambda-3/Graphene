@@ -35,7 +35,7 @@ public class RDFHelper {
 	private static final String XML_NAMESPACE = "http://www.w3.org/2001/XMLSchema#";
 
 	// graphene
-	private static final String GRAPHENE_SENTENCE_NAMESPACE = "http://lambda3.org/graphene/sentence#";
+	private static final String GRAPHENE_SENTENCE_NAMESPACE = "http://lambda3.org/graphene/sentenceNameSpace#";
 	private static final String GRAPHENE_EXTRACTION_NAMESPACE = "http://lambda3.org/graphene/extraction#";
 	private static final String GRAPHENE_TEXT_NAMESPACE = "http://lambda3.org/graphene/text#";
 
@@ -43,9 +43,9 @@ public class RDFHelper {
 		return "\"" + String.valueOf(number) + "\"" + "^^" + "<" + XML_NAMESPACE + "integer" + ">";
 	}
 
-	public static String rdfLiteral(String text, String languageTag) {
+	public static String rdfLiteral(String text, String... languageTag) {
 		String escapedText = text.replace("\"", "\\\"").replace("\n", "\\\n").replace("\r", "\\\r").replace("\\", "");
-		String langStr = (languageTag != null) ? "@" + languageTag : "";
+		String langStr = (languageTag.length > 0) ? "@" + languageTag[0] : "";
 
 		return "\"" + escapedText + "\"" + langStr + "^^" + "<" + XML_NAMESPACE + "string" + ">";
 	}
@@ -58,16 +58,16 @@ public class RDFHelper {
 		return "<" + RDFS_NAMESPACE + text + ">";
 	}
 
-	public static String grapheneSentenceResource(String text) {
+	public static String sentenceNameSpace(String text) {
 		return "<" + GRAPHENE_SENTENCE_NAMESPACE + text + ">";
 	}
 
-	public static String grapheneExtractionResource(String text) {
+	public static String extractionNameSpace(String text) {
 		return "<" + GRAPHENE_EXTRACTION_NAMESPACE + text + ">";
 	}
 
-	public static String grapheneTextResource(String text) {
-		String escapedText = null;
+	public static String textResource(String text) {
+		String escapedText;
 		try {
 			escapedText = URLEncoder.encode(text, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
@@ -77,12 +77,12 @@ public class RDFHelper {
 		return "<" + GRAPHENE_TEXT_NAMESPACE + escapedText + ">";
 	}
 
-	public static String rdfBlankNode(String id) {
+	public static String blankNode(String id) {
 		return "_:" + id;
 	}
 
-	public static String rdfTriple(String subject, String predicate, String object) {
-		return subject + " " + predicate + " " + object + " .";
+	public static String triple(String subject, String predicate, String object) {
+		return String.format("%s %s %s .", subject, predicate, object);
 	}
 
 }

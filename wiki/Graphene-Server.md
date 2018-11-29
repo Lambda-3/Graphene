@@ -63,6 +63,7 @@ Returns the JSON-serialized versions of the `RelationExtractionContent` class or
 
 * **text**: The input text (mandatory). 
 * **doCoreference**: Specifies whether coreference should be executed before Relation-Extraction (true/false).
+* **doComplexCategories**: Specifies whether complex categories should be extracted (true/false).
 * **isolateSentences**: Specifies whether the sentences from the input text should be processed individually (This will not extract relationships that occur between neighboured sentences). Set **true**, if you run Graphene over a collection of independent sentences and **false** for a full coherent text (true/false).
 * **format**: Specifies which textual representation should be returned:
     * `DEFAULT`: The default RDFNL format
