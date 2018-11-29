@@ -162,7 +162,7 @@ Just add the following lines to your project's `pom.xml` file:
 <dependency>
     <groupId>org.lambda3.graphene</groupId>
     <artifactId>graphene-core</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
 </dependency>
 ```
 
