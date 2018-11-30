@@ -75,17 +75,25 @@ public class ComplexCategoryExtractor {
 	}
 
 	public void addComplexCategories(Triple triple) {
-		triple.addExtension(SUBJECT, getComplexCategory(triple.subject));
-		triple.addExtension(OBJECT, getComplexCategory(triple.object));
+		ComplexCategory ccs = getComplexCategory(triple.subject);
+		if (ccs != null) {
+			triple.addExtension(SUBJECT, ccs);
+		}
+		ComplexCategory cco = getComplexCategory(triple.object);
+		if (cco != null) {
+			triple.addExtension(OBJECT, cco);
+		}
 	}
 
-	public ComplexCategory getComplexCategory(String query) {
-		try {
-			JSONObject json = getQueryJson(query.toLowerCase());
-			List<ComplexCategory> yclasses = getComplexCategories(json);
-			return (yclasses.isEmpty() ? null : yclasses.get(0));
-		} catch (Exception e) {
-			e.printStackTrace();
+	protected ComplexCategory getComplexCategory(String query) {
+		if (query != null && !query.trim().isEmpty()) {
+			try {
+				JSONObject json = getQueryJson(query.toLowerCase());
+				List<ComplexCategory> yclasses = getComplexCategories(json);
+				return (yclasses.isEmpty() ? null : yclasses.get(0));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 
 		return null;
