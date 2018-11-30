@@ -1,9 +1,9 @@
 #!/bin/sh
-VERSION=8.2.0
+COMMIT = bcc9983237b71379d7024fe2a0550c20276103ad
 
 set -ex
-wget https://github.com/Lambda-3/DiscourseSimplification/archive/v$VERSION.tar.gz -O DiscourseSimplification.tar.gz
-tar xfa DiscourseSimplification.tar.gz
-cd DiscourseSimplification-$VERSION && mvn install -B -DskipTests && cd ..
-rm -f DiscourseSimplification.tar.gz
-rm -rf DiscourseSimplification-$VERSION 
+git clone git@github.com:Lambda-3/DiscourseSimplification.git
+cd DiscourseSimplification
+git checkout bcc9983237b71379d7024fe2a0550c20276103ad
+mvn install -B -DskipTests && cd ..
+rm -rf DiscourseSimplification
