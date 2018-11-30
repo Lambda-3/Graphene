@@ -229,8 +229,7 @@ public class ComplexCategoryExtractorTest {
 		for (Triple triple : tl) {
 			assert triple.property != null;
 			if (triple.property.equals("withdrew")) {
-				//TODO subject again lowercased unecessarily "The"
-				Assert.assertEquals(triple.subject, "the current President of The United States");
+				Assert.assertEquals(triple.subject, "The current President of The United States");
 				Assert.assertEquals(triple.object, "his sponsorship");
 
 				presidentTest(triple.getExtension(ComplexCategory.class, ComplexCategoryExtractor.SUBJECT));
@@ -242,7 +241,7 @@ public class ComplexCategoryExtractorTest {
 				Assert.assertEquals(cc.core.specContents[0].effectiveTerm, "his");
 				ok.add(true);
 			} else {
-				Assert.assertEquals(triple.subject, "his business ventures");
+				Assert.assertEquals(triple.subject, "His business ventures");
 				Assert.assertEquals(triple.property, "were experiencing");
 				Assert.assertEquals(triple.object, "financial woes");
 
