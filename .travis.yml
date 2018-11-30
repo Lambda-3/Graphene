@@ -9,7 +9,7 @@ before_install:
   - "git clone https://gitlab.com/julsal/dparser.git"
   - "cd dparser"
   - "pip install -r requirements.txt"
-  - "python3 dparser/service.py &"
+  - "python3 service.py &"
   - "cd .."
 notifications:
   slack:

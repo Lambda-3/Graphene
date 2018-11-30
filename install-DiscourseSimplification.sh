@@ -1,5 +1,5 @@
 #!/bin/sh
-VERSION=8.3.0
+VERSION=8.2.0
 
 set -ex
 wget https://github.com/Lambda-3/DiscourseSimplification/archive/v$VERSION.tar.gz -O DiscourseSimplification.tar.gz
