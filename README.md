@@ -83,7 +83,12 @@ To install [Discourse Simplification](https://github.com/Lambda-3/DiscourseSimpl
 
     ./install-DiscourseSimplification.sh
     
-If you want to extract Complex-Categories, you will need to deploy this [parser](https://gitlab.com/julsal/dparser).
+If you want to extract Complex-Categories, you will need to have an instance of this [parser](https://gitlab.com/julsal/dparser) running:
+
+    git clone https://gitlab.com/julsal/dparser.git /tmp/dparser
+    cd /tmp/dparser
+    pip install -r requirements.txt --user
+    python3 service.py &
 
 ## Setup of Graphene
 
