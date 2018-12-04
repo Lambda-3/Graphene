@@ -34,7 +34,7 @@ public class DefaultFormatter extends Formatter {
 
 	@Override
 	protected void writeSimpleContext(StringBuilder sb, SimpleContext sc, String... params) {
-		sb.append(String.format(context, sc.getRelation(), sc.getAsFullSentence()));
+		sb.append(String.format(context, sc.getRelation(), sc.getOriginalExcerptText()));
 	}
 
 	@Override
