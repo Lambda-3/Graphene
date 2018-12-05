@@ -80,7 +80,7 @@ public class RelationExtractor {
 		String[] parts = re.split(Pattern.quote("."));
 		if (parts[parts.length - 1].toLowerCase().contains("head")) {
 			this.mainPattern = HEAD_RELATION_EXTRACTION_PATTERN;
-		} else if (parts[parts.length - 1].toLowerCase().contains("head")) {
+		} else if (parts[parts.length - 1].toLowerCase().contains("nest")) {
 			this.mainPattern = NESTED_RELATION_EXTRACTION_PATTERN;
 		} else {
 			throw new RuntimeException("Unsupported relation extraction pattern = " + re);
