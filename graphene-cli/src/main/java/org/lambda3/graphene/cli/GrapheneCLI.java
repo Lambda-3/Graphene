@@ -11,12 +11,12 @@ package org.lambda3.graphene.cli;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -35,6 +35,7 @@ import org.kohsuke.args4j.CmdLineParser;
 import org.kohsuke.args4j.Option;
 import org.lambda3.graphene.core.Graphene;
 import org.lambda3.graphene.core.coreference.model.CoreferenceContent;
+import org.lambda3.graphene.core.relation_extraction.formatter.Formatter;
 import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 import org.lambda3.text.simplification.discourse.model.Content;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
@@ -82,7 +83,7 @@ public class GrapheneCLI {
 
 	@Option(name = "--reformat",
 		usage = "Specifies which textual representation for Relation-Extraction should be returned [DEFAULT/DEFAULT_RESOLVED/FLAT/FLAT_RESOLVED/RDF/SERIALIZED].")
-	private RelationExtractionOutputFormat reOutputFormat = RelationExtractionOutputFormat.DEFAULT;
+	private FormatterFactory.OutputFormat reOutputFormat = FormatterFactory.OutputFormat.DEFAULT;
 
 	@Option(name = "--doCoreference",
 		usage = "Specifies whether coreference should be executed before Discourse-Simplification or Relation-Extraction.")
@@ -280,7 +281,7 @@ public class GrapheneCLI {
 	private String format(Content content) throws JsonProcessingException {
 
 		if (content instanceof CoreferenceContent) {
-			CoreferenceContent c = (CoreferenceContent)content;
+			CoreferenceContent c = (CoreferenceContent) content;
 			switch (corefOutputFormat) {
 				case DEFAULT:
 					return c.getSubstitutedText();
@@ -290,30 +291,27 @@ public class GrapheneCLI {
 		}
 
 		if (content instanceof SimplificationContent) {
-			SimplificationContent c = (SimplificationContent)content;
+			SimplificationContent c = (SimplificationContent) content;
 			if (operation.equals(Operation.RE)) {
+				Formatter formatter = FormatterFactory.get(reOutputFormat);
 				switch (reOutputFormat) {
 					case DEFAULT:
-						return FormatterFactory.get("default").format(c.getSentences(), false);
-					case DEFAULT_RESOLVED:
-						return FormatterFactory.get("default").format(c.getSentences(), true);
 					case FLAT:
-						return FormatterFactory.get("flat").format(c.getSentences(), false);
+						return formatter.format(c.getSentences(), false);
+					case DEFAULT_RESOLVED:
 					case FLAT_RESOLVED:
-						return FormatterFactory.get("flat").format(c.getSentences(), true);
 					case RDF:
-						return FormatterFactory.get("rdf").format(c.getSentences(), true);
+					case JSON:
+						return formatter.format(c.getSentences(), true);
 					case SERIALIZED:
 						return content.prettyPrintJSON();
 				}
 			} else if (operation.equals(Operation.SIM)) {
 				switch (simOutputFormat) {
 					case DEFAULT:
-						return c.defaultFormat(false);
-					case DEFAULT_RESOLVED:
-						return c.defaultFormat(true);
 					case FLAT:
 						return c.flatFormat(false);
+					case DEFAULT_RESOLVED:
 					case FLAT_RESOLVED:
 						return c.flatFormat(true);
 					case SERIALIZED:
@@ -391,15 +389,6 @@ public class GrapheneCLI {
 		DEFAULT_RESOLVED,
 		FLAT,
 		FLAT_RESOLVED,
-		SERIALIZED
-	}
-
-	private enum RelationExtractionOutputFormat {
-		DEFAULT,
-		DEFAULT_RESOLVED,
-		FLAT,
-		FLAT_RESOLVED,
-		RDF,
 		SERIALIZED
 	}
 }

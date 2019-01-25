@@ -11,18 +11,20 @@ package org.lambda3.graphene.server.beans;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
  * ==========================License-End===============================
  */
 
+
+import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 
 import javax.validation.constraints.NotNull;
 import javax.ws.rs.DefaultValue;
@@ -42,7 +44,7 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 	private boolean isolateSentences;
 
 	@DefaultValue("DEFAULT")
-	private OutputFormat format;
+	private FormatterFactory.OutputFormat format;
 
 	public String getText() {
 		return text;
@@ -57,7 +59,7 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		return doCoreference;
 	}
 
-    @SuppressWarnings({"unused"})
+	@SuppressWarnings({"unused"})
 	public void setDoCoreference(boolean doCoreference) {
 		this.doCoreference = doCoreference;
 	}
@@ -80,31 +82,22 @@ public class RelationExtractionRequestBean extends AbstractRequestBean {
 		this.isolateSentences = isolateSentences;
 	}
 
-	public OutputFormat getFormat() {
+	public FormatterFactory.OutputFormat getFormat() {
 		return format;
 	}
 
-    @SuppressWarnings({"unused"})
-	public void setFormat(OutputFormat format) {
+	@SuppressWarnings({"unused"})
+	public void setFormat(FormatterFactory.OutputFormat format) {
 		this.format = format;
 	}
 
 	@Override
 	public String toString() {
 		return "RelationExtractionRequestBean{" +
-                "text='" + truncateText(text) + '\'' +
-                ", doCoreference=" + doCoreference +
-				", isolateSentences=" + isolateSentences +
-                ", format=" + format +
-                '}';
-    }
-
-
-	public enum OutputFormat {
-		DEFAULT,
-		DEFAULT_RESOLVED,
-		FLAT,
-		FLAT_RESOLVED,
-		RDF
+			"text='" + truncateText(text) + '\'' +
+			", doCoreference=" + doCoreference +
+			", isolateSentences=" + isolateSentences +
+			", format=" + format +
+			'}';
 	}
 }

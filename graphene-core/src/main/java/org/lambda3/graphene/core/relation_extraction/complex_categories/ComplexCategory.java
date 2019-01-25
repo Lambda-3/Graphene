@@ -1,8 +1,6 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class ComplexCategory {
 
@@ -86,7 +84,7 @@ public class ComplexCategory {
 
 	@Override
 	public int hashCode() {
-
 		return Objects.hash(name, core);
 	}
+
 }
