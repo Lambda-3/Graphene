@@ -217,7 +217,7 @@ public class ComplexCategoryExtractorTest {
 
 		SimplificationContent content = graphene.doRelationExtraction(text,
 			false, true, true);
-		String output = FormatterFactory.get("default").format(content.getSentences(), false);
+		String output = FormatterFactory.get(FormatterFactory.OutputFormat.DEFAULT).format(content.getSentences(), false);
 		System.out.println(output);
 
 		List<Triple> tl = GrapheneStream.triples(content).collect(Collectors.toList());

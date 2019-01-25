@@ -17,6 +17,16 @@ public abstract class Formatter {
 	protected String linked;
 	protected String extra;
 
+	protected String openRelation = "";
+	protected String closeRelation = "";
+
+	protected String openContext = "";
+	protected String closeContext = "";
+
+	protected String openLinkedContext = "";
+	protected String closeLinkedContext = "";
+	protected String separator = "";
+
 	static final String[] EMPTY_ARRAY = new String[0];
 
 	protected abstract String[] writeHeadline(StringBuilder sb, Sentence s);
@@ -40,26 +50,48 @@ public abstract class Formatter {
 			String[] hp = writeHeadline(sb, sentence);
 			for (Element element : sentence.getElements()) {
 				String[] ep = null;
+				if (!element.getListExtension(Extraction.class).isEmpty() || !element.getSimpleContexts().isEmpty()) {
+					sb.append(openRelation);
+				}
 				for (Extraction extraction : element.getListExtension(Extraction.class)) {
 					ep = writeExtraction(sb, extraction, element.getContextLayer(), hp);
+					sb.append(separator);
 				}
 
 				for (SimpleContext sc : element.getSimpleContexts()) {
 					for (Extraction extraction : sc.getListExtension(Extraction.class)) {
 						ep = writeExtraction(sb, extraction, element.getContextLayer() + 1, hp);
+						sb.append(separator);
 					}
 				}
 
-				for (SimpleContext sc : element.getSimpleContexts()) {
-					writeSimpleContext(sb, sc, ep);
+				if (!element.getListExtension(Extraction.class).isEmpty() || !element.getSimpleContexts().isEmpty()) {
+					sb.setLength(sb.length() - separator.length());
+					sb.append(closeRelation);
 				}
 
-				for (LinkedContext lc : element.getLinkedContexts()) {
-					if (resolve) {
-						writeResolvedLinkedContext(sb, sentences, lc, ep);
-					} else {
-						writeLinkedContext(sb, lc);
+				if (!element.getSimpleContexts().isEmpty()) {
+					sb.append(openContext);
+					for (SimpleContext sc : element.getSimpleContexts()) {
+						writeSimpleContext(sb, sc, ep);
+						sb.append(separator);
 					}
+					sb.setLength(sb.length() - separator.length());
+					sb.append(closeContext);
+				}
+
+				if (!element.getLinkedContexts().isEmpty()) {
+					sb.append(openLinkedContext);
+					for (LinkedContext lc : element.getLinkedContexts()) {
+						if (resolve) {
+							writeResolvedLinkedContext(sb, sentences, lc, ep);
+						} else {
+							writeLinkedContext(sb, lc);
+						}
+						sb.append(separator);
+					}
+					sb.setLength(sb.length() - separator.length());
+					sb.append(closeLinkedContext);
 				}
 				writeExtra(sb, element);
 			}

@@ -22,7 +22,7 @@ public class ComplexCategoryExtractor {
 	private static final String URL_PROPERTY_NAME = "complex.category.extractor.url";
 
 	private static final String USER_AGENT = "Linse Query Parser 0.2.0";
-	private static final String DEFAULT_URL = "http://127.0.0.1:5000/";
+	private static final String DEFAULT_URL = "http://127.0.0.1:8170/";
 	private static final String DIRECT_SPEC = "spec";
 
 	private String url;

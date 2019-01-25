@@ -64,7 +64,7 @@ public class GrapheneTest {
 		LOG.info("LOAD FROM FILE...");
 		SimplificationContent loaded = SimplificationContent.deserializeFromJSON(temp, SimplificationContent.class);
 
-		LOG.info(FormatterFactory.get("default").format(loaded.getSentences(), false));
+		LOG.info(FormatterFactory.get(FormatterFactory.OutputFormat.DEFAULT).format(loaded.getSentences(), false));
 	}
 
 	@Test
@@ -72,8 +72,8 @@ public class GrapheneTest {
 		String text = "Although the Treasury will announce details of the November refunding on Monday, the funding will be delayed if Congress and President Bush fail to increase the Treasury's borrowing capacity.";
 		SimplificationContent c = graphene.doRelationExtraction(text, false, false, false);
 
-		LOG.info(FormatterFactory.get("default").format(c.getSentences(), false));
-		LOG.info(FormatterFactory.get("flat").format(c.getSentences(), false));
-		LOG.info(FormatterFactory.get("rdf").format(c.getSentences(), false));
+		LOG.info(FormatterFactory.get(FormatterFactory.OutputFormat.DEFAULT).format(c.getSentences(), false));
+		LOG.info(FormatterFactory.get(FormatterFactory.OutputFormat.FLAT).format(c.getSentences(), false));
+		LOG.info(FormatterFactory.get(FormatterFactory.OutputFormat.RDF).format(c.getSentences(), false));
 	}
 }

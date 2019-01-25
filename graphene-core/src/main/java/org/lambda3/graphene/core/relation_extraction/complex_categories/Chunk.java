@@ -1,9 +1,7 @@
 package org.lambda3.graphene.core.relation_extraction.complex_categories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Chunk {
 

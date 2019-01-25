@@ -11,12 +11,12 @@ package org.lambda3.graphene.server.resources;
  * it under the terms of the GNU General Public License as
  * published by the Free Software Foundation, either version 3 of the
  * License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public
  * License along with this program.  If not, see
  * <http://www.gnu.org/licenses/gpl-3.0.html>.
@@ -25,6 +25,7 @@ package org.lambda3.graphene.server.resources;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.lambda3.graphene.core.relation_extraction.formatter.Formatter;
 import org.lambda3.graphene.core.relation_extraction.formatter.FormatterFactory;
 import org.lambda3.graphene.server.beans.RelationExtractionRequestBean;
 import org.lambda3.text.simplification.discourse.model.SimplificationContent;
@@ -44,6 +45,7 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 
 	private final static Logger LOG = LoggerFactory.getLogger(RelationExtractionResource.class);
 
+
 	@POST
 	@Path("text")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -55,46 +57,40 @@ public class RelationExtractionResource extends AbstractGrapheneResource {
 		SimplificationContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences(), bean.isDoComplexCategories());
 
 		return Response
-                .status(Response.Status.OK)
-                .entity(content.serializeToJSON())
-                .build();
-    }
+			.status(Response.Status.OK)
+			.entity(content.serializeToJSON())
+			.build();
+	}
 
-    @POST
-    @Path("text")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
-    public Response relationExtractionFromTextAsText(@Valid RelationExtractionRequestBean bean) {
+	@POST
+	@Path("text")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.TEXT_PLAIN)
+	public Response relationExtractionFromTextAsText(@Valid RelationExtractionRequestBean bean) {
 
 		LOG.debug("New RelationExtractionRequest: {}", bean);
 
 		SimplificationContent content = graphene.doRelationExtraction(bean.getText(), bean.isDoCoreference(), bean.isIsolateSentences(), bean.isDoComplexCategories());
+		Formatter formatter = FormatterFactory.get(bean.getFormat());
 
-        String rep = "";
+		String rep = "";
 		switch (bean.getFormat()) {
-			case DEFAULT:
-				rep = FormatterFactory.get("default").format(content.getSentences(), false);
-				break;
 			case DEFAULT_RESOLVED:
-				rep = FormatterFactory.get("default").format(content.getSentences(), true);
-				break;
-			case FLAT:
-				rep = FormatterFactory.get("flat").format(content.getSentences(), false);
-				break;
 			case FLAT_RESOLVED:
-				rep = FormatterFactory.get("flat").format(content.getSentences(), true);
-				break;
 			case RDF:
-				rep = FormatterFactory.get("rdf").format(content.getSentences(), true);
+			case JSON:
+				rep = formatter.format(content.getSentences(), true);
 				break;
+			case DEFAULT:
+			case FLAT:
 			default:
-				rep = FormatterFactory.get("default").format(content.getSentences(), false);
+				rep = formatter.format(content.getSentences(), false);
 				break;
 		}
 
-        return Response
-                .status(Response.Status.OK)
-                .entity(rep)
-                .build();
-    }
+		return Response
+			.status(Response.Status.OK)
+			.entity(rep)
+			.build();
+	}
 }
