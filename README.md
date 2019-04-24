@@ -77,11 +77,7 @@ The RDF N-Triples format: [RDF](wiki/files/Barack_Obama_2017_11_06.nt)
 * docker-compose version 1.12+
 
 ## Dependencies
-Compiling and packaging requires two additional packages:
-
-To install [Sentence Simplification](https://github.com/Lambda-3/SentenceSimplification), execute the following script:
-
-	./install-SentenceSimplification.sh
+Compiling and packaging requires an additional package:
 
 To install [Discourse Simplification](https://github.com/Lambda-3/DiscourseSimplification), execute the following script:
 
@@ -166,7 +162,7 @@ Just add the following lines to your project's `pom.xml` file:
 </dependency>
 ```
 
-### Graphene-Sever
+### Graphene-Server
 The usage of the Graphene-Server is described [here](wiki/Graphene-Server.md).
 
 
