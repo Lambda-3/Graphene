@@ -1,0 +1,2 @@
+**/*.*
+!graphene-server/target/graphene*

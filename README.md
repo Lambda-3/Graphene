@@ -143,7 +143,7 @@ Ensure that you have installed the Graphene-Core API and packaged the server par
 
 Then, you can build and start the composed images by running:
 	
-	docker-compose up
+	docker-compose -f docker-compose-server.yml up
 
 
 ## Usage

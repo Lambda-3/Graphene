@@ -7,7 +7,7 @@ services:
       - coreference
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: graphene-server/target/classes/Dockerfile-server
     ports:
       - "8080:8080"
     links:

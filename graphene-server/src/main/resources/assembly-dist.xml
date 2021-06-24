@@ -78,7 +78,7 @@
 			<directory>${project.basedir}/src/main/resources</directory>
 			<outputDirectory>conf</outputDirectory>
 			<includes>
-				<include>Dockerfile-graphene</include>
+				<include>Dockerfile-server</include>
 			</includes>
 		</fileSet>
 
